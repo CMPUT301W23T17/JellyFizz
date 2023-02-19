@@ -1,3 +1,5 @@
+package com.example.qr_code_hunter;
+
 public class Camera {
 
     private static final int REQUEST_CAMERA_PERMISSION = 200;
