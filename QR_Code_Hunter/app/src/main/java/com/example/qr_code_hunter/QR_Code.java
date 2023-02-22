@@ -1,7 +1,4 @@
 package com.example.qr_code_hunter;
-
-import android.util.Log;
-
 import java.util.*;
 
 public class QR_Code {
