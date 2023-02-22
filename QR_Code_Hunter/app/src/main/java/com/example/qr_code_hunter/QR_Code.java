@@ -72,5 +72,4 @@ public class QR_Code {
         return totalScore;
     }
 
-
 }
