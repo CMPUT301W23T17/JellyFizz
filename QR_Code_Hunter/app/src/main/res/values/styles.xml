@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="scan_now">
+
+        <item name="android:textSize">
+            30sp
+        </item>
+
+        <item name="android:letterSpacing">
+            -0.01
+        </item>
+
+        <item name="android:textColor">
+            #FFFFFF
+        </item>
+
+    </style>
+
+    <style name="welcome_use">
+
+        <item name="android:textSize">
+            30sp
+        </item>
+
+        <item name="android:textColor">
+            #191847
+        </item>
+
+    </style>
+</resources>

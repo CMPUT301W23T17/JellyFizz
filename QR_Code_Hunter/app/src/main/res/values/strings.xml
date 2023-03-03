@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">QR_Code_Hunter</string>
+    <string name="score">score</string>
+    <string name="_9999">#9999</string>
+    <string name="your_rank">Your Rank:</string>
+    <string name="pts">PTS</string>
+    <string name="_0">0</string>
+    <string name="scan_now">Scan Now</string>
+    <string name="welcome_use">WELCOME,  USERNAME !</string>
 </resources>
