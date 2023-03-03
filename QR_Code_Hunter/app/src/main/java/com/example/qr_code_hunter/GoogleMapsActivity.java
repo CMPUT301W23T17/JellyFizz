@@ -2,7 +2,6 @@ package com.example.qr_code_hunter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
@@ -11,19 +10,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
+import android.graphics.drawable.GradientDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -32,37 +36,137 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.Priority;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.Arrays;
 
 public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback {
     FrameLayout map;
     GoogleMap gMap;
     double longitude, latitude;
     Marker marker;
+    GroundOverlay overlay;
+    private Bitmap bitmap;
     private static final int REQUEST_CODE = 101;
     private static final int REQUEST_CHECK_SETTING = 1001;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 110;
     private LocationRequest locationRequest;
-    //SearchView searchView;
+    private static String TAG = "Info";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_maps);
         map = findViewById(R.id.map);
+        // Create radial gradient circle
+        getCircleRadiant();
+        // Get to current location on google map when open
         getLocation();
+
+        // Initiate the SDK
+        String apiKey = getString(R.string.api_key);
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(),apiKey);
+        }
+
+        PlacesClient placesClient = Places.createClient(this);
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Set location bias for result to Edmonton only
+        LatLngBounds edmontonBounds = new LatLngBounds(
+                new LatLng(53.3343, -113.5812), // Southwest bound of Edmonton
+                new LatLng(53.6758, -113.2693)  // Northeast bound of Edmonton
+        );
+
+        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(edmontonBounds));
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+
+                // Focus google map on the chosen search location
+                LatLng latLng = place.getLatLng();
+                if (marker != null){
+                    marker.remove();
+                }
+                MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(place.getName());
+//                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,15);
+                gMap.animateCamera(cameraUpdate);
+                marker = gMap.addMarker(markerOptions);
+
+                //Show radius of nearby QR codes
+                float radius = 500; // Replace with the radius of the circle in meters
+                overlay.setPosition(place.getLatLng());
+                overlay.setDimensions(radius * 2, radius * 2);
+            }
+
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
+
+    // https://developer.android.com/reference/android/graphics/RadialGradient
+    // Android Developer Community
+    // Use to get a pain of a radial gradiant
+    private void getCircleRadiant() {
+        int radius = 500;
+        // Set color and position
+        int color1 = 0xDDFF6B6B;
+        int color2 = 0xAAFFA8A8;
+        int color3 = 0x99FFE3E3;
+        // Define the gradient stops as percentages of the radius
+        float[] gradientStops = { 0.2f, 0.5f, 0.9f };
+        // Define the colors for each gradient stop
+        int[] gradientColors = { color1, color2, color3 };
+        // Create a RadialGradient object
+        RadialGradient gradient = new RadialGradient(500, 500, radius, gradientColors, gradientStops, Shader.TileMode.CLAMP);
+        // Create a Paint object with the RadialGradient
+        Paint paint = new Paint();
+        paint.setShader(gradient);
+        // Create a Bitmap object and a Canvas object
+        bitmap = Bitmap.createBitmap((int) (2 * radius), (int) (2 * radius), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        // Draw a circle with the Paint object and the Canvas object
+        canvas.drawCircle(radius, radius, radius, paint);
+    }
+
     private void getLocation() {
         // https://developers.google.com/android/reference/com/google/android/gms/location/LocationResult
         // Author: Google developer community
@@ -175,7 +279,20 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("My Current Location");
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        googleMap.addMarker(markerOptions);
+        marker = googleMap.addMarker(markerOptions);
+        try {
+            // Convert the Bitmap object to a BitmapDescriptor object
+            BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+
+            // Add a GroundOverlay to the map with the BitmapDescriptor object
+            GroundOverlayOptions options = new GroundOverlayOptions()
+                    .image(descriptor)
+                    .position(latLng, 2 * 500)
+                    .transparency(0.3f)
+                    .clickable(false);
+            overlay = gMap.addGroundOverlay(options);
+        } catch (Exception e){
+            e.printStackTrace();}
     }
 
     // https://www.youtube.com/watch?v=JzxjNNCYt_o&list=PLQ_Ai1O7sMV3eyA6q0spONZ2VgEj7FcF3&index=1
@@ -207,6 +324,23 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                     Toast.makeText(GoogleMapsActivity.this,"GPS is required to be turned on",Toast.LENGTH_SHORT).show();
                     break;
             }
+        }
+        // https://developers.google.com/maps/documentation/places/android-sdk/autocomplete-->
+        // Author: Android Developer Community-->
+        // Use CardView to create border for search fragment
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+                Toast.makeText(GoogleMapsActivity.this, "No location found",Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
     }
 }
