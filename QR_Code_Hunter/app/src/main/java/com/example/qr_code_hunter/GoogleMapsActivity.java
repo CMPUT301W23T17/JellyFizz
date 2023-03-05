@@ -40,15 +40,18 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -59,11 +62,20 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Arrays;
 
-public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnCameraIdleListener {
     FrameLayout map;
+
     GoogleMap gMap;
     double longitude, latitude;
     Marker marker;
@@ -74,6 +86,10 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     private static final int AUTOCOMPLETE_REQUEST_CODE = 110;
     private LocationRequest locationRequest;
     private static String TAG = "Info";
+
+    FirebaseFirestore db;
+
+    final CollectionReference qrCodes = db.collection("QrCodes");
 
 
     @Override
@@ -140,6 +156,17 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
+
+        //This is the database listener, everytime a new qr code is added to the database, This is executed, Enables real time updates
+        qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+            FirebaseFirestoreException error) {
+                onCameraIdle();
+            }
+        });
+
     }
 
     // https://developer.android.com/reference/android/graphics/RadialGradient
@@ -343,4 +370,56 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
             return;
         }
     }
+
+    //This method pulls markers from the database everytime the screen of the user moves,
+    //https://www.google.com/search?q=google+maps+api+how+to+set+a+camera+listener&rlz=1C1VDKB_enCA1019CA1019&oq=google+maps+api+how+to+set+a+camera+listener&aqs=chrome..69i57j69i64.10027j0j7&sourceid=chrome&ie=UTF-8#fpstate=ive&vld=cid:9f82404a,vid:YO9fTpHwAqQ
+
+
+    //This method is activated everytime time a camera action happens. The user moves screen, zooms, etc..., updates the markers on the screen when this happens
+    @Override
+    public void onCameraIdle() {
+
+        //get the bounds of the screen
+        Projection currentProjection = this.gMap.getProjection();
+        VisibleRegion visibleRegion = currentProjection.getVisibleRegion();
+        LatLngBounds latLngBounds = visibleRegion.latLngBounds;
+
+
+        //get the instance of the database
+        db = FirebaseFirestore.getInstance();
+
+
+        //filter all qrcodes, make sure they are within the bound of the screen
+        qrCodes.whereGreaterThan("latitude", latLngBounds.southwest.latitude)
+                .whereLessThan("latitude", latLngBounds.northeast.latitude)
+                .whereGreaterThan("longitude", latLngBounds.southwest.longitude)
+                .whereLessThan("longitude", latLngBounds.northeast.longitude)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Loop thorugh documents and  filters documents within the bounds of the visible region from the database, documents are filtered according to the bounds of the screen
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                //Add the marker to the map
+                                String qrCodeUniqueName = (String) document.getData().get("uniqueName");
+                                LatLng qrCodeLocation = new LatLng((Double)document.getData().get("Longitude"), (Double) document.getData().get("Latitude"));
+
+                                //Render marker
+                                MarkerOptions markerOptions = new MarkerOptions().position(qrCodeLocation).title(qrCodeUniqueName);
+                                marker = gMap.addMarker(markerOptions);
+
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+
+
+
 }
