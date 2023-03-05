@@ -87,8 +87,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     private LocationRequest locationRequest;
     private static String TAG = "Info";
 
-    FirebaseFirestore db;
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     final CollectionReference qrCodes = db.collection("QrCodes");
 
 
@@ -154,17 +153,6 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
             public void onError(@NonNull Status status) {
                 // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-
-
-        //This is the database listener, everytime a new qr code is added to the database, This is executed, Enables real time updates
-        //If it becomes too extensive, can disable
-        qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-            FirebaseFirestoreException error) {
-                onCameraIdle();
             }
         });
 
@@ -321,6 +309,17 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
             overlay = gMap.addGroundOverlay(options);
         } catch (Exception e){
             e.printStackTrace();}
+
+
+        //This is the database listener, everytime a new qr code is added to the database, This is executed, Enables real time updates
+        //If it becomes too extensive, can disable
+        qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+            FirebaseFirestoreException error) {
+                onCameraIdle();
+            }
+        });
     }
 
     // https://www.youtube.com/watch?v=JzxjNNCYt_o&list=PLQ_Ai1O7sMV3eyA6q0spONZ2VgEj7FcF3&index=1
