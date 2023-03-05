@@ -159,6 +159,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
 
         //This is the database listener, everytime a new qr code is added to the database, This is executed, Enables real time updates
+        //If it becomes too extensive, can disable
         qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
