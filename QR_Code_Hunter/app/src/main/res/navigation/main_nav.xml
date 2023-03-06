@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/player_profie_screen">
+    <fragment
+        android:id="@+id/map_screen"
+        android:name="com.example.qr_code_hunter.Map_Screen"
+        android:label="fragment_map__screen"
+        tools:layout="@layout/fragment_map__screen" />
+    <fragment
+        android:id="@+id/search_screen"
+        android:name="com.example.qr_code_hunter.Search_Screen"
+        android:label="fragment_search__screen"
+        tools:layout="@layout/fragment_search__screen" />
+    <fragment
+        android:id="@+id/ranking_user_screen"
+        android:name="com.example.qr_code_hunter.Ranking_User_Screen"
+        android:label="fragment_ranking__user__screen"
+        tools:layout="@layout/fragment_ranking__user__screen" />
+    <activity
+        android:id="@+id/home_screen"
+        android:name="com.example.qr_code_hunter.Home_Screen"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+    <activity
+        android:id="@+id/player_profie_screen"
+        android:name="com.example.qr_code_hunter.Player_Profie_Screen"
+        android:label="activity_player_profie_screen"
+        tools:layout="@layout/activity_player_profie_screen" />
+</navigation>
