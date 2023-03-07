@@ -1,7 +1,5 @@
 package com.example.qr_code_hunter;
 
-package com.example.camera;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +16,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.graphics.Bitmap;
+import android.net.Uri;
+
+//import com.google.firebase.storage.FirebaseStorage;
+//import com.google.firebase.storage.StorageReference;
+//import com.google.firebase.storage.UploadTask;
 
 public class camera {
     private static final String TAG = "Camera";
