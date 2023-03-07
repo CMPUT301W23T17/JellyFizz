@@ -1,6 +1,9 @@
 package com.example.qr_code_hunter;
 
+import org.junit.Test;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -16,4 +19,12 @@ public class QRCodeTest {
         mockCodeName = mockCode.getName();
         assertEquals("JetSeaGasEraOwlJawOakIceOilSaw", mockCodeName);
     }
+
+    @Test
+    public void testVisualRepresentation() {
+        QRCode mockQR = new QRCode();
+        String rep = mockQR.setVisualRep("11010010");
+        System.out.println(rep);
+    }
+
 }

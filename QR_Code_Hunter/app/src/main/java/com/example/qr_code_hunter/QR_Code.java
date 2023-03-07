@@ -1,7 +1,20 @@
 package com.example.qr_code_hunter;
 
-public class QRCode {
+public class QR_Code {
     String code_name = "";
+    private int score;
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * This creates a unique name corresponding to one QR code using the first 10 bits of the binary value
@@ -32,6 +45,8 @@ public class QRCode {
         }
     }
 
+
+
     /**
      * This returns the name of a code
      * @return
@@ -40,4 +55,21 @@ public class QRCode {
     public String getName() {
         return code_name;
     }
+    /**
+     * This returns the visual reprsentation of a code
+     * @return
+     *      Returns a string-type
+     */
+    public String getVisualRep() {
+        return code_name;
+    }
+    /**
+     * This returns the visual reprsentation of a code
+     * @return
+     *      Returns a string-type
+     */
+    public String getVisualRep() {
+        return code_name;
+    }
+
 }
