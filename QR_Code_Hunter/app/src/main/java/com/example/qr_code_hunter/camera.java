@@ -91,6 +91,7 @@ public class camera {
         }
     }
 
+    // Returns True if all app permissions are granted by the user.
     private boolean allPermissionsGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -99,7 +100,8 @@ public class camera {
         }
         return true;
     }
-
+    
+    // Returns image file to be saved.
     private File createImageFile() throws Exception {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
