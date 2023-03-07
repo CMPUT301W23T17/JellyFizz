@@ -39,12 +39,19 @@ public class QRCodeTest {
         assertEquals("RedSeaGasEraOwlJawLogFluMudAxe", mockCodeName);
     }
 
-//    @Test
-//    public void testVisualRepresentation() {
-//        QRCode mockQR = new QRCode("11010010");
-//        String rep = mockQR.getVisualRep();
-//        System.out.println(rep);
-//    }
+    @Test
+    public void testVisualRepresentation() throws NoSuchAlgorithmException {
+        QRCode mockQR = new QRCode("hello");
+        assertEquals("  _--------------_ \n" +
+                " { ~~~>      <~~~ }\n" +
+                "{| < + > || < + > |}\n" +
+                "{|       ||       |}\n" +
+                " |      {__}      | \n" +
+                " |_              _| \n" +
+                " |    (______)    | \n" +
+                " |                | \n" +
+                " ------------------ ", mockQR.getVisualRep());
+    }
 
     @Test
     public void testSetscore() throws NoSuchAlgorithmException {
