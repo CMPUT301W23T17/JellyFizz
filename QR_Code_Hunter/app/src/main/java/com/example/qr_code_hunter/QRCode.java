@@ -1,5 +1,9 @@
 package com.example.qr_code_hunter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
+
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class QRCode {
@@ -28,50 +32,35 @@ public class QRCode {
 //        setScore(shaGeneratorHexadecimal(scannedString));
     }
 
-    /**
-     * This creates the string of first 12 bits of the binary value based on QR Code
-     * @param input
-     *      This is input of the QR code
-     */
-    public String shaGeneratorBinary (String input){
-        byte[] inputData = input.getBytes();
-        byte[] outputData = new byte[0];
-        try {
-            outputData = sha.encryptSHA(inputData, "SHA-256");
-        } catch (Exception e){
-            e.printStackTrace();
+
+
+    public String shaGeneratorHexadecimal(String input) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(input.getBytes(StandardCharsets.UTF_8));
+        StringBuilder hexString = new StringBuilder();
+
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
         }
-        int resultInt1 = getBit(outputData, 0);
-        int resultInt2 = getBit(outputData, 1);
-        String result = String.valueOf(resultInt1) + String.valueOf(resultInt2);
-        return result;
-    };
-    /**
-     * This creates the string of SHA QR Code
-     * @param input
-     *      This is input of the QR code
-     */
-    public String shaGeneratorHexadecimal (String input){
-        byte[] inputData = input.getBytes();
-        byte[] outputData = new byte[0];
-        try {
-            outputData = sha.encryptSHA(inputData, "SHA-256");
-        } catch (Exception e){
-            e.printStackTrace();
+
+        return hexString.toString();
+    }
+
+    public String shaGeneratorBinary(String input) throws NoSuchAlgorithmException {
+        String target = this.shaGeneratorHexadecimal(input);
+        target = target.substring(0,5);
+        byte[] bytes = target.getBytes();
+        StringBuilder binary = new StringBuilder();
+        for (byte b : bytes) {
+            int value = b;
+            for (int i = 0; i < 8; i++) {
+                binary.append((value & 128) == 0 ? 0 : 1);
+                value <<= 1;
+            }
         }
-        return outputData.toString();
-    };
-    /**
-     * This creates the integer represented bits
-     * @param data,pos
-     *      This is data, pos
-     */
-    private static int getBit(byte[] data, int pos) {
-        int posByte = pos/8;
-        int posBit = pos%8;
-        byte valByte = data[posByte];
-        int valInt = valByte>>(8-(posBit+1)) & 0x0001;
-        return valInt;
+        return binary.toString();
     }
 
     /**
