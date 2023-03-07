@@ -1,70 +1,43 @@
 package com.example.qr_code_hunter;
 
-public class QR_Code {
+public class QRCode {
+    String code_name = "";
 
     /**
-     * Returns a visual representation of the QR code
-     * @param binary binary number that will determine the attributes of the visual
-     * @return string representation of QR code
+     * This creates a unique name corresponding to one QR code using the first 10 bits of the binary value
+     * @param binary
+     *      This is the binary value of the SHA-256 hash of the code
      */
-    public String getVisualRep(String binary){
+    public void setName(String binary) {
         char bin[] = binary.toCharArray();
+        String[][] namesArray = new String[][]{
+                new String[]{"Red", "Jet"},
+                new String[]{"Sea", "Bay"},
+                new String[]{"Car", "Gas"},
+                new String[]{"Art", "Era"},
+                new String[]{"Owl", "Bat"},
+                new String[]{"Jaw", "Eye"},
+                new String[]{"Oak", "Log"},
+                new String[]{"Flu", "Ice"},
+                new String[]{"Mud", "Oil"},
+                new String[]{"Saw", "Axe"}
+        };
 
-        String rep = null;
-
-        if(bin[0] == '1'){
-            rep ="  _||||||||||||||_ ";
-        }else{
-            rep ="  _--------------_ ";
-        }
-
-        if(bin[1] == '1'){
-            rep = rep.concat("\n { ----      ---- }");
-        }else{
-            rep = rep.concat("\n { ~~~>      <~~~ }");
-        }
-
-        if(bin[2] == '1'){
-            rep = rep.concat("\n{| < + > || < + > |}");
-        }else{
-            rep = rep.concat("\n>|-[ @]--||--[ @]-|<");
-        }
-
-        if(bin[3] == '1'){
-            rep = rep.concat("\n{|       ||       |}");
-            rep = rep.concat("\n |      {__}      | ");
-        }else{
-            rep = rep.concat("\n>|       ||       |<");
-            rep = rep.concat("\n |      <..>      | ");
-        }
-
-        if(bin[4] == '1'){
-            rep = rep.concat("\n |   _~~~~~~~~_   | ");
-        }else{
-            rep = rep.concat("\n |_              _| ");
-        }
-        if(bin[5] == '1'){
-            if(bin[6] == '1'){
-                rep = rep.concat("\n  |_  (______)  _| ");
-            }else{
-                rep = rep.concat("\n  |_  [||||||]  _| ");
+        for (int i = 0; i < 10; i++) {
+            if (bin[i] == '1') {
+                code_name = code_name.concat(namesArray[i][1]);
+            } else {
+                code_name = code_name.concat(namesArray[i][0]);
             }
-            rep = rep.concat("\n   |_          _| ");
-        }else{
-            if(bin[6] == '1'){
-                rep = rep.concat("\n |    (______)    | ");
-            }else{
-                rep = rep.concat("\n |    [||||||]    | ");
-            }
-            rep = rep.concat("\n |                | ");
         }
+    }
 
-        if(bin[7] == '1'){
-            rep = rep.concat("\n -----||||||||----- ");
-        }else{
-            rep = rep.concat("\n ------------------ ");
-        }
-
-        return rep;
+    /**
+     * This returns the name of a code
+     * @return
+     *      Returns a string-type
+     */
+    public String getName() {
+        return code_name;
     }
 }
