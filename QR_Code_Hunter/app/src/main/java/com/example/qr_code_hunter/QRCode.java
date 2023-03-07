@@ -13,8 +13,6 @@ public class QRCode {
     private String visual_rep = "";
 
 
-
-
     //Supported Attribute
     private static Map<Character, Integer> alphabetPoints = Map.of(
             'a', 10,
@@ -26,14 +24,18 @@ public class QRCode {
     );
 
 
-    QRCode(String scannedString) {
-        setName(scannedString);
-        setVisualRep(scannedString);
-//        setScore(shaGeneratorHexadecimal(scannedString));
+    QRCode(String scannedString) throws NoSuchAlgorithmException {
+        setName(this.shaGeneratorBinary(scannedString));
+        setVisualRep(this.shaGeneratorBinary(scannedString));
+        setScore(this.shaGeneratorHexadecimal(scannedString));
     }
 
 
-
+    /**
+     * Returns a hexadecimal string using SHA-256
+     * @param input a scanned string
+     * @return  a string representation of QR code
+     */
     public String shaGeneratorHexadecimal(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(input.getBytes(StandardCharsets.UTF_8));
@@ -47,7 +49,11 @@ public class QRCode {
 
         return hexString.toString();
     }
-
+    /**
+     * Returns a binary string using SHA-256
+     * @param input a scanned string
+     * @return  a binary string representation of QR code
+     */
     public String shaGeneratorBinary(String input) throws NoSuchAlgorithmException {
         String target = this.shaGeneratorHexadecimal(input);
         target = target.substring(0,5);

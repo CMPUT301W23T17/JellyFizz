@@ -26,11 +26,11 @@ public class QRCodeTest {
     }
 
     @Test
-    public void testSetName() {
-        QRCode mockCode = new QRCode("1011000110101011001001");
+    public void testSetName() throws NoSuchAlgorithmException {
+        QRCode mockCode = new QRCode("hello");
         String mockCodeName = ""; // initial name is empty
         mockCodeName = mockCode.getName();
-        assertEquals("JetSeaGasEraOwlJawOakIceOilSaw", mockCodeName);
+        assertEquals("RedSeaGasEraOwlJawLogFluMudAxe", mockCodeName);
     }
 
 //    @Test
