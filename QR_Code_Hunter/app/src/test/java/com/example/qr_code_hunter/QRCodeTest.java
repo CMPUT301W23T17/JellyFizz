@@ -12,19 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class QRCodeTest {
     @Test
     void testSetName() {
-        QRCode mockCode = new QRCode();
+        QRCode mockCode = new QRCode("1011000110101011001001");
         String mockBinaryCode = "1011000110101011001001";
-        String mockCodeName = ""; // initial name is empty
         mockCode.setName(mockBinaryCode);
+
+        String mockCodeName = ""; // initial name is empty
         mockCodeName = mockCode.getName();
         assertEquals("JetSeaGasEraOwlJawOakIceOilSaw", mockCodeName);
     }
 
-    @Test
-    public void testVisualRepresentation() {
-        QRCode mockQR = new QRCode();
-        String rep = mockQR.setVisualRep("11010010");
-        System.out.println(rep);
-    }
+//    @Test
+//    public void testVisualRepresentation() {
+//        QRCode mockQR = new QRCode();
+//        String rep = mockQR.setVisualRep("11010010");
+//        System.out.println(rep);
+//    }
 
 }

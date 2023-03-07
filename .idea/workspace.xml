@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91ff62bb-2043-487c-a042-91b8b96a7eae" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QR_Code.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QR_Code.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QRCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QRCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/navigation/nav_graph.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/test/java/com/example/qr_code_hunter/QRCodeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/test/java/com/example/qr_code_hunter/QRCodeTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

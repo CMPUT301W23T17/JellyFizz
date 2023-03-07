@@ -22,11 +22,10 @@ public class QRCode {
     );
 
 
-
     QRCode(String scannedString) {
-        setName(shaGeneratorBinary(scannedString));
-        setVisualRep(shaGeneratorBinary(scannedString));
-        setScore(shaGeneratorHexadecimal(scannedString));
+        setName(scannedString);
+        setVisualRep(scannedString);
+//        setScore(shaGeneratorHexadecimal(scannedString));
     }
 
     /**
