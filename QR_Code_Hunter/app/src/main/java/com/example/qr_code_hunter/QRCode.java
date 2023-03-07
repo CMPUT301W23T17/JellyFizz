@@ -32,7 +32,7 @@ public class QRCode {
 
 
     /**
-     * Returns a hexadecimal string using SHA-256
+     * Returns a string using SHA-256
      * @param input a scanned string
      * @return  a string representation of QR code
      */
@@ -49,6 +49,8 @@ public class QRCode {
 
         return hexString.toString();
     }
+
+
     /**
      * Returns a binary string using SHA-256
      * @param input a scanned string
