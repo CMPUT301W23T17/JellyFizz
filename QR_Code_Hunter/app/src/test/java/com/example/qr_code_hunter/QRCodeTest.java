@@ -1,21 +1,21 @@
 package com.example.qr_code_hunter;
 
 import org.junit.Test;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 /**
  * This is a class that tests the methods of QR_Code
  */
 public class QRCodeTest {
     @Test
-    void testSetName() {
-        QRCode mockCode = new QRCode("1011000110101011001001");
-        String mockBinaryCode = "1011000110101011001001";
-        mockCode.setName(mockBinaryCode);
+    public void testSha
 
+
+    @Test
+    public void testSetName() {
+        QRCode mockCode = new QRCode("1011000110101011001001");
         String mockCodeName = ""; // initial name is empty
         mockCodeName = mockCode.getName();
         assertEquals("JetSeaGasEraOwlJawOakIceOilSaw", mockCodeName);
@@ -23,9 +23,14 @@ public class QRCodeTest {
 
 //    @Test
 //    public void testVisualRepresentation() {
-//        QRCode mockQR = new QRCode();
-//        String rep = mockQR.setVisualRep("11010010");
+//        QRCode mockQR = new QRCode("11010010");
+//        String rep = mockQR.getVisualRep();
 //        System.out.println(rep);
 //    }
+    @Test
+    public void testSetscore() {
+        QRCode testQR_Code = new QRCode("1011000110101011001001");
+        assertEquals(111, testQR_Code.getScore());
+}
 
 }
