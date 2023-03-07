@@ -8,7 +8,6 @@ public class QRCode {
     private Integer score;
     private String visual_rep = "";
 
-    private String hashString;   //delete later
 
 
 
@@ -25,21 +24,56 @@ public class QRCode {
 
 
     QRCode(String scannedString) {
-        //all initialization methods of the class should be called here, (visual rep, score, hashing, geolocation, etc...)
-        // will be called when a QR_Code is made
-
-        //Hashing methods should be called first
-
-        this.hashString = "696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6";
-        scoreQR_Code(this.hashString);
+        setName(shaGeneratorBinary(scannedString));
+        setVisualRep(shaGeneratorBinary(scannedString));
+        setScore(shaGeneratorHexadecimal(scannedString));
     }
 
-
-
-
-
-
-
+    /**
+     * This creates the string of first 12 bits of the binary value based on QR Code
+     * @param input
+     *      This is input of the QR code
+     */
+    public String shaGeneratorBinary (String input){
+        byte[] inputData = input.getBytes();
+        byte[] outputData = new byte[0];
+        try {
+            outputData = sha.encryptSHA(inputData, "SHA-256");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        int resultInt1 = getBit(outputData, 0);
+        int resultInt2 = getBit(outputData, 1);
+        String result = String.valueOf(resultInt1) + String.valueOf(resultInt2);
+        return result;
+    };
+    /**
+     * This creates the string of SHA QR Code
+     * @param input
+     *      This is input of the QR code
+     */
+    public String shaGeneratorHexadecimal (String input){
+        byte[] inputData = input.getBytes();
+        byte[] outputData = new byte[0];
+        try {
+            outputData = sha.encryptSHA(inputData, "SHA-256");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return outputData.toString();
+    };
+    /**
+     * This creates the integer represented bits
+     * @param data,pos
+     *      This is data, pos
+     */
+    private static int getBit(byte[] data, int pos) {
+        int posByte = pos/8;
+        int posBit = pos%8;
+        byte valByte = data[posByte];
+        int valInt = valByte>>(8-(posBit+1)) & 0x0001;
+        return valInt;
+    }
 
     /**
      * This creates a unique name corresponding to one QR code using the first 10 bits of the binary value
@@ -74,7 +108,7 @@ public class QRCode {
      * @param hashString this is the hash of the QR_Code scanned representation
      * @return this methods returns the score of the QR_Code based on the scoring system on eclass
      */
-    public void scoreQR_Code(String hashString) {
+    public void setScore(String hashString) {
         this.score = 0;
         char currentChar = hashString.charAt(0);
         int count = 0;
@@ -111,28 +145,23 @@ public class QRCode {
      * @param binary binary number that will determine the attributes of the visual
      * @return string representation of QR code
      */
-    public void getVisualRep(String binary){
+    public void setVisualRep(String binary){
         char bin[] = binary.toCharArray();
-
-
         if(bin[0] == '1'){
             visual_rep ="  _||||||||||||||_ ";
         }else{
             visual_rep ="  _--------------_ ";
         }
-
         if(bin[1] == '1'){
             visual_rep = visual_rep.concat("\n { ----      ---- }");
         }else{
             visual_rep = visual_rep.concat("\n { ~~~>      <~~~ }");
         }
-
         if(bin[2] == '1'){
             visual_rep = visual_rep.concat("\n{| < + > || < + > |}");
         }else{
             visual_rep = visual_rep.concat("\n>|-[ @]--||--[ @]-|<");
         }
-
         if(bin[3] == '1'){
             visual_rep = visual_rep.concat("\n{|       ||       |}");
             visual_rep = visual_rep.concat("\n |      {__}      | ");
@@ -140,7 +169,6 @@ public class QRCode {
             visual_rep = visual_rep.concat("\n>|       ||       |<");
             visual_rep = visual_rep.concat("\n |      <..>      | ");
         }
-
         if(bin[4] == '1'){
             visual_rep = visual_rep.concat("\n |   _~~~~~~~~_   | ");
         }else{
@@ -161,7 +189,6 @@ public class QRCode {
             }
             visual_rep = visual_rep.concat("\n |                | ");
         }
-
         if(bin[7] == '1'){
             visual_rep = visual_rep.concat("\n -----||||||||----- ");
         }else{
