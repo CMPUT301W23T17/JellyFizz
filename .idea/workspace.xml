@@ -5,21 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91ff62bb-2043-487c-a042-91b8b96a7eae" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/Player_Profile_Screen.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/sha.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/home.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/profie.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_player_profile_screen.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/navigation/nav_graph.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values-land/dimens.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values-w1240dp/dimens.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values-w600dp/dimens.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values/dimens.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QR_Code.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QR_Code.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/test/java/com/example/qr_code_hunter/QRCodeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/test/java/com/example/qr_code_hunter/QRCodeTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/test/java/com/example/qr_code_hunter/QRtesting.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

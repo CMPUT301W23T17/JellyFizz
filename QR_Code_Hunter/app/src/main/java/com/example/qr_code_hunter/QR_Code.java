@@ -2,15 +2,17 @@ package com.example.qr_code_hunter;
 
 import java.util.Map;
 
-public class QR_Code {
+public class QRCode {
+    //QR_Code Attribute
     private String code_name = "";
     private Integer score;
+    private String visual_rep = "";
+
+    private String hashString;   //delete later
 
 
 
-
-
-
+    //Supported Attribute
     private static Map<Character, Integer> alphabetPoints = Map.of(
             'a', 10,
             'b', 11,
@@ -22,7 +24,15 @@ public class QR_Code {
 
 
 
+    QRCode(String scannedString) {
+        //all initialization methods of the class should be called here, (visual rep, score, hashing, geolocation, etc...)
+        // will be called when a QR_Code is made
 
+        //Hashing methods should be called first
+
+        this.hashString = "696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6";
+        scoreQR_Code(this.hashString);
+    }
 
 
 
@@ -64,8 +74,8 @@ public class QR_Code {
      * @param hashString this is the hash of the QR_Code scanned representation
      * @return this methods returns the score of the QR_Code based on the scoring system on eclass
      */
-    public static void scoreQR_Code(String hashString) {
-        int score = 0;
+    public void scoreQR_Code(String hashString) {
+        this.score = 0;
         char currentChar = hashString.charAt(0);
         int count = 0;
 
@@ -88,7 +98,7 @@ public class QR_Code {
                     int valueOfChar = alphabetPoints.get(currentChar);
                     iterationScore = (int) Math.pow(valueOfChar, count);
                 }
-                if (count > 0) score += iterationScore;
+                if (count > 0) this.score += iterationScore;
                 currentChar = hashString.charAt(i);
                 count = 0;
             }
@@ -96,7 +106,68 @@ public class QR_Code {
     }
 
 
+    /**
+     * Returns a visual representation of the QR code
+     * @param binary binary number that will determine the attributes of the visual
+     * @return string representation of QR code
+     */
+    public void getVisualRep(String binary){
+        char bin[] = binary.toCharArray();
 
+
+        if(bin[0] == '1'){
+            visual_rep ="  _||||||||||||||_ ";
+        }else{
+            visual_rep ="  _--------------_ ";
+        }
+
+        if(bin[1] == '1'){
+            visual_rep = visual_rep.concat("\n { ----      ---- }");
+        }else{
+            visual_rep = visual_rep.concat("\n { ~~~>      <~~~ }");
+        }
+
+        if(bin[2] == '1'){
+            visual_rep = visual_rep.concat("\n{| < + > || < + > |}");
+        }else{
+            visual_rep = visual_rep.concat("\n>|-[ @]--||--[ @]-|<");
+        }
+
+        if(bin[3] == '1'){
+            visual_rep = visual_rep.concat("\n{|       ||       |}");
+            visual_rep = visual_rep.concat("\n |      {__}      | ");
+        }else{
+            visual_rep = visual_rep.concat("\n>|       ||       |<");
+            visual_rep = visual_rep.concat("\n |      <..>      | ");
+        }
+
+        if(bin[4] == '1'){
+            visual_rep = visual_rep.concat("\n |   _~~~~~~~~_   | ");
+        }else{
+            visual_rep = visual_rep.concat("\n |_              _| ");
+        }
+        if(bin[5] == '1'){
+            if(bin[6] == '1'){
+                visual_rep = visual_rep.concat("\n  |_  (______)  _| ");
+            }else{
+                visual_rep = visual_rep.concat("\n  |_  [||||||]  _| ");
+            }
+            visual_rep = visual_rep.concat("\n   |_          _| ");
+        }else{
+            if(bin[6] == '1'){
+                visual_rep = visual_rep.concat("\n |    (______)    | ");
+            }else{
+                visual_rep = visual_rep.concat("\n |    [||||||]    | ");
+            }
+            visual_rep = visual_rep.concat("\n |                | ");
+        }
+
+        if(bin[7] == '1'){
+            visual_rep = visual_rep.concat("\n -----||||||||----- ");
+        }else{
+            visual_rep = visual_rep.concat("\n ------------------ ");
+        }
+    }
 
 
 
@@ -139,6 +210,6 @@ public class QR_Code {
      * @return
      *      Returns a string-type
      */
-    public String getVisualRep() {return code_name;}
+    public String getVisualRep() {return visual_rep;}
 
 }
