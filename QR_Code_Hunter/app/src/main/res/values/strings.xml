@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">QR_Code_Hunter</string>
+    <string name="ranking_activity_title">Leaderboard</string>
 </resources>
