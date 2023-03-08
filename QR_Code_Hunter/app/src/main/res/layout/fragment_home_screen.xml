@@ -12,12 +12,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!-- TODO: Update blank fragment layout -->
 
         <TextView
             android:id="@+id/score_display"
             android:layout_width="212dp"
-            android:layout_height="170dp"
+            android:layout_height="168dp"
             android:layout_marginTop="4dp"
             android:text="@string/_0"
             android:textAlignment="textEnd"
@@ -33,7 +32,7 @@
             android:layout_width="101dp"
             android:layout_height="47dp"
             android:layout_marginStart="4dp"
-            android:layout_marginBottom="88dp"
+            android:layout_marginBottom="68dp"
             android:ems="10"
             android:inputType="textPersonName"
             android:text="@string/pts"
@@ -48,12 +47,12 @@
             android:id="@+id/your_ranking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="16dp"
             android:text="@string/your_rank"
             android:textColor="#191847"
             android:textSize="34sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.245"
+            app:layout_constraintHorizontal_bias="0.268"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/score_display"
             tools:ignore="VisualLintOverlap" />
@@ -62,12 +61,12 @@
             android:id="@+id/my_ranking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="16dp"
             android:text="@string/_9999"
             android:textColor="#191847"
             android:textSize="34sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.731"
+            app:layout_constraintHorizontal_bias="0.732"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/score_display"
             tools:ignore="VisualLintOverlap" />
@@ -107,7 +106,7 @@
             android:id="@+id/scan_button"
             android:layout_width="232dp"
             android:layout_height="86dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/rectangle_1"
             android:clickable="true"
             android:focusable="true"
