@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Search_Screen#newInstance} factory method to
+ * Use the {@link Profie_screen#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Search_Screen extends Fragment {
+public class Profie_screen extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +24,7 @@ public class Search_Screen extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Search_Screen() {
+    public Profie_screen() {
         // Required empty public constructor
     }
 
@@ -34,11 +34,11 @@ public class Search_Screen extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Search_Screen.
+     * @return A new instance of fragment Profie_screen.
      */
     // TODO: Rename and change types and number of parameters
-    public static Search_Screen newInstance(String param1, String param2) {
-        Search_Screen fragment = new Search_Screen();
+    public static Profie_screen newInstance(String param1, String param2) {
+        Profie_screen fragment = new Profie_screen();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +59,6 @@ public class Search_Screen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search__screen, container, false);
+        return inflater.inflate(R.layout.fragment_profie_screen, container, false);
     }
 }

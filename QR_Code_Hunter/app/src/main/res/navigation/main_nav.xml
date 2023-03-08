@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_ranking__user__screen" />
     <activity
         android:id="@+id/home_screen"
-        android:name="com.example.qr_code_hunter.Home_Screen"
+        android:name="com.example.qr_code_hunter.main_activity"
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
     <activity
