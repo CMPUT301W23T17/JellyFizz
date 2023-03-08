@@ -12,7 +12,6 @@
         android:layout_width="216dp"
         android:layout_height="145dp"
         android:layout_marginTop="32dp"
-        android:fontFamily="@font/aladin"
         android:text="@string/_0"
         android:textAlignment="textEnd"
         android:textColor="#191847"
@@ -29,7 +28,6 @@
         android:layout_marginStart="4dp"
         android:layout_marginBottom="88dp"
         android:ems="10"
-        android:fontFamily="@font/aladin"
         android:inputType="textPersonName"
         android:text="@string/pts"
         android:textAlignment="textStart"
@@ -40,11 +38,10 @@
         tools:ignore="TextViewEdits,VisualLintBounds" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/your_ranking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:fontFamily="@font/akaya_telivigala"
         android:text="@string/your_rank"
         android:textColor="#191847"
         android:textSize="34sp"
@@ -55,11 +52,10 @@
         tools:ignore="VisualLintOverlap" />
 
     <TextView
-        android:id="@+id/rank_display"
+        android:id="@+id/my_ranking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:fontFamily="@font/akaya_telivigala"
         android:text="@string/_9999"
         android:textColor="#191847"
         android:textSize="34sp"
@@ -87,7 +83,6 @@
         android:layout_height="61dp"
         android:layout_marginEnd="8dp"
         android:elevation="200dp"
-        android:fontFamily="@font/akaya_telivigala"
         android:gravity="top"
         android:lineSpacingExtra="-4sp"
         android:text="@string/scan_now"
@@ -110,7 +105,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/your_ranking"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <ImageView
@@ -129,7 +124,6 @@
         android:layout_width="286dp"
         android:layout_height="29dp"
         android:elevation="200dp"
-        android:fontFamily="@font/aladin"
         android:gravity="center_horizontal|top"
         android:lineSpacingExtra="-12sp"
         android:text="@string/welcome_use"
