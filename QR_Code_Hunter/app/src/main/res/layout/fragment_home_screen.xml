@@ -72,10 +72,10 @@
             tools:ignore="VisualLintOverlap" />
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="61dp"
+            android:id="@+id/scan_photo"
+            android:layout_width="50dp"
             android:layout_height="55dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="32dp"
             android:elevation="200dp"
             app:layout_constraintBottom_toBottomOf="@+id/scan_button"
             app:layout_constraintStart_toStartOf="@+id/scan_button"
@@ -88,7 +88,6 @@
             android:layout_width="123dp"
             android:layout_height="55dp"
             android:layout_marginEnd="16dp"
-            android:autoText="false"
             android:elevation="200dp"
             android:gravity="center"
             android:lineSpacingExtra="-4sp"
@@ -106,7 +105,7 @@
             android:id="@+id/scan_button"
             android:layout_width="232dp"
             android:layout_height="86dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/rectangle_1"
             android:clickable="true"
             android:focusable="true"
@@ -120,10 +119,11 @@
             android:id="@+id/rectangle_2"
             android:layout_width="352dp"
             android:layout_height="105dp"
-            android:layout_marginTop="92dp"
+            android:layout_marginTop="96dp"
             android:background="@drawable/rectangle_2"
             android:elevation="24dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -138,15 +138,15 @@
             android:textAppearance="@style/welcome_use"
             app:layout_constraintBottom_toBottomOf="@+id/rectangle_2"
             app:layout_constraintEnd_toEndOf="@+id/rectangle_2"
-            app:layout_constraintHorizontal_bias="0.538"
+            app:layout_constraintHorizontal_bias="0.55"
             app:layout_constraintStart_toStartOf="@+id/rectangle_2"
             app:layout_constraintTop_toTopOf="@+id/rectangle_2"
-            app:layout_constraintVertical_bias="0.456" />
+            app:layout_constraintVertical_bias="0.454" />
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="51dp"
-            android:layout_height="44dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:elevation="200dp"
             app:layout_constraintBottom_toBottomOf="@+id/ask_button"
             app:layout_constraintEnd_toEndOf="@+id/ask_button"
@@ -154,14 +154,14 @@
             app:layout_constraintStart_toStartOf="@+id/ask_button"
             app:layout_constraintTop_toTopOf="@+id/ask_button"
             app:layout_constraintVertical_bias="0.571"
-            app:srcCompat="@drawable/askbutton" />
+            app:srcCompat="@drawable/img" />
 
-        <Button
+        <ImageButton
             android:id="@+id/ask_button"
             android:layout_width="45dp"
-            android:layout_height="54dp"
+            android:layout_height="45dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="4dp"
             android:background="@drawable/ellipse_494"
             android:clickable="true"
             app:layout_constraintEnd_toEndOf="parent"
