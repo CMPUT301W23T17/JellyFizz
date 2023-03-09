@@ -4,9 +4,16 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +21,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Ranking_screen extends Fragment {
-
+    ListView rankings;
+    ArrayList<Rank> rankArr = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,6 +61,36 @@ public class Ranking_screen extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        // Your code
+        setContentView(R.layout.activity_main);
+        rankings = rankings.findViewById(R.id.leaderboard);
+
+        String[] names = {
+                "Jerry West", "Jane Doe", "John Smith", "James Bond", "Jonathan Gulliver", "Juan Carlos Montana", "Jerome Haystack"};
+
+        Integer[] points = {
+                117, 800, 900, 300, 500, 1000, 150
+        };
+
+        Integer[] positions = {
+                7, 3, 2, 5, 4, 1, 6
+        };
+
+        for (int i = 0; i < names.length; i++) {
+            rankArr.add(new Rank(names[i], points[i], positions[i]));
+        }
+
+        // add entries here
+        sortRank();
+
+        RankAdapter adapter = new RankAdapter(getContext() , 0, rankArr);
+        rankings.setAdapter(adapter);
+
+        displayYourRank("James Bond");
+    }
+
+    private void setContentView(int activity_main) {
     }
 
     @Override
@@ -61,4 +99,68 @@ public class Ranking_screen extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ranking_screen, container, false);
     }
+    public void updateEntry(Rank rank, int newPos) {
+        rank.position = newPos;
+    }
+
+    public void sortRank() {
+        for (int i = 1; i < rankArr.size(); i++) {
+            int j = i - 1;
+            int k = i;
+            Rank temp = null;
+            int tempRank = rankArr.get(i).position;
+            while (j >= 0 && rankArr.get(j).score < rankArr.get(k).score) {
+                temp = rankArr.get(k);
+                rankArr.set(k, rankArr.get(j));
+                updateEntry(rankArr.get(j), k+1);
+                rankArr.set(j, temp);
+                updateEntry(rankArr.get(j), j+1);
+                j--;
+                k--;
+            }
+            if(rankArr.get(k).position == tempRank) {
+                updateEntry(rankArr.get(i), i+1);
+            }
+        }
+    }
+
+    public void displayYourRank(String yourUsername) {
+        TextView yourName = getView().findViewById(R.id.yourName);
+        TextView yourPts = getView().findViewById(R.id.yourPoints);
+
+        int yourRank = 0;
+        int yourScore = 0;
+        for(Rank entry: rankArr) {
+            if (Objects.equals(entry.username, yourUsername)) {
+                yourRank = entry.position;
+                yourScore = entry.score;
+            }
+        }
+
+        ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
+        TextView yourRankLabel = getView().findViewById(R.id.yourRank);
+        if(yourRank < 4) {
+            if(yourRank == 1) {
+                yourTrophy.setImageResource(R.drawable.gold_trophy);
+            }
+            else if(yourRank == 2) {
+                yourTrophy.setImageResource(R.drawable.silver_trophy);
+            }
+            else if (yourRank == 3){
+                yourTrophy.setImageResource(R.drawable.bronze_trophy);
+            }
+            yourTrophy.setVisibility(View.VISIBLE);
+            yourRankLabel.setVisibility(View.INVISIBLE);
+        }
+        else {
+            yourRankLabel.setVisibility(View.VISIBLE);
+            yourTrophy.setVisibility(View.INVISIBLE);
+            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
+        }
+
+        yourName.setText(yourUsername);
+        String ptsLabel = String.valueOf(yourScore) + " pts";
+        yourPts.setText(ptsLabel);
+    }
+
 }
