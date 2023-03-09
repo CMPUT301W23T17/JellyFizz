@@ -98,13 +98,14 @@
             android:id="@+id/number_points"
             android:layout_width="29dp"
             android:layout_height="27dp"
+            android:layout_marginTop="300dp"
             android:text="90"
             android:textColor="#DD6E6E"
             android:textColorLink="#D65F5F"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="40dp"
-            tools:layout_editor_absoluteY="299dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="39dp" />
 
         <TextView
             android:id="@+id/number_points2"
@@ -115,8 +116,8 @@
             android:textColorLink="#D65F5F"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="191dp"
-            tools:layout_editor_absoluteY="299dp" />
+            app:layout_constraintBottom_toTopOf="@+id/textpoint2"
+            tools:layout_editor_absoluteX="191dp" />
 
         <TextView
             android:id="@+id/number_points3"
@@ -127,83 +128,102 @@
             android:textColorLink="#D65F5F"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="328dp"
-            tools:layout_editor_absoluteY="299dp" />
+            app:layout_constraintBottom_toTopOf="@+id/textpoint3"
+            tools:layout_editor_absoluteX="328dp" />
 
         <TextView
             android:id="@+id/textpoint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="36dp"
             android:text="points"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/number_points"
-            tools:layout_editor_absoluteX="29dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="330dp" />
 
         <TextView
             android:id="@+id/textpoint2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="points"
+            android:text="codes scanned"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="185dp"
-            tools:layout_editor_absoluteY="330dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textpoint3"
+            app:layout_constraintStart_toEndOf="@+id/textpoint"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.463" />
 
         <TextView
             android:id="@+id/textpoint4"
             android:layout_width="62dp"
             android:layout_height="34dp"
+            android:layout_marginTop="580dp"
+            android:layout_marginEnd="52dp"
             android:text="MORE >"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="328dp"
-            tools:layout_editor_absoluteY="578dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textpoint5"
             android:layout_width="156dp"
             android:layout_height="42dp"
+            android:layout_marginBottom="104dp"
             android:text="List of codes"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="578dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textpoint3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="points"
+            android:layout_marginEnd="52dp"
+            android:text="ranked"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="317dp"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:layout_editor_absoluteY="330dp" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="94dp"
             android:layout_height="71dp"
+            android:layout_marginStart="16dp"
             android:src="@drawable/vector"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="627dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.953" />
 
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="94dp"
             android:layout_height="71dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="32dp"
             android:src="@drawable/vector"
-            tools:layout_editor_absoluteX="131dp"
-            tools:layout_editor_absoluteY="627dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageView5" />
 
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="94dp"
             android:layout_height="71dp"
+            android:layout_marginEnd="52dp"
             android:src="@drawable/vector"
-            tools:layout_editor_absoluteX="243dp"
-            tools:layout_editor_absoluteY="627dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.95" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
