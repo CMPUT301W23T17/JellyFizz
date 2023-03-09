@@ -2,6 +2,9 @@ package com.example.qr_code_hunter;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
@@ -61,10 +64,19 @@ public class Ranking_screen extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
 
-        // Your code
-        setContentView(R.layout.activity_main);
-        rankings = rankings.findViewById(R.id.leaderboard);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_ranking_screen, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rankings = getView().findViewById(R.id.leaderboard);
 
         String[] names = {
                 "Jerry West", "Jane Doe", "John Smith", "James Bond", "Jonathan Gulliver", "Juan Carlos Montana", "Jerome Haystack"};
@@ -84,21 +96,12 @@ public class Ranking_screen extends Fragment {
         // add entries here
         sortRank();
 
-        RankAdapter adapter = new RankAdapter(getContext() , 0, rankArr);
+        RankAdapter adapter = new RankAdapter(getActivity(), 0, rankArr);
         rankings.setAdapter(adapter);
 
-        displayYourRank("James Bond");
+        displayYourRank("Jerry West");
     }
 
-    private void setContentView(int activity_main) {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ranking_screen, container, false);
-    }
     public void updateEntry(Rank rank, int newPos) {
         rank.position = newPos;
     }
@@ -162,5 +165,4 @@ public class Ranking_screen extends Fragment {
         String ptsLabel = String.valueOf(yourScore) + " pts";
         yourPts.setText(ptsLabel);
     }
-
 }
