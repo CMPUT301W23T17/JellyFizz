@@ -131,7 +131,7 @@
             android:id="@+id/welcome_use"
             android:layout_width="283dp"
             android:layout_height="83dp"
-            android:elevation="200dp"
+            android:elevation="50dp"
             android:gravity="center_horizontal|top"
             android:lineSpacingExtra="0sp"
             android:text="@string/welcome_use"
