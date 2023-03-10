@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1084324586026",
+    "project_id": "jellyfizz-a9d03",
+    "storage_bucket": "jellyfizz-a9d03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084324586026:android:17d7411151742f5ea05953",
+        "android_client_info": {
+          "package_name": "com.example.qr_code_hunter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084324586026-dlkti36agfe53mnos7j0vc0au4ptkuj2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhNwQXjthDHth5ptDVlj47gTineStXqNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084324586026-dlkti36agfe53mnos7j0vc0au4ptkuj2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

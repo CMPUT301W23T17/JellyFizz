@@ -234,9 +234,5 @@ public class QRCode {
      *      Returns a string-type
      */
     public String getVisualRep() {return visual_rep;}
-    public String QRCode_Scanner(){
-      //code...
-      return "";
-    }
 
 }
