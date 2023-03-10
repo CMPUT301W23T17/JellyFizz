@@ -16,14 +16,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import android.graphics.Bitmap;
-import android.net.Uri;
 
 //import com.google.firebase.storage.FirebaseStorage;
 //import com.google.firebase.storage.StorageReference;
 //import com.google.firebase.storage.UploadTask;
 
-public class camera {
+public class Camera {
     private static final String TAG = "Camera";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_PERMISSIONS = 2;
@@ -40,7 +38,7 @@ public class camera {
         void onPictureTaken(Uri photoUri);
     }
 
-    public camera(Activity activity) {
+    public Camera(Activity activity) {
         this.activity = activity;
     }
 
