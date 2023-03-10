@@ -26,6 +26,7 @@ import java.util.Objects;
 public class Ranking_screen extends Fragment {
     ListView rankings;
     ArrayList<Rank> rankArr = new ArrayList<>();
+    TextView header;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -71,11 +72,13 @@ public class Ranking_screen extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ranking_screen, container, false);
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        header = getView().findViewById(R.id.ranking_header);
         rankings = getView().findViewById(R.id.leaderboard);
 
         String[] names = {

@@ -23,8 +23,6 @@ public class main_activity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
-                    getSupportActionBar().setTitle(R.string.app_name);
-                    getSupportActionBar().hide();
                     replaceFragment(new Home_screen());
                     break;
                 case R.id.map_screen:
@@ -37,8 +35,6 @@ public class main_activity extends AppCompatActivity {
                     replaceFragment(new Profie_screen());
                     break;
                 case R.id.ranking_user_screen:
-                    getSupportActionBar().show();
-                    getSupportActionBar().setTitle("Leaderboard");
                     replaceFragment(new Ranking_screen());
                     break;
             }
