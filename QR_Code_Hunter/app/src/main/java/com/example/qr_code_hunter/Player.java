@@ -79,7 +79,7 @@ public class Player{
     }
 
     public int getTotalCodeScanned() {
-        return totalCodeScanned;
+        return myQrCodes.size();
     }
 
     public int getTotalScore() {
