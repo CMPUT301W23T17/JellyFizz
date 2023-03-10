@@ -14,11 +14,11 @@
         android:icon="@drawable/ic_map"
         android:title="Map" />
     <item
-        android:id="@+id/ranking_user_screen"
+        android:id="@+id/ranking_screen"
         android:icon="@drawable/ic_ranking"
         android:title="Ranking" />
     <item
-        android:id="@+id/player_profie_screen"
+        android:id="@+id/player_profile_screen"
         android:icon="@drawable/ic_profie"
         android:title="Profie" />
 </menu>

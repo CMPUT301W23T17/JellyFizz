@@ -71,10 +71,10 @@ import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Map_screen#newInstance} factory method to
+ * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Map_screen extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
     FrameLayout map;
     GoogleMap gMap;
@@ -97,7 +97,7 @@ public class Map_screen extends Fragment implements OnMapReadyCallback {
     private String mParam1;
     private String mParam2;
 
-    public Map_screen() {
+    public MapFragment() {
         // Required empty public constructor
     }
 
@@ -110,8 +110,8 @@ public class Map_screen extends Fragment implements OnMapReadyCallback {
      * @return A new instance of fragment Map_screen.
      */
     // TODO: Rename and change types and number of parameters
-    public static Map_screen newInstance(String param1, String param2) {
-        Map_screen fragment = new Map_screen();
+    public static MapFragment newInstance(String param1, String param2) {
+        MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -274,7 +274,7 @@ public class Map_screen extends Fragment implements OnMapReadyCallback {
                                         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                                         assert supportMapFragment != null;
 
-                                        supportMapFragment.getMapAsync(Map_screen.this);
+                                        supportMapFragment.getMapAsync(MapFragment.this);
                                     }
                                 }
                             }, Looper.getMainLooper());
