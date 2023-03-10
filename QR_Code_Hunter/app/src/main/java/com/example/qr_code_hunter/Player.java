@@ -1,33 +1,81 @@
 package com.example.qr_code_hunter;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.util.ArrayList;
 
 public class Player{
-    protected ArrayList<String> myQrCodes = new ArrayList<String>(); // list of SHA-256
+    protected ArrayList<DocumentReference> myQrCodes = new ArrayList<>();
     protected String uniqueUsername;
     protected PlayerProfile profileInfo;
     protected int totalCodeScanned;
     protected int totalScore;
     protected int rank;
 
-    public Player(String phone, String email, String username, Boolean privacy, ArrayList<String> codeScanned, int score, int rank) {
+    public Player(String phone, String email, String username, Boolean privacy, ArrayList<DocumentReference> codeScanned, int score, int rank) {
         this.profileInfo = new PlayerProfile(phone, email, privacy);
         this.uniqueUsername = username;
-        this.myQrCodes = codeScanned;
+        this.myQrCodes = codeScanned; // Document references of player's QR codes in db
         this.totalScore = score;
         this.rank = rank;
     }
 
     public String lowestScoreQrCode() {
-        return "method not done";
+        final int[] lowest = {-1};
+        final String[] lowestQr = {null};
+        for (DocumentReference hashString: myQrCodes) {
+            hashString.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    int qrScore = documentSnapshot.getLong("Score").intValue();
+                    if (lowest[0] < 0) {
+                        lowest[0] = qrScore;
+                        lowestQr[0] = hashString.toString();
+                    }
+                    else if (lowest[0] > 0 && qrScore < lowest[0]) {
+                        lowest[0] = qrScore;
+                        lowestQr[0] = hashString.toString();
+                    }
+                }
+            });
+        }
+        return lowestQr[0];
     }
 
     public String highestScoreQrCode() {
-        return "method not done";
+        final int[] highest = {-1};
+        final String[] highestQr = {null};
+        for (DocumentReference hashString: myQrCodes) {
+            hashString.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    int qrScore = documentSnapshot.getLong("Score").intValue();
+                    if (highest[0] < 0) {
+                        highest[0] = qrScore;
+                        highestQr[0] = hashString.toString();
+                    }
+                    else if (highest[0] > 0 && qrScore > highest[0]) {
+                        highest[0] = qrScore;
+                        highestQr[0] = hashString.toString();
+                    }
+                }
+            });
+        }
+        return highestQr[0];
     }
 
     public void calculateScore() {
-        // method not done
+        for (DocumentReference hashString: myQrCodes) {
+            hashString.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    int qrScore = documentSnapshot.getLong("Score").intValue();
+                    totalScore += qrScore;
+                }
+            });
+        }
     }
 
     public int getTotalCodeScanned() {
@@ -49,50 +97,4 @@ public class Player{
     public PlayerProfile getProfileInfo() {
         return profileInfo;
     }
-
-
-    // old methods
-    // /**
-//     * Returns QR Code which has the highest score
-//     * @return a  QR code
-//     */
-//    public QRCode highestScoreQrCode(){
-//        QRCode result = null;
-//        for (QRCode item : myQrCodes) {
-//            if ( result == null){
-//                result = item;
-//            }
-//            else if ( item.getScore() > result.getScore()){
-//                result = item;
-//            }
-//        }
-//        return result;
-//    }
-//    /**
-//     * Returns QR Code which has the lowest score
-//     * @return a  QR code
-//     */
-//    public QRCode lowestScoreQR_Code(){
-//        QRCode result = null;
-//        for (QRCode item : myQrCodes) {
-//            if ( result == null){
-//                result = item;
-//            }
-//            else if ( item.getScore() < result.getScore()){
-//                result = item;
-//            }
-//        }
-//        return result;
-//    }
-//    /**
-//     * Returns the sum of QR Code score
-//     * @return integer
-//     */
-//    public Integer sumScoreQR_Code(){
-//        Integer result = 0;
-//        for (QRCode item : myQrCodes) {
-//            result = result + item.getScore();
-//        }
-//        return result;
-//    };
 }
