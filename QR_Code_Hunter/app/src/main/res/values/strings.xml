@@ -9,4 +9,6 @@
     <string name="_0">0</string>
     <string name="scan_now">Scan Now</string>
     <string name="welcome_use">WELCOME,  USERNAME !</string>
+    <string name="app_name">QR_Code_Hunter</string>
+    <string name="api_key">AIzaSyAWw-jZVejLgBsAkmiF9Pc4wGVvKp8yp-Q</string>
 </resources>
