@@ -17,10 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-//import com.google.firebase.storage.FirebaseStorage;
-//import com.google.firebase.storage.StorageReference;
-//import com.google.firebase.storage.UploadTask;
-
 public class Camera {
     private static final String TAG = "Camera";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
