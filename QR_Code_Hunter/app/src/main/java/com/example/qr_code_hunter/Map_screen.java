@@ -63,7 +63,6 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-package com.example.qr_code_hunter;
 
 import android.Manifest;
 import android.app.Activity;
@@ -196,7 +195,8 @@ public class Map_screen extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setContentView(R.layout.activity_google_maps);
+
+       // setContentView(R.layout.activity_google_maps);
         map = getView().findViewById(R.id.map);
         // Create radial gradient circle
         getCircleRadiant();
@@ -207,14 +207,14 @@ public class Map_screen extends Fragment {
         String apiKey = getString(R.string.api_key);
 
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(),apiKey);
+            Places.initialize(getActivity().getApplicationContext(),apiKey);
         }
 
-        PlacesClient placesClient = Places.createClient(this);
+        PlacesClient placesClient = Places.createClient(getActivity());
 
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+                getActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Set location bias for result to Edmonton only
         LatLngBounds edmontonBounds = new LatLngBounds(
@@ -297,31 +297,32 @@ public class Map_screen extends Fragment {
             // Author: Android Knowledge - https://www.youtube.com/@android_knowledge
             // Check to see if user allow to access location and nearby location info
             if (ActivityCompat.checkSelfPermission(
-                    this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(
-                    this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(GoogleMapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+                    getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                 return;
             } else {
                 if (isGPSEnabled()) {
                     // https://www.youtube.com/watch?v=mbQd6frpC3g
                     // Author: Technical Coding - https://www.youtube.com/@TechnicalCoding
                     // Get current location
-                    LocationServices.getFusedLocationProviderClient(GoogleMapsActivity.this)
+                    LocationServices.getFusedLocationProviderClient(getActivity())
                             .requestLocationUpdates(locationRequest, new LocationCallback() {
                                 @Override
                                 public void onLocationResult(@NonNull LocationResult locationResult) {
                                     super.onLocationResult(locationResult);
-                                    LocationServices.getFusedLocationProviderClient(GoogleMapsActivity.this)
+                                    LocationServices.getFusedLocationProviderClient(getActivity())
                                             .removeLocationUpdates(this);
                                     if (locationResult != null && locationResult.getLocations().size() > 0) {
                                         int index  = locationResult.getLocations().size() -1;
                                         latitude = locationResult.getLocations().get(index).getLatitude();
                                         longitude = locationResult.getLocations().get(index).getLongitude();
-                                        Toast.makeText(getApplicationContext(), latitude + " " + longitude, Toast.LENGTH_SHORT).show();
-                                        SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                                        Toast.makeText(getActivity().getApplicationContext(), latitude + " " + longitude, Toast.LENGTH_SHORT).show();
+                                        SupportMapFragment supportMapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
                                         assert supportMapFragment != null;
-                                        supportMapFragment.getMapAsync(GoogleMapsActivity.this);
+
+                                        supportMapFragment.getMapAsync(this);
                                     }
                                 }
                             }, Looper.getMainLooper());

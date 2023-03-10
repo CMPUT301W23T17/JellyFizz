@@ -1,10 +1,10 @@
 package com.example.qr_code_hunter;
 
 import android.os.Bundle;
-import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -41,10 +41,12 @@ public class main_activity extends AppCompatActivity {
         });
 
     }
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment ){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
     }
+
+
 }
