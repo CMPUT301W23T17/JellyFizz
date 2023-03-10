@@ -4,9 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,10 +19,10 @@ import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Ranking_screen#newInstance} factory method to
+ * Use the {@link RankingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Ranking_screen extends Fragment {
+public class RankingFragment extends Fragment {
     ListView rankings;
     ArrayList<Rank> rankArr = new ArrayList<>();
     TextView header;
@@ -37,7 +35,7 @@ public class Ranking_screen extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Ranking_screen() {
+    public RankingFragment() {
         // Required empty public constructor
     }
 
@@ -50,8 +48,8 @@ public class Ranking_screen extends Fragment {
      * @return A new instance of fragment Ranking_screen.
      */
     // TODO: Rename and change types and number of parameters
-    public static Ranking_screen newInstance(String param1, String param2) {
-        Ranking_screen fragment = new Ranking_screen();
+    public static RankingFragment newInstance(String param1, String param2) {
+        RankingFragment fragment = new RankingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -72,7 +70,7 @@ public class Ranking_screen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ranking_screen, container, false);
+        return inflater.inflate(R.layout.fragment_ranking, container, false);
 
     }
 
@@ -105,7 +103,7 @@ public class Ranking_screen extends Fragment {
         RankAdapter adapter = new RankAdapter(getActivity(), 0, rankArr);
         rankings.setAdapter(adapter);
 
-        displayYourRank("Jerry West");
+        displayYourRank("John Smith");
     }
 
     public void updateEntry(Rank rank, int newPos) {
