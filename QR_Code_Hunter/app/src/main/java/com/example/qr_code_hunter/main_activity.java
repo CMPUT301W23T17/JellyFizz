@@ -48,12 +48,12 @@ public class main_activity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.map_screen);
-        assert fragment != null;
-        fragment.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.map_screen);
+//        assert fragment != null;
+//        fragment.onActivityResult(requestCode, resultCode, data);
+//    }
 
 }

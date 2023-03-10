@@ -315,7 +315,6 @@ public class Map_screen extends Fragment implements OnMapReadyCallback {
 
                             }
                             break;
-
                         case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                             break;
                     }
