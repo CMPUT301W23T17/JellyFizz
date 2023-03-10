@@ -1,5 +1,6 @@
 package com.example.qr_code_hunter;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,12 @@ public class main_activity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.map_screen);
+        assert fragment != null;
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
 
 }

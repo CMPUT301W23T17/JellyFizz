@@ -1,9 +1,9 @@
 package com.example.qr_code_hunter;
 
 import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -20,6 +20,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Looper;
@@ -64,66 +65,8 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.Priority;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.util.Arrays;
 import java.util.Arrays;
 
 /**
@@ -131,15 +74,16 @@ import java.util.Arrays;
  * Use the {@link Map_screen#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Map_screen extends Fragment {
+public class Map_screen extends Fragment implements OnMapReadyCallback {
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
     FrameLayout map;
     GoogleMap gMap;
     double longitude, latitude;
     Marker marker;
     GroundOverlay overlay;
     private Bitmap bitmap;
-    private static final int REQUEST_CODE = 101;
-    private static final int REQUEST_CHECK_SETTING = 1001;
+    private static final int REQUEST_CODE = 100;
+    private static final int REQUEST_CHECK_SETTING = 200;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 110;
     private LocationRequest locationRequest;
     private static String TAG = "Info";
@@ -187,6 +131,11 @@ public class Map_screen extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Request location permission if needed
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.activity_google_maps, container, false);
     }
@@ -196,7 +145,7 @@ public class Map_screen extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-       // setContentView(R.layout.activity_google_maps);
+
         map = getView().findViewById(R.id.map);
         // Create radial gradient circle
         getCircleRadiant();
@@ -213,14 +162,17 @@ public class Map_screen extends Fragment {
         PlacesClient placesClient = Places.createClient(getActivity());
 
         // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        //AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+        //        getActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Set location bias for result to Edmonton only
         LatLngBounds edmontonBounds = new LatLngBounds(
                 new LatLng(53.3343, -113.5812), // Southwest bound of Edmonton
                 new LatLng(53.6758, -113.2693)  // Northeast bound of Edmonton
         );
+
 
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(edmontonBounds));
 
@@ -319,10 +271,10 @@ public class Map_screen extends Fragment {
                                         latitude = locationResult.getLocations().get(index).getLatitude();
                                         longitude = locationResult.getLocations().get(index).getLongitude();
                                         Toast.makeText(getActivity().getApplicationContext(), latitude + " " + longitude, Toast.LENGTH_SHORT).show();
-                                        SupportMapFragment supportMapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
+                                        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                                         assert supportMapFragment != null;
 
-                                        supportMapFragment.getMapAsync(this);
+                                        supportMapFragment.getMapAsync(Map_screen.this);
                                     }
                                 }
                             }, Looper.getMainLooper());
@@ -343,7 +295,7 @@ public class Map_screen extends Fragment {
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);
 
-        Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(getApplicationContext())
+        Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(getContext().getApplicationContext())
                 .checkLocationSettings(builder.build());
 
 
@@ -352,13 +304,13 @@ public class Map_screen extends Fragment {
             public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
                 try {
                     LocationSettingsResponse response = task.getResult(ApiException.class);
-                    Toast.makeText(GoogleMapsActivity.this,"GPS is ON",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"GPS is ON",Toast.LENGTH_SHORT).show();
                 } catch (ApiException e) {
                     switch (e.getStatusCode()) {
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                             try {
                                 ResolvableApiException resolvableApiException = (ResolvableApiException) e;
-                                resolvableApiException.startResolutionForResult(GoogleMapsActivity.this, 2);
+                                resolvableApiException.startResolutionForResult(getActivity(), 2);
                             } catch (IntentSender.SendIntentException ex) {
 
                             }
@@ -380,7 +332,7 @@ public class Map_screen extends Fragment {
         boolean isEnabled = false;
 
         if (locationManager == null) {
-            locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
         }
         isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return isEnabled;
@@ -429,16 +381,16 @@ public class Map_screen extends Fragment {
     // Author: Technical Coding - https://www.youtube.com/@TechnicalCoding
     // This is used to notice on status of gps
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CHECK_SETTING) {
             switch(resultCode) {
-                case Activity.RESULT_OK:
-                    Toast.makeText(GoogleMapsActivity.this,"GPS is turned on",Toast.LENGTH_SHORT).show();
+                case RESULT_OK:
+                    Toast.makeText(getActivity(),"GPS is turned on",Toast.LENGTH_SHORT).show();
                     break;
 
                 case RESULT_CANCELED:
-                    Toast.makeText(GoogleMapsActivity.this,"GPS is required to be turned on",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"GPS is required to be turned on",Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -455,7 +407,7 @@ public class Map_screen extends Fragment {
                 Log.i(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
-                Toast.makeText(GoogleMapsActivity.this, "No location found",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "No location found",Toast.LENGTH_SHORT).show();
             }
             return;
         }
