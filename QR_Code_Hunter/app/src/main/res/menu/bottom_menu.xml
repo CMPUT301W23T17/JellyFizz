@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_screen"
+        android:icon="@drawable/ic_home"
+        android:title="Home" />
+    <item
+        android:id="@+id/search_screen"
+        android:icon="@drawable/ic_search"
+        android:title="Search" />
+    <item
+        android:id="@+id/map_screen"
+        android:icon="@drawable/ic_map"
+        android:title="Map" />
+    <item
+        android:id="@+id/ranking_user_screen"
+        android:icon="@drawable/ic_ranking"
+        android:title="Ranking" />
+    <item
+        android:id="@+id/player_profie_screen"
+        android:icon="@drawable/ic_profie"
+        android:title="Profie" />
+</menu>
