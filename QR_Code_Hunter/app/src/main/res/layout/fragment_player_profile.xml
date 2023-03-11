@@ -200,7 +200,7 @@
             android:layout_width="94dp"
             android:layout_height="71dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/vector"
+            android:src="@drawable/qrcode_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintHorizontal_bias="0.0"
@@ -214,7 +214,7 @@
             android:layout_height="71dp"
             android:layout_marginEnd="28dp"
             android:layout_marginBottom="32dp"
-            android:src="@drawable/vector"
+            android:src="@drawable/qrcode_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView5" />
 
@@ -223,7 +223,7 @@
             android:layout_width="94dp"
             android:layout_height="71dp"
             android:layout_marginEnd="52dp"
-            android:src="@drawable/vector"
+            android:src="@drawable/qrcode_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
