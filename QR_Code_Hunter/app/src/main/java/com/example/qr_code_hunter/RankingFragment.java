@@ -76,7 +76,7 @@ public class RankingFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        //super.onViewCreated(view, savedInstanceState);
 
 
         header = getView().findViewById(R.id.ranking_header);
