@@ -44,7 +44,7 @@
             tools:ignore="TextViewEdits,VisualLintBounds" />
 
         <TextView
-            android:id="@+id/your_ranking"
+            android:id="@+id/your_ranking_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -58,7 +58,7 @@
             tools:ignore="VisualLintOverlap" />
 
         <TextView
-            android:id="@+id/my_ranking"
+            android:id="@+id/my_ranking_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
