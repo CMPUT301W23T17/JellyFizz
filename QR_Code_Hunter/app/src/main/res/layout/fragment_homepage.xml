@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".HomepageFragment"
     android:background="@drawable/gradient"
->
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,12 +25,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.09"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rectangle_2" />
+            app:layout_constraintTop_toBottomOf="@+id/welcome_box" />
 
         <TextView
-            android:id="@+id/pts"
+            android:id="@+id/pts_string"
             android:layout_width="101dp"
-            android:layout_height="47dp"
+            android:layout_height="48dp"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="68dp"
             android:ems="10"
@@ -44,7 +44,7 @@
             tools:ignore="TextViewEdits,VisualLintBounds" />
 
         <TextView
-            android:id="@+id/your_ranking"
+            android:id="@+id/your_ranking_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -58,7 +58,7 @@
             tools:ignore="VisualLintOverlap" />
 
         <TextView
-            android:id="@+id/my_ranking"
+            android:id="@+id/my_ranking_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -81,7 +81,9 @@
             app:layout_constraintStart_toStartOf="@+id/scan_button"
             app:layout_constraintTop_toTopOf="@+id/scan_button"
             app:layout_constraintVertical_bias="0.548"
-            app:srcCompat="@drawable/qrcode_image" />
+            app:srcCompat="@drawable/qrcode_image"
+            tools:ignore="ImageContrastCheck"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/scan_now"
@@ -112,11 +114,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/your_ranking"
+            app:layout_constraintTop_toBottomOf="@+id/your_ranking_string"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageView
-            android:id="@+id/rectangle_2"
+            android:id="@+id/welcome_box"
             android:layout_width="352dp"
             android:layout_height="105dp"
             android:layout_marginTop="96dp"
@@ -125,7 +127,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/welcome_use"
@@ -136,11 +139,11 @@
             android:lineSpacingExtra="0sp"
             android:text="@string/welcome_use"
             android:textAppearance="@style/welcome_use"
-            app:layout_constraintBottom_toBottomOf="@+id/rectangle_2"
-            app:layout_constraintEnd_toEndOf="@+id/rectangle_2"
+            app:layout_constraintBottom_toBottomOf="@+id/welcome_box"
+            app:layout_constraintEnd_toEndOf="@+id/welcome_box"
             app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintStart_toStartOf="@+id/rectangle_2"
-            app:layout_constraintTop_toTopOf="@+id/rectangle_2"
+            app:layout_constraintStart_toStartOf="@+id/welcome_box"
+            app:layout_constraintTop_toTopOf="@+id/welcome_box"
             app:layout_constraintVertical_bias="0.454" />
 
         <ImageView
@@ -154,7 +157,8 @@
             app:layout_constraintStart_toStartOf="@+id/ask_button"
             app:layout_constraintTop_toTopOf="@+id/ask_button"
             app:layout_constraintVertical_bias="0.571"
-            app:srcCompat="@drawable/img" />
+            app:srcCompat="@drawable/img"
+            android:contentDescription="TODO" />
 
         <ImageButton
             android:id="@+id/ask_button"
@@ -166,7 +170,8 @@
             android:clickable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck"
+            android:contentDescription="TODO" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
