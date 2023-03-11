@@ -70,14 +70,11 @@ public class Owner extends Player{
     public DocumentReference checkQrCodeExist(String hashString) {
         DocumentReference newCode = null;
         Task<DocumentSnapshot> documentSnapshotTask = qrcode.document(hashString).get();
-        try {
-            DocumentSnapshot documentSnapshot = Tasks.await(documentSnapshotTask);
+        if (documentSnapshotTask.isSuccessful()) {
+            DocumentSnapshot documentSnapshot = documentSnapshotTask.getResult();
             if (documentSnapshot.exists()) {
                 newCode = qrcode.document(hashString);
             }
-        } catch (ExecutionException | InterruptedException e) {
-            // Handle exceptions
-            Log.d("Working", "Code found error" + e.toString());
         }
         return newCode;
     }
@@ -210,24 +207,23 @@ public class Owner extends Player{
 
     /**
      * This returns duplication check of newly scanned QrCode
+     * @param qrRef
+     *      document reference of code just scanned
      * @return
      *      Returns true if duplicated, false otherwise
      */
     public Boolean checkDuplicateCodeScanned(DocumentReference qrRef) {
         Boolean duplicated = false;
         // Get query of players scan newly scanned code
-        Query query = scanned.whereEqualTo("Player",ownerRef);
-        query.whereEqualTo("Player",ownerRef).whereEqualTo("qrCodeScanned",qrRef);
+        Query query = scanned.whereEqualTo("Player",ownerRef)
+                        .whereEqualTo("qrCodeScanned",qrRef).limit(1);
         // Check if query is empty
         Task<QuerySnapshot> querySnapshotTask = query.get();
-        try {
-            QuerySnapshot querySnapshot = Tasks.await(querySnapshotTask);
+        if (querySnapshotTask.isSuccessful()) {
+            QuerySnapshot querySnapshot = querySnapshotTask.getResult();
             if (!querySnapshot.isEmpty()) {
                 duplicated = true;
             }
-        } catch (ExecutionException | InterruptedException e) {
-            // Handle exceptions
-            Log.d("Working", "Duplicated check error" + e.toString());
         }
         return duplicated;
     }
