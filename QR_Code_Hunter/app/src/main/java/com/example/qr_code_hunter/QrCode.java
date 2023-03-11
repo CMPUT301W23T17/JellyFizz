@@ -1,6 +1,10 @@
 package com.example.qr_code_hunter;
 
 import android.media.Image;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.type.LatLng;
@@ -9,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class QrCode {
+public class QrCode implements Parcelable {
     private ArrayList<DocumentReference> playerList;
     private String codeName = "";
     private String visualRep = "";
@@ -34,6 +38,31 @@ public class QrCode {
         setVisualRep(sha.shaGeneratorBinary(scannedString));
         setScore(sha.shaGeneratorHexadecimal(scannedString));
     }
+
+    protected QrCode(Parcel in) {
+        codeName = in.readString();
+        visualRep = in.readString();
+        hashString = in.readString();
+        if (in.readByte() == 0) {
+            score = null;
+        } else {
+            score = in.readInt();
+        }
+        byte tmpDataPrivacy = in.readByte();
+        dataPrivacy = tmpDataPrivacy == 0 ? null : tmpDataPrivacy == 1;
+    }
+
+    public static final Creator<QrCode> CREATOR = new Creator<QrCode>() {
+        @Override
+        public QrCode createFromParcel(Parcel in) {
+            return new QrCode(in);
+        }
+
+        @Override
+        public QrCode[] newArray(int size) {
+            return new QrCode[size];
+        }
+    };
 
     /**
      * This creates a unique name corresponding to the QrCode using 10 bits
@@ -255,4 +284,39 @@ public class QrCode {
         return hashString;
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable
+     * instance's marshaled representation. For example, if the object will
+     * include a file descriptor in the output of {@link #writeToParcel(Parcel, int)},
+     * the return value of this method must include the
+     * {@link #CONTENTS_FILE_DESCRIPTOR} bit.
+     *
+     * @return a bitmask indicating the set of special object types marshaled
+     * by this Parcelable object instance.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(codeName);
+        dest.writeString(visualRep);
+        dest.writeString(hashString);
+        if (score == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(score);
+        }
+        dest.writeByte((byte) (dataPrivacy == null ? 0 : dataPrivacy ? 1 : 2));
+    }
 }
