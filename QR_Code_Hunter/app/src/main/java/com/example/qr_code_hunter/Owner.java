@@ -92,8 +92,8 @@ public class Owner extends Player{
      */
     public DocumentReference createNewCode(QrCode qrCode, String comment, String image) {
         // Hashing geolocation for new qrcode
-        double latitude = qrCode.getLocation().latitude;
-        double longitude = qrCode.getLocation().longitude;
+        double latitude = qrCode.getGeolocation().getLatitude();
+        double longitude = qrCode.getGeolocation().getLongitude();
         String geohash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));
         // Input into database
         Map<String, Object> data = new HashMap<>();
@@ -236,6 +236,7 @@ public class Owner extends Player{
      * @param visibility
      *      true indicates shows info, false will hide info
      */
+
     public void setPrivacy(Boolean visibility) {
         this.profileInfo.privacy = visibility;
     }
@@ -264,4 +265,5 @@ public class Owner extends Player{
     }
 
 
+    public void setPrivacy(Boolean visibility) {}
 }
