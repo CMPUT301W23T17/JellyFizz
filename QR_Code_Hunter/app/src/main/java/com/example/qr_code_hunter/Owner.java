@@ -47,7 +47,7 @@ public class Owner extends Player{
      * @param image
      *       image go along with the qrcode just scanned
      */
-    public void addQRCode(QRCode code, String comment, String image) {
+    public void addQRCode(QrCode code, String comment, String image) {
         DocumentReference qrRef = checkQrCodeExist(code.getHashString());
         if (qrRef == null) {
             // assign document reference to newly create QrCode in case it isn't in the database
@@ -91,7 +91,7 @@ public class Owner extends Player{
      * @return
      *      Returns document reference to new code added in QrCode collection
      */
-    public DocumentReference createNewCode(QRCode qrCode, String comment, String image) {
+    public DocumentReference createNewCode(QrCode qrCode, String comment, String image) {
         // Hashing geolocation for new qrcode
         double latitude = qrCode.getLocation().latitude;
         double longitude = qrCode.getLocation().longitude;
@@ -185,7 +185,7 @@ public class Owner extends Player{
      * @param
      *      qrCode belongs to QrCode class, it is the newly scanned code
      */
-    public void updateSumScore(QRCode qrCode) {
+    public void updateSumScore(QrCode qrCode) {
         int newScore = this.getTotalScore() + qrCode.getScore();
         Map<String, Object> data = new HashMap<>();
         data.put("score",newScore);
@@ -228,7 +228,7 @@ public class Owner extends Player{
         return duplicated;
     }
 
-    public void deleteQRCode(QRCode code) {
+    public void deleteQRCode(QrCode code) {
     // We need to access the QrCode list to see how it works first, cause it is real time update
     }
 
