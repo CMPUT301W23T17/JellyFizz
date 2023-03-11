@@ -237,9 +237,9 @@ public class Owner extends Player{
      *      true indicates shows info, false will hide info
      */
 
-    public void setPrivacy(Boolean visibility) {
-        this.profileInfo.privacy = visibility;
-    }
+//    public void setPrivacy(Boolean visibility) {
+//        this.profileInfo.privacy = visibility;
+//    }
 
 
     /**
@@ -265,5 +265,4 @@ public class Owner extends Player{
     }
 
 
-    public void setPrivacy(Boolean visibility) {}
 }

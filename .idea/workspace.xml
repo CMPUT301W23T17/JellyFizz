@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91ff62bb-2043-487c-a042-91b8b96a7eae" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/instruction_dialog.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/HomepageFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/HomepageFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/RankingFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/RankingFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/ic_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/ic_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/ic_map.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/ic_map.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/menu/bottom_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/menu/bottom_menu.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values/themes.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
