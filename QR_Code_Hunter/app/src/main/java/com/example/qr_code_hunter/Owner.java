@@ -55,8 +55,7 @@ public class Owner extends Player{
         }
         addRelationship(qrRef);
         updateSumScore(code);
-        // Update user rank
-        // Update player rank
+        updateRank();
     }
 
 
@@ -240,4 +239,29 @@ public class Owner extends Player{
     public void setPrivacy(Boolean visibility) {
         this.profileInfo.privacy = visibility;
     }
+
+
+    /**
+     * This method updates the ranks of the players in the database based on their score
+     */
+    public void updateRank() {
+        player.orderBy("score", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                int rank = 1;
+                for(QueryDocumentSnapshot document: queryDocumentSnapshots){
+                    int score = document.getLong("score").intValue();
+                    document.getReference().update("rank", rank);
+
+                    QueryDocumentSnapshot nextDocument = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(rank);
+                    if(nextDocument.getLong("score").intValue() < score && nextDocument != null){
+                        rank++;
+                    }
+                }
+
+            }
+        });
+    }
+
+
 }
