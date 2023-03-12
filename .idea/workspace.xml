@@ -5,10 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91ff62bb-2043-487c-a042-91b8b96a7eae" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/CaptureAct.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/Map_screen.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/Map_screen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/main_activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/main_activity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/HomepageFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/HomepageFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/NewCodeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/NewCodeActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/NewCodeActivity2.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/NewCodeActivity2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QrCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/QrCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/ShaGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/ShaGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_new_code.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_new_code.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_new_code_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_new_code_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values-night/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values-night/themes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/values/colors.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +39,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
     <property name="cidr.known.project.marker" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/QR_Code_Hunter" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AndroidStudioProjects/MyCarFootprint" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

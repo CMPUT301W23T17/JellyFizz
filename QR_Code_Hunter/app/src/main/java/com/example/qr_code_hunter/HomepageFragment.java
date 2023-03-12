@@ -1,7 +1,11 @@
 package com.example.qr_code_hunter;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -11,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
@@ -21,6 +27,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
+    ImageButton instruction_button;
+    AlertDialog.Builder builder;
     View scanButton;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -69,16 +77,29 @@ public class HomepageFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_homepage, container, false);
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
+        builder = new AlertDialog.Builder(getActivity());
+
+        instruction_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialog();
+            }
+        });
         scanButton = getView().findViewById(R.id.scan_button);
         scanButton.setOnClickListener(v -> {
             scanCode();
         });
+
     }
 
+    private void openDialog() {
+        Instruction_Dialog instruction_dialog = new Instruction_Dialog();
+        instruction_dialog.show(getParentFragmentManager(),"dede");
+    }
     private void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
@@ -86,7 +107,6 @@ public class HomepageFragment extends Fragment {
         options.setCaptureActivity(CaptureAct.class);
         barLauncher.launch(options);
     }
-
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if(result.getContents() != null) {
             String inputString = result.getContents();
