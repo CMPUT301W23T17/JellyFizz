@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryBounds;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
@@ -45,6 +49,8 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -54,8 +60,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
@@ -66,8 +76,20 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.LineNumberReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,6 +109,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int AUTOCOMPLETE_REQUEST_CODE = 110;
     private LocationRequest locationRequest;
     private static String TAG = "Info";
+
+    List<Marker> nearbyCodes = new ArrayList<>();
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    final CollectionReference qrCodes = db.collection("QrCodes");
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -184,12 +211,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-
                 // Focus google map on the chosen search location
                 LatLng latLng = place.getLatLng();
+
                 if (marker != null){
                     marker.remove();
                 }
+
+                // Find nearby
+                qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                            FirebaseFirestoreException error) {
+                        // Delete current nearby if applicable
+                        for (Marker point: nearbyCodes) {
+                            point.remove();
+                        }
+                        onCameraIdle(latLng.latitude,latLng.longitude);
+                    }
+                });
+
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(place.getName());
 //                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,15);
@@ -201,8 +242,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 overlay.setPosition(place.getLatLng());
                 overlay.setDimensions(radius * 2, radius * 2);
             }
-
-
             @Override
             public void onError(@NonNull Status status) {
                 // TODO: Handle the error.
@@ -343,6 +382,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.gMap = googleMap;
+
+        //This is called to show nearby qr codes
+        qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                // Delete current nearby if applicable
+                for (Marker point: nearbyCodes) {
+                    point.remove();
+                }
+                onCameraIdle(latitude,longitude);
+            }
+        });
+
         LatLng latLng = new LatLng(latitude,longitude);
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("My Current Location");
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -410,5 +463,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
             return;
         }
+    }
+
+    // This method is called to show nearby QrCode
+    // https://firebase.google.com/docs/firestore/solutions/geoqueries#query_geohashes
+    // Author: Firebase.google.com
+    // I use the GeoFireUtils.getDistanceBetween(a,b) to find distance between two location on map
+
+    public void onCameraIdle(double latitude, double longitude) {
+        final GeoLocation center = new GeoLocation(latitude, longitude);
+        final double radiusInM = 500;
+
+        //filter all codes, make sure they are within the bound of the screen
+        qrCodes
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.get("latitude") != null && document.get("longitude") != null) {
+                                    double lat = document.getDouble("latitude");
+                                    double lng = document.getDouble("longitude");
+                                    GeoLocation docLocation = new GeoLocation(lat, lng);
+                                    double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
+                                    if (distanceInM <= radiusInM) {
+                                        LatLng validMarker = new LatLng(lat, lng);
+                                        Long score = document.getLong("Score");
+                                        String finalScore = score+"";
+                                        String name = document.getString("codeName");
+                                        String title = name + "--score: " + finalScore;
+                                        MarkerOptions markerOptions = new MarkerOptions().position(validMarker).title(title);
+                                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                        nearbyCodes.add(gMap.addMarker(markerOptions));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
     }
 }
