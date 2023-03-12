@@ -1,5 +1,6 @@
 package com.example.qr_code_hunter;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -96,13 +97,10 @@ public class loginPageFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
 
-
         EditText userNameViewer = view.findViewById(R.id.editTextUsername);
-
 
         //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
         //if pressure still to much, can make it not in realtime
-
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {
             @Override
@@ -123,8 +121,9 @@ public class loginPageFragment extends Fragment {
                                                 QuerySnapshot querySnapshot = task.getResult();
                                                 if (!querySnapshot.isEmpty()) {
                                                     // A player with the same username already exists
-                                                    userNameView.requestFocus();
+                                                    userNameError.setText("This username has been taken, please choose another");
                                                     userNameError.setVisibility(View.VISIBLE);
+                                                    userNameView.requestFocus();
                                                 } else {
                                                     // The username is available
                                                     userNameError.setVisibility(View.INVISIBLE);
@@ -205,7 +204,7 @@ public class loginPageFragment extends Fragment {
 
                 //verify UserName error button is invisible
                 EditText userNameView = view.findViewById(R.id.editTextUsername);
-                String username = userNameView.getText().toString().trim().replace("/","");
+                String username = userNameView.getText().toString().trim();
                 TextView userNameError = view.findViewById(R.id.userNameTaken);
 
                 if (username.length() < 1) {
@@ -213,6 +212,16 @@ public class loginPageFragment extends Fragment {
                     userNameView.requestFocus();
                     return;
                 }
+
+                // Make sure string only contains letters and numbers
+                if (!username.matches("^[a-zA-Z0-9]*$")) {
+                    userNameError.setText("username can only contain letters or numbers");
+                    Log.d("String Checking", username);
+                    userNameError.setVisibility(View.VISIBLE);
+                    userNameView.requestFocus();
+                    return;
+                }
+
                 if (userNameError.getVisibility() != View.INVISIBLE) {
                     // the TextView is currently visible
                     userNameView.requestFocus();
@@ -221,7 +230,6 @@ public class loginPageFragment extends Fragment {
 
                 //all checks passed, register key to shared Permissions to allow not to register next time
                 registerKey(username);
-
 
                 //now add user to database
                 Map<String, Object> currentPlayer = new HashMap<>();
@@ -232,10 +240,10 @@ public class loginPageFragment extends Fragment {
                 currentPlayer.put("rank", 0);
                 currentPlayer.put("score", 0);
 
-                playersRef.add(currentPlayer)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                playersRef.document(username).set(currentPlayer)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(DocumentReference documentReference) {
+                            public void onSuccess(Void aVoid) {
                                 // Player added successfully, time to go to homepage
                                 goToHomepage();
                             }

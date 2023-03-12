@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
             replaceFragment(new loginPageFragment());
         }
 
-
-        replaceFragment(new HomepageFragment());
-
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
