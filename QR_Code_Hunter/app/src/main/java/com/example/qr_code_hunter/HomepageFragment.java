@@ -1,5 +1,6 @@
 package com.example.qr_code_hunter;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +18,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
+    Button instruction_button;
+    AlertDialog.Builder builder;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -65,8 +69,21 @@ public class HomepageFragment extends Fragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        instruction_button = getView().findViewById(R.id.ask_button);
+        builder = new AlertDialog.Builder(getActivity());
 
+        instruction_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialog();
+            }
+        });
+        
 
+    }
 
+    private void openDialog() {
+        Instruction_Dialog instruction_dialog = new Instruction_Dialog();
+        instruction_dialog.show(getParentFragmentManager(),"dede");
     }
 }
