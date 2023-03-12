@@ -13,6 +13,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
 public class QrCode implements Parcelable {
     private ArrayList<DocumentReference> playerList;
     private String codeName = "";
@@ -282,6 +285,17 @@ public class QrCode implements Parcelable {
      */
     public String getHashString() {
         return hashString;
+    }
+     /**
+     * This starts intent for scanning qr code.
+     */
+     private void scanQrCode() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Volume up to flash on");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureAct.class);
+        barLaucher.launch(options);
     }
 
     /**
