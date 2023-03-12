@@ -19,7 +19,7 @@ public class NewCodeActivity extends AppCompatActivity {
     TextView otherPlayers;
     Button nextPageBtn;
     QrCode newCode;
-    String scannedString; // assume this is the scanned string returned from scanner
+    String scannedString;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +32,8 @@ public class NewCodeActivity extends AppCompatActivity {
         otherPlayers = findViewById(R.id.others_scan_list);
         nextPageBtn = findViewById(R.id.next_button);
 
-        scannedString = "b1ab25c55913c95cc6913f1dbce9bef185ebf00a64553a8ef"; // example
+        scannedString = getIntent().getExtras().getString("scanned string");
+
         try {
             newCode = new QrCode(scannedString);
         } catch (NoSuchAlgorithmException e) {
@@ -45,19 +46,17 @@ public class NewCodeActivity extends AppCompatActivity {
         String scoreLabel = "You earned " + String.valueOf(newCode.getScore()) + " points!";
         codePts.setText(scoreLabel);
 
-
         if (newCode.getPlayerList().size() > 2) {
             String othersLabel = "+" + String.valueOf(newCode.getPlayerList().size() - 1) + " others have scanned this code";
             otherPlayers.setText(othersLabel);
-            otherPlayers.setVisibility(View.VISIBLE);
 
         } else if (newCode.getPlayerList().size() == 2){ // you and someone else
             String othersLabel = "+1 other have scanned this code";
             otherPlayers.setText(othersLabel);
-            otherPlayers.setVisibility(View.VISIBLE);
         }
         else { // you are the only one
-            otherPlayers.setVisibility(View.INVISIBLE);
+            String othersLabel = "You are the first one to scan this code!";
+            otherPlayers.setText(othersLabel);
         }
 
         nextPageBtn.setOnClickListener(new View.OnClickListener() {

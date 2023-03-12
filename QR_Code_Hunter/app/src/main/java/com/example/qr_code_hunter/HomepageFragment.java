@@ -1,11 +1,19 @@
 package com.example.qr_code_hunter;
 
+import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -13,6 +21,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
+    View scanButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,4 +69,30 @@ public class HomepageFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_homepage, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        scanButton = getView().findViewById(R.id.scan_button);
+        scanButton.setOnClickListener(v -> {
+            scanCode();
+        });
+    }
+
+    private void scanCode() {
+        ScanOptions options = new ScanOptions();
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureAct.class);
+        barLauncher.launch(options);
+    }
+
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        if(result.getContents() != null) {
+            String inputString = result.getContents();
+            Intent intent = new Intent(getActivity(), NewCodeActivity.class);
+            intent.putExtra("scanned string", inputString);
+            startActivity(intent);
+        }
+    });
 }
