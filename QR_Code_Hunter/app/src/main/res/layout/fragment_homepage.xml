@@ -131,7 +131,7 @@
             android:contentDescription="TODO" />
 
         <TextView
-            android:id="@+id/welcome_use"
+            android:id="@+id/welcome_user"
             android:layout_width="283dp"
             android:layout_height="83dp"
             android:elevation="50dp"
