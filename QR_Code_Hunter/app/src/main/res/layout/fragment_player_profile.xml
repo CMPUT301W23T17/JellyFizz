@@ -13,37 +13,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="50dp"
-                    android:text="Email: ccid@ualberta.ca"
-                    android:textColor="#24366A"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
-                    app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-                    app:layout_constraintHorizontal_bias="0.101"
-                    app:layout_constraintStart_toStartOf="@+id/rectangle_"
-                    app:layout_constraintTop_toTopOf="@+id/rectangle_"
-                    app:layout_constraintVertical_bias="0.475" />
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="50dp"
+            android:text="Email: ccid@ualberta.ca"
+            android:textColor="#24366A"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
+            app:layout_constraintEnd_toEndOf="@+id/rectangle_"
+            app:layout_constraintHorizontal_bias="0.101"
+            app:layout_constraintStart_toStartOf="@+id/rectangle_"
+            app:layout_constraintTop_toTopOf="@+id/rectangle_"
+            app:layout_constraintVertical_bias="0.475" />
 
-                <TextView
-                    android:id="@+id/mobile_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="50dp"
-                    android:text="Mobile Number: 604 704 4816"
-                    android:textColor="#24366A"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
-                    app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-                    app:layout_constraintHorizontal_bias="0.144"
-                    app:layout_constraintStart_toStartOf="@+id/rectangle_"
-                    app:layout_constraintTop_toTopOf="@+id/rectangle_"
-                    app:layout_constraintVertical_bias="0.756" />
+        <TextView
+            android:id="@+id/mobile_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="50dp"
+            android:text="Mobile Number: 604 704 4816"
+            android:textColor="#24366A"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
+            app:layout_constraintEnd_toEndOf="@+id/rectangle_"
+            app:layout_constraintHorizontal_bias="0.144"
+            app:layout_constraintStart_toStartOf="@+id/rectangle_"
+            app:layout_constraintTop_toTopOf="@+id/rectangle_"
+            app:layout_constraintVertical_bias="0.756" />
 
         <ImageView
             android:id="@+id/rectangle_"
@@ -73,17 +73,17 @@
             app:layout_constraintVertical_bias="0.344" />
 
         <Switch
-                    android:id="@+id/switch1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="50dp"
-                    android:text="HIDE"
-                    app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
-                    app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-                    app:layout_constraintHorizontal_bias="0.912"
-                    app:layout_constraintStart_toStartOf="@+id/rectangle_"
-                    app:layout_constraintTop_toTopOf="@+id/rectangle_"
-                    app:layout_constraintVertical_bias="0.153" />
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="50dp"
+            android:text="HIDE"
+            app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
+            app:layout_constraintEnd_toEndOf="@+id/rectangle_"
+            app:layout_constraintHorizontal_bias="0.912"
+            app:layout_constraintStart_toStartOf="@+id/rectangle_"
+            app:layout_constraintTop_toTopOf="@+id/rectangle_"
+            app:layout_constraintVertical_bias="0.153" />
 
         <TextView
             android:id="@+id/number_points"
@@ -96,7 +96,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.104"
+            app:layout_constraintHorizontal_bias="0.12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.43" />

@@ -12,10 +12,7 @@
     <item
         android:id="@+id/map_screen"
         android:icon="@drawable/ic_map"
-        android:title="Map"
-
-
-        />
+        android:title="Map" />
     <item
         android:id="@+id/ranking_screen"
         android:icon="@drawable/ic_ranking"
