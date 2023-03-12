@@ -1,6 +1,8 @@
 package com.example.qr_code_hunter;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,13 +12,29 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+    //ActivyMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFragment(new HomepageFragment());
+
+        //Owner here
+        String owner;
+
+        //Check if user has created an account before on this specific device, 1) if yes go to homepage 2) if no go to loginPage
+        String accountCreatedKey = getString(R.string.accountCreated);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean accountCreated = prefs.contains(accountCreatedKey);
+
+        if (accountCreated) {
+
+            replaceFragment(new HomepageFragment());
+        } else {
+            replaceFragment(new loginPage());
+        }
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
