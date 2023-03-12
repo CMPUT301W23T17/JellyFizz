@@ -18,8 +18,6 @@ public class Search{
     final CollectionReference player = db.collection("Players");
     CollectionReference codes = db.collection("QrCodes");
     ArrayList<String> usernames = new ArrayList<>();
-    QRCode qrCodeUser;
-    QRCode qrCodeData;
 
 
 

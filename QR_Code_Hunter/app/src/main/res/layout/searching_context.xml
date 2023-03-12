@@ -2,7 +2,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content_view"
     android:padding="20dp"
-    android:textSize="40sp"
+    android:textSize="25sp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:elevation="200sp"
+    android:background="@drawable/rectangle_s">
 </TextView>

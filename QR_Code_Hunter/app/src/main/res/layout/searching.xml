@@ -2,16 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textAlignment="textEnd">
 
     <ListView
         android:id="@+id/search_list"
-        android:layout_width="408dp"
-        android:layout_height="405dp"
+        android:layout_width="405dp"
+        android:layout_height="439dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rectangle1836"
+        android:divider="@color/white"
+        android:dividerHeight="15.0dp"
+        android:drawSelectorOnTop="false"
         android:text="@string/testing"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
