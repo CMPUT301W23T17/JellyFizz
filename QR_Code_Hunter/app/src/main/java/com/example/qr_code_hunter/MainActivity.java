@@ -14,14 +14,15 @@ import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
     //ActivyMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
+
+    //Owner of the account(username of player on current device)
+    private String owner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //Owner here
-        String owner;
 
         //Check if user has created an account before on this specific device, 1) if yes go to homepage 2) if no go to loginPage
         String accountCreatedKey = getString(R.string.accountCreated);
@@ -29,11 +30,13 @@ public class MainActivity extends AppCompatActivity {
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
         if (accountCreated) {
-
+            //set the owner
+            owner = prefs.getString(accountCreatedKey, "");
             replaceFragment(new HomepageFragment());
         } else {
             replaceFragment(new loginPage());
         }
+
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
@@ -55,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+
+    public String getOwner() {
+        return owner;
     }
 
     private void replaceFragment(Fragment fragment ){
