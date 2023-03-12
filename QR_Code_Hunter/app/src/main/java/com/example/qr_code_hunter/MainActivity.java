@@ -17,9 +17,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Owner of the account(username of player on current device)
     private String owner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
             replaceFragment(new loginPageFragment());
         }
 
+
+        replaceFragment(new HomepageFragment());
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){

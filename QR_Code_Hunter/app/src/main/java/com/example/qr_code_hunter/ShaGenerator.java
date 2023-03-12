@@ -46,14 +46,4 @@ public class ShaGenerator {
         }
         return hexString.toString();
     }
-
-    public byte[] encryptSHA(byte[] data, String shaN) {
-        // method not done
-        return new byte[0];
-    }
-
-    public int getBit(byte[] data, int pos) {
-        // method not done
-        return 0;
-    }
 }
