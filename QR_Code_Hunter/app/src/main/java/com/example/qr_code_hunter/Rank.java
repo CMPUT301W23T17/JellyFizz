@@ -9,5 +9,4 @@ public class Rank {
         this.position = position;
         this.score = score;
     }
-
 }
