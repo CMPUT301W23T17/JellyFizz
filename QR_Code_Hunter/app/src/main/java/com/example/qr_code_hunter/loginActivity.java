@@ -77,7 +77,7 @@ public class loginActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             EditText userNameView = findViewById(R.id.editTextUsername);
-                            String username = userNameView.getText().toString().trim().replace("/","");
+                            String username = userNameView.getText().toString().trim();
                             TextView userNameError = findViewById(R.id.userNameTaken);
 
                             if (!username.isEmpty()) {

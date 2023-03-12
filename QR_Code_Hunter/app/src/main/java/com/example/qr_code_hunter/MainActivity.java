@@ -15,10 +15,6 @@ import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
     //ActivyMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
-
-    //Owner of the account(username of player on current device)
-    private String owner;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +57,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-    }
-
-
-    public String getOwner() {
-        return owner;
     }
 
     private void replaceFragment(Fragment fragment ){
