@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class Search{
@@ -17,6 +18,8 @@ public class Search{
     final CollectionReference player = db.collection("Players");
     CollectionReference codes = db.collection("QrCodes");
     ArrayList<String> usernames = new ArrayList<>();
+    QRCode qrCodeUser;
+    QRCode qrCodeData;
 
 
 
