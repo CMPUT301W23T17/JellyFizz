@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class QrCode implements Parcelable {
-    private ArrayList<DocumentReference> playerList;
+    private ArrayList<DocumentReference> playerList = new ArrayList<>();
     private String codeName = "";
     private String visualRep = "";
     private String hashString;

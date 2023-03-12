@@ -1,8 +1,13 @@
 package com.example.qr_code_hunter;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomepageFragment#newInstance} factory method to
@@ -21,6 +29,7 @@ import android.widget.ImageButton;
 public class HomepageFragment extends Fragment {
     ImageButton instruction_button;
     AlertDialog.Builder builder;
+    View scanButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,6 +79,7 @@ public class HomepageFragment extends Fragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
@@ -79,7 +89,10 @@ public class HomepageFragment extends Fragment {
                 openDialog();
             }
         });
-        
+        scanButton = getView().findViewById(R.id.scan_button);
+        scanButton.setOnClickListener(v -> {
+            scanCode();
+        });
 
     }
 
@@ -87,4 +100,19 @@ public class HomepageFragment extends Fragment {
         Instruction_Dialog instruction_dialog = new Instruction_Dialog();
         instruction_dialog.show(getParentFragmentManager(),"dede");
     }
+    private void scanCode() {
+        ScanOptions options = new ScanOptions();
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(true);
+        options.setCaptureActivity(CaptureAct.class);
+        barLauncher.launch(options);
+    }
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        if(result.getContents() != null) {
+            String inputString = result.getContents();
+            Intent intent = new Intent(getActivity(), NewCodeActivity.class);
+            intent.putExtra("scanned string", inputString);
+            startActivity(intent);
+        }
+    });
 }
