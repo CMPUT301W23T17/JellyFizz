@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             owner = prefs.getString(accountCreatedKey, "");
             replaceFragment(new HomepageFragment());
         } else {
-            replaceFragment(new loginPage());
+            replaceFragment(new loginPageFragment());
         }
 
 

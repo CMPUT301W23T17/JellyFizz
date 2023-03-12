@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -38,10 +37,10 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link loginPage#newInstance} factory method to
+ * Use the {@link loginPageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class loginPage extends Fragment {
+public class loginPageFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,7 +51,7 @@ public class loginPage extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public loginPage() {
+    public loginPageFragment() {
         // Required empty public constructor
     }
 
@@ -65,8 +64,8 @@ public class loginPage extends Fragment {
      * @return A new instance of fragment loginPage.
      */
     // TODO: Rename and change types and number of parameters
-    public static loginPage newInstance(String param1, String param2) {
-        loginPage fragment = new loginPage();
+    public static loginPageFragment newInstance(String param1, String param2) {
+        loginPageFragment fragment = new loginPageFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -103,33 +102,53 @@ public class loginPage extends Fragment {
 
         //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
         //if pressure still to much, can make it not in realtime
+
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                EditText userNameView = view.findViewById(R.id.editTextUsername);
-                String username = userNameView.getText().toString().trim().replace("/","");
-                TextView userNameError = view.findViewById(R.id.userNameTaken);
+                Thread currentThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        EditText userNameView = view.findViewById(R.id.editTextUsername);
+                        String username = userNameView.getText().toString().trim().replace("/","");
+                        TextView userNameError = view.findViewById(R.id.userNameTaken);
 
-                if (!username.isEmpty()) {
-                    playersRef.whereEqualTo(FieldPath.documentId(), username)
-                            .get()
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    QuerySnapshot querySnapshot = task.getResult();
-                                    if (!querySnapshot.isEmpty()) {
-                                        // A player with the same username already exists
-                                        userNameView.requestFocus();
-                                        userNameError.setVisibility(View.VISIBLE);
-                                    } else {
-                                        // The username is available
-                                        userNameError.setVisibility(View.INVISIBLE);
-                                    }
-                                } else {
-                                    Log.d("Database Error", "Could not fetch data from the database");
-                                }
-                            });
+                        if (!username.isEmpty()) {
+                            playersRef.whereEqualTo(FieldPath.documentId(), username)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (!Thread.currentThread().isInterrupted()) {
+                                            if (task.isSuccessful()) {
+                                                QuerySnapshot querySnapshot = task.getResult();
+                                                if (!querySnapshot.isEmpty()) {
+                                                    // A player with the same username already exists
+                                                    userNameView.requestFocus();
+                                                    userNameError.setVisibility(View.VISIBLE);
+                                                } else {
+                                                    // The username is available
+                                                    userNameError.setVisibility(View.INVISIBLE);
+                                                }
+                                            } else {
+                                                Log.d("Database Error", "Could not fetch data from the database");
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+
+                currentThread.start();
+
+                // Wait for the thread to finish executing
+                try {
+                    currentThread.join();
+                } catch (InterruptedException e) {
+                    Log.d("Thread Error", "Could not execute thread");
                 }
+
+                // Free the thread
+                currentThread.interrupt();
             }
         };
 
