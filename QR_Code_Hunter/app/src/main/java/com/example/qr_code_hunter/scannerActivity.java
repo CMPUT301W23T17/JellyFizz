@@ -14,14 +14,14 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-public class MainActivity extends AppCompatActivity
+public class scannerActivity extends AppCompatActivity
 {
     Button btn_scan;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_scanner);
         btn_scan =findViewById(R.id.btn_scan);
         btn_scan.setOnClickListener(v->
         {
