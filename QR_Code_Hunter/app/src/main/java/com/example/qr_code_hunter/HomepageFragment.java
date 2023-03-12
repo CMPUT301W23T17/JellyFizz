@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +19,7 @@ import android.widget.Button;
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
-    Button instruction_button;
+    ImageButton instruction_button;
     AlertDialog.Builder builder;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -69,7 +70,7 @@ public class HomepageFragment extends Fragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        instruction_button = getView().findViewById(R.id.ask_button);
+        instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
         instruction_button.setOnClickListener(new View.OnClickListener() {
