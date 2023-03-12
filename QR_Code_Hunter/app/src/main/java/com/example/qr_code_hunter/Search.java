@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,11 +27,17 @@ public class Search extends AppCompatActivity {
 
     private ListView listView;
     private ArrayAdapter adapter;
+    View rootView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searching);
+
+        LayoutInflater inflater = getLayoutInflater();
+        rootView = inflater.inflate(R.layout.searching, null);
+        listView = rootView.findViewById(R.id.search_list);
 
     }
 
@@ -53,7 +62,7 @@ public class Search extends AppCompatActivity {
                     }
                 }
 
-                listView = findViewById(R.id.search_list);
+                listView = rootView.findViewById(R.id.search_list);
 //                adapter = new ArrayAdapter<>(this, R.layout.searching_context, usernames);
 //                listView.setAdapter(adapter);
 
