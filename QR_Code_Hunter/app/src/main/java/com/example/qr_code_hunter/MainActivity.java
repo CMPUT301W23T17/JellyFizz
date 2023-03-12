@@ -1,5 +1,6 @@
 package com.example.qr_code_hunter;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -33,10 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (accountCreated) {
             //set the owner
-            owner = prefs.getString(accountCreatedKey, "");
+            loginActivity.setOwner( prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
         } else {
-            replaceFragment(new loginPageFragment());
+            Intent intent = new Intent(this, loginActivity.class);
+            startActivity(intent);
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
