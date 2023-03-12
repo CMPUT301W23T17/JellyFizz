@@ -32,62 +32,27 @@ public class Search{
      * @param string username the user inputs
      * @param callback stops the listener when task is complete
      */
-    public void searchPlayer(String string, SearchPlayerCallback callback){
+    public void searchPlayer(String string, SearchPlayerCallback callback) {
         ArrayList<String> usernames = new ArrayList<>();
-        Query query = player.whereGreaterThanOrEqualTo(FieldPath.documentId(), string)
-                .orderBy(FieldPath.documentId())
-                .limit(10);
-
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String id = document.getId() ;
-                    if (id.startsWith(string)) {
-                        usernames.add(id + ": " + document.getLong("score") + "pts");
+        if(string.length() != 0) {
+            Query query = player.whereGreaterThanOrEqualTo(FieldPath.documentId(), string)
+                    .orderBy(FieldPath.documentId())
+                    .limit(10);
+            query.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String id = document.getId();
+                        if (id.startsWith(string)) {
+                            usernames.add(id + ": " + document.getLong("score") + "pts");
+                        }
                     }
+                } else {
+                    Log.e("TAG", "Error getting documents: ", task.getException());
                 }
-            } else {
-                System.out.println("NOOOOOOOOOOOOOO");
-                Log.e("TAG", "Error getting documents: ", task.getException());
-            }
-            callback.onSearchPlayerComplete(usernames);
-        });
+                callback.onSearchPlayerComplete(usernames);
+            });
+        }
     }
-
-
-
-
-    public void showQRCode(String string, SearchPlayerCallback callback){
-        ArrayList<String> qrcodes = new ArrayList<>();
-        Query query = codes.whereGreaterThanOrEqualTo(FieldPath.documentId(), string)
-                .orderBy(FieldPath.documentId())
-                .limit(10);
-
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String id = document.getId() ;
-                    if (id.startsWith(string)) {
-                        qrcodes.add(id + ": " + document.getLong("score") + "pts");
-                    }
-                }
-            } else {
-                System.out.println("NOOOOOOOOOOOOOO");
-                Log.e("TAG", "Error getting documents: ", task.getException());
-            }
-            callback.onSearchPlayerComplete(qrcodes);
-        });
-    }
-
-
-
-
-
-
-
-
-
-
 }
 
 

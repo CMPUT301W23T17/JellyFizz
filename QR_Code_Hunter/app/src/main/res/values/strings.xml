@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">QR_Code_Hunter</string>
     <string name="testing">Testing...</string>
-    <string name="choose_your">Choose your searching type:</string>
-    <string name="user_name">USER NAME</string>
+    <string name="choose_your">SEARCH USERNAME:</string>
+    <string name="user_name">ENTER USER NAME</string>
     <string name="qr_code">QR CODE</string>
-    <string name="searching">SEARCHING</string>
+    <string name="searching">SEARCH</string>
 </resources>

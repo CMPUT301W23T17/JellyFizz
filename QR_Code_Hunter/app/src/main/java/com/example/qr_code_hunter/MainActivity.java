@@ -3,8 +3,10 @@ package com.example.qr_code_hunter;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,21 +25,30 @@ public class MainActivity extends AppCompatActivity {
         search = new Search();
         ArrayList<String> list = new ArrayList<>();
 
-        search.searchPlayer("Kyle", new Search.SearchPlayerCallback() {
+        View searchbutton = findViewById(R.id.search_bar);
+
+        searchbutton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSearchPlayerComplete(ArrayList<String> usernames) {
-                list.addAll(usernames);
-                System.out.println(list);
-                listView = findViewById(R.id.search_list);
-                adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.searching_context, list);
-                listView.setAdapter(adapter);
+            public void onClick(View view) {
+                EditText text = findViewById(R.id.enter_username);
+                search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {
+                    @Override
+                    public void onSearchPlayerComplete(ArrayList<String> usernames) {
+                        if(list.isEmpty()){
+                            list.addAll(usernames);
+                        }else{
+                            list.clear();
+                            list.addAll(usernames);
+                        }
+                        listView = findViewById(R.id.search_list);
+                        adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.searching_context, list);
+                        listView.setAdapter(adapter);
+                        System.out.println(list);
+                    }
+                });
+
             }
         });
-
-
-
-
-
 
     }
 }

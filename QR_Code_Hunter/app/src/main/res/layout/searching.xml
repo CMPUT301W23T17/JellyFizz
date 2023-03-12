@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:textAlignment="textEnd">
 
     <ListView
         android:id="@+id/search_list"
         android:layout_width="408dp"
         android:layout_height="405dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/rectangle1836"
         android:text="@string/testing"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,14 +35,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="TextSizeCheck" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="138dp"
-        android:layout_height="44dp"
+    <View
+        android:id="@+id/user_name"
+        android:layout_width="376dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rectangle11"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/choose_your"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/enter_username"
+        android:layout_width="350dp"
+        android:layout_height="54dp"
         android:elevation="200sp"
         android:gravity="center_horizontal|top"
+        android:hint="@string/user_name"
         android:lineSpacingExtra="3sp"
-        android:text="@string/user_name"
+        android:textAlignment="center"
         android:textAppearance="@style/user_name"
         android:translationY="-1.29sp"
         app:layout_constraintBottom_toBottomOf="@+id/user_name"
@@ -51,48 +66,6 @@
         app:layout_constraintTop_toTopOf="@+id/user_name"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="TextSizeCheck,TextContrastCheck" />
-
-    <View
-        android:id="@+id/user_name"
-        android:layout_width="179dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rectangle16"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choose_your"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="200sp"
-        android:gravity="center_horizontal|top"
-        android:lineSpacingExtra="3sp"
-        android:text="@string/qr_code"
-        android:textAppearance="@style/qr_code"
-        android:translationY="-1.29sp"
-        app:layout_constraintBottom_toBottomOf="@+id/qr_code"
-        app:layout_constraintEnd_toEndOf="@+id/qr_code"
-        app:layout_constraintStart_toStartOf="@+id/qr_code"
-        app:layout_constraintTop_toTopOf="@+id/qr_code"
-        tools:ignore="TextContrastCheck" />
-
-    <View
-        android:id="@+id/qr_code"
-        android:layout_width="184dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rectangle16"
-        android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.68"
-        app:layout_constraintStart_toEndOf="@+id/user_name"
-        app:layout_constraintTop_toBottomOf="@+id/choose_your"
-        tools:ignore="SpeakableTextPresentCheck" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -118,19 +91,18 @@
         app:layout_constraintBottom_toBottomOf="@+id/search_bar"
         app:layout_constraintEnd_toEndOf="@+id/search_bar"
         app:layout_constraintTop_toTopOf="@+id/search_bar"
-        app:layout_constraintVertical_bias="0.642" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <View
         android:id="@+id/search_bar"
         android:layout_width="391dp"
         android:layout_height="46dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/rectangle_s"
         android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qr_code"
+        app:layout_constraintTop_toBottomOf="@+id/enter_username"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 
