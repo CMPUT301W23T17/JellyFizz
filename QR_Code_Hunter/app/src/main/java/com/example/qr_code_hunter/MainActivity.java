@@ -23,23 +23,17 @@ public class MainActivity extends AppCompatActivity {
         search = new Search();
         ArrayList<String> list = new ArrayList<>();
 
-        list = search.searchPlayer("Kyle");
+        search.searchPlayer("Kyle", new Search.SearchPlayerCallback() {
+            @Override
+            public void onSearchPlayerComplete(ArrayList<String> usernames) {
+                list.addAll(usernames);
+                System.out.println(list);
+                listView = findViewById(R.id.search_list);
+                adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.searching_context, list);
+                listView.setAdapter(adapter);
+            }
+        });
 
-
-//        String[] cities = {
-//                "Edmonton", "Vancouver", "Moscow",
-//                "Sydney", "Berlin", "Vienna",
-//                "Tokyo", "Beijing", "Osaka", "New Delhi"
-//        };
-
-//        ArrayList<String> list = new ArrayList<>();
-//
-//        list.addAll(Arrays.asList(cities));
-
-
-        listView = findViewById(R.id.search_list);
-        adapter = new ArrayAdapter<>(this, R.layout.searching_context, list);
-        listView.setAdapter(adapter);
 
 
     }
