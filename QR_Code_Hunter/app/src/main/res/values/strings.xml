@@ -3,6 +3,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="score">score</string>
+    <string name="accountCreated">dxxzc-accountCreated-vzxvzs</string>
+
     <string name="_9999">#9999</string>
     <string name="your_rank">Your Rank:</string>
     <string name="pts">PTS</string>
