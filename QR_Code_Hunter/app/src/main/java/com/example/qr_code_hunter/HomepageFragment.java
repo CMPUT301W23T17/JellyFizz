@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import android.location.Location;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomepageFragment#newInstance} factory method to
@@ -75,16 +79,20 @@ public class HomepageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         scanButton = getView().findViewById(R.id.scan_button);
         scanButton.setOnClickListener(v -> {
-            scanCode();
+        Location current = scanCode();
         });
     }
 
-    private void scanCode() {
+    private Location scanCode() {
+        
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureAct.class);
         barLauncher.launch(options);
+        Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        
+        return currentLocation;
     }
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
