@@ -1,5 +1,7 @@
 package com.example.qr_code_hunter;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -32,6 +40,8 @@ public class HomepageFragment extends Fragment {
     AlertDialog.Builder builder;
     View scanButton;
     TextView welcomeOwner;
+    TextView rank;
+    TextView score;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,8 +95,9 @@ public class HomepageFragment extends Fragment {
         instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
+        String ownerName = loginActivity.getOwner();
         welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
-        welcomeOwner.setText("WELCOME "+ loginActivity.getOwner());
+        welcomeOwner.setText("WELCOME "+ ownerName);
 
         instruction_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +110,55 @@ public class HomepageFragment extends Fragment {
             scanCode();
         });
 
+        // Access to the player collection
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference OwnerRef = db.collection("Players").document(ownerName);
+        // Display Email
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            Integer myAttribute = Math.toIntExact(documentSnapshot.getLong("rank"));
+                            // Do something with the value
+                            rank = (TextView) getView().findViewById(R.id.my_ranking_number);
+                            rank.setText("Your Rank: #"+myAttribute);
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            Integer myAttribute = Math.toIntExact(documentSnapshot.getLong("score"));
+                            // Do something with the value
+                            score = (TextView) getView().findViewById(R.id.score_display);
+                            score.setText(myAttribute.toString());
+
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
     }
 
     private void openDialog() {
