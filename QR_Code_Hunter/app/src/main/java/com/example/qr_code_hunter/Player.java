@@ -169,7 +169,7 @@ public class Player {
      * @return Returns an integer
      */
     public int getTotalCodeScanned() {
-        return myQrCodes.size();
+        return this.totalCodeScanned;
     }
 
     /**
