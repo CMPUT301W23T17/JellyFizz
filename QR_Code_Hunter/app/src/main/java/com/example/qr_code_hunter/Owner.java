@@ -92,8 +92,8 @@ public class Owner extends Player{
      */
     public DocumentReference createNewCode(QrCode qrCode, String comment, String image) {
         // Hashing geolocation for new qrcode
-        double latitude = qrCode.getGeolocation().getLatitude();
-        double longitude = qrCode.getGeolocation().getLongitude();
+        double latitude = qrCode.getGeolocation().latitude;
+        double longitude = qrCode.getGeolocation().longitude;
         String geohash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));
         // Input into database
         Map<String, Object> data = new HashMap<>();

@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.type.LatLng;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;

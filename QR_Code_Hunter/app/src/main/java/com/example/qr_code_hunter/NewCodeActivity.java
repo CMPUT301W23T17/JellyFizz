@@ -1,6 +1,7 @@
 package com.example.qr_code_hunter;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -20,6 +23,7 @@ public class NewCodeActivity extends AppCompatActivity {
     Button nextPageBtn;
     QrCode newCode;
     String scannedString;
+    Location curLoc;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class NewCodeActivity extends AppCompatActivity {
         nextPageBtn = findViewById(R.id.next_button);
 
         scannedString = getIntent().getExtras().getString("scanned string");
+        curLoc = getIntent().getParcelableExtra("current location");
 
         try {
             newCode = new QrCode(scannedString);
@@ -42,6 +47,15 @@ public class NewCodeActivity extends AppCompatActivity {
 
         codeName.setText(newCode.getName());
         visualRep.setText(newCode.getVisualRep());
+        if (curLoc != null) {
+            LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+            newCode.setLocation(latLng);
+            String loc = "@ " + Double.toString(curLoc.getLatitude()) + ", " + Double.toString(curLoc.getLongitude());
+            codeLoc.setText(loc);
+        } else {
+            String x = "location is null";
+            codeLoc.setText(x);
+        }
 
         String scoreLabel = "You earned " + String.valueOf(newCode.getScore()) + " points!";
         codePts.setText(scoreLabel);
