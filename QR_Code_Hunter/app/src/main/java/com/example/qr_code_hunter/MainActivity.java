@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             //set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
-//            startActivity(intent);
+
         } else {
             Intent intent = new Intent(this, loginActivity.class);
             startActivity(intent);
