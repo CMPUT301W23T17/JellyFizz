@@ -90,6 +90,12 @@ public class HomepageFragment extends Fragment {
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureAct.class);
         barLauncher.launch(options);
+        
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+            LocationService.MY_PERMISSION_ACCESS_COURSE_LOCATION );
+        }
+        
         Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         
         return currentLocation;
