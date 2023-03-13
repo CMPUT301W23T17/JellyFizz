@@ -20,7 +20,6 @@ public class QrCode implements Parcelable {
     private String hashString;
     private Integer score;
     private Boolean dataPrivacy;
-    private Image objectImage;
     private LatLng geolocation;
     ShaGenerator sha = new ShaGenerator();
 
