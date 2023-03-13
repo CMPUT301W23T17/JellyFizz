@@ -188,7 +188,7 @@ public class Owner extends Player{
      */
     public void updateSumScore(QrCode qrCode) {
         int newScore = this.getTotalScore() + qrCode.getScore();
-        int newTotalCodeScanned = this.totalCodeScanned + 1;
+        int newTotalCodeScanned = getTotalCodeScanned() + 1;
         Map<String, Object> data = new HashMap<>();
         data.put("score",newScore);
         data.put("totalCodeScanned",newTotalCodeScanned);
