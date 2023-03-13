@@ -32,10 +32,14 @@ public class Owner extends Player{
     private final CollectionReference scanned = db.collection("scannedBy");
 
     private DocumentReference ownerRef;
+    private int totalCodeScanned;
+    DocumentReference existedQrRef = null;
+    Boolean codeDuplicated = false;
 
     public Owner(String phone, String email, String username, Boolean privacy, ArrayList<DocumentReference> codeScanned, int score, int rank) {
         super(phone, email, username, privacy, codeScanned, score, rank);
         this.ownerRef = this.player.document(username);
+        setTotalCodeScanned();
     }
 
     /**
@@ -92,16 +96,15 @@ public class Owner extends Player{
      */
     public DocumentReference createNewCode(QrCode qrCode, String comment, String image) {
         // Hashing geolocation for new qrcode
-        double latitude = qrCode.getGeolocation().getLatitude();
-        double longitude = qrCode.getGeolocation().getLongitude();
-        String geohash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(latitude,longitude));
+        double latitude = qrCode.getGeolocation().latitude;
+        double longitude = qrCode.getGeolocation().longitude;
         // Input into database
         Map<String, Object> data = new HashMap<>();
-        data.put("geohash",geohash);
         data.put("latitude",latitude);
         data.put("longitude",longitude);
-        data.put("score",qrCode.getScore());
+        data.put("Score",qrCode.getScore());
         data.put("Privacy",qrCode.getPrivacy());
+        data.put("codeName",qrCode.getName());
         // Create new document whose ID is the hash string
         DocumentReference newRef = qrcode.document(qrCode.getHashString());
         newRef.set(data)
@@ -109,7 +112,6 @@ public class Owner extends Player{
                     @Override
                     public void onSuccess(Void unused) {
                         Log.d("Working", "Data added successfully");
-                        addSubCollection(newRef, comment, image);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -118,6 +120,7 @@ public class Owner extends Player{
                         Log.d("Working", "Data not added" + e.toString());
                     }
                 });
+        addSubCollection(newRef, comment, image);
         return newRef;
     }
 
@@ -132,11 +135,10 @@ public class Owner extends Player{
      */
     public void addSubCollection(DocumentReference newRef, String comment, String image) {
         // Create a subcollection called "CommentAndPhoto" and add a new document with "username"
-        CollectionReference subRef = newRef.collection("CommentAndPhoto");
         Map<String, Object> subData = new HashMap<>();
-        subData.put("comment", comment);
-        subData.put("image", image);
-        subRef.document(this.getUsername()).set(subData)
+        subData.put("Comment", comment);
+        subData.put("Photo", image);
+        newRef.collection("CommentAndPhoto").document(this.getUsername()).set(subData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -160,7 +162,7 @@ public class Owner extends Player{
     public void addRelationship(DocumentReference qrRef) {
         Map<String, Object> data = new HashMap<>();
         data.put("Player",ownerRef);
-        data.put("qrCodeScanned",qrRef);
+        data.put("qrCodesScanned",qrRef);
         scanned
                 .document()
                 .set(data)
@@ -186,19 +188,21 @@ public class Owner extends Player{
      */
     public void updateSumScore(QrCode qrCode) {
         int newScore = this.getTotalScore() + qrCode.getScore();
+        int newTotalCodeScanned = this.totalCodeScanned + 1;
         Map<String, Object> data = new HashMap<>();
         data.put("score",newScore);
+        data.put("totalCodeScanned",newTotalCodeScanned);
         ownerRef.update(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("Working", "Score updated successfully");
+                        Log.d("Working", "Score & CodeNum updated successfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Score not updated" + e.toString());
+                        Log.d("Working", "Score & CodeNum not updated" + e.toString());
                     }
                 });
     }
@@ -250,16 +254,40 @@ public class Owner extends Player{
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 int rank = 1;
+                int nextScore = 0;
                 for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                     int score = document.getLong("score").intValue();
                     document.getReference().update("rank", rank);
 
                     QueryDocumentSnapshot nextDocument = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(rank);
-                    if(nextDocument.getLong("score").intValue() < score && nextDocument != null){
+                    nextScore = nextDocument.getLong("score").intValue();
+                    if (nextScore == 0) {
+                        rank = 0;
+                    } else if (nextScore < score && nextDocument != null){
                         rank++;
                     }
                 }
-
+            }
+        });
+    }
+    
+     /**
+     * this get the total code scanned by owner
+     */
+    public void setTotalCodeScanned() {
+        ownerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        totalCodeScanned = document.getLong("totalCodeScanned").intValue();
+                    } else {
+                        Log.d("working", "No such document");
+                    }
+                } else {
+                    Log.d("working", "get failed with ", task.getException());
+                }
             }
         });
     }
