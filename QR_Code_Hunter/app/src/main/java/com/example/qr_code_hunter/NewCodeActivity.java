@@ -48,6 +48,7 @@ public class NewCodeActivity extends AppCompatActivity {
 
         String scannedString = getIntent().getExtras().getString("scanned string");
         Location curLoc = getIntent().getParcelableExtra("current location");
+        Owner owner = getIntent().getParcelableExtra("current owner");
 
         geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
         LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
@@ -90,6 +91,7 @@ public class NewCodeActivity extends AppCompatActivity {
                 Intent intent = new Intent(NewCodeActivity.this, NewCodeActivity2.class);
                 intent.putExtra("New QrCode", newCode);
                 intent.putExtra("Coordinates", latLng);
+                intent.putExtra("Current Owner", owner);
                 startActivity(intent);
             }
         });

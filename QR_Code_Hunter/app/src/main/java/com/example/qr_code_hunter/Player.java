@@ -29,13 +29,17 @@ public class Player {
     protected int minScore = Integer.MAX_VALUE;
     protected DocumentReference minScoreQrCode = null;
 
+    public Player(){}
 
-    public Player(String phone, String email, String username, Boolean privacy, ArrayList<DocumentReference> codeScanned, int score, int rank) {
+
+    public Player(String phone, String email, String username, Boolean privacy,
+                  ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned) {
         this.profileInfo = new PlayerProfile(phone, email, privacy);
         this.uniqueUsername = username;
         this.myQrCodes = codeScanned; // Document references of player's QR codes in db
         this.totalScore = score;
         this.rank = rank;
+        this.totalCodeScanned = totalCodeScanned;
     }
 
     /**

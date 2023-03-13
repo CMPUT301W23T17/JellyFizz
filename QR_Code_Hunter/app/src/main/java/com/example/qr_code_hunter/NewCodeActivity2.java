@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,6 +24,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
@@ -39,6 +43,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
+    Owner currentOwner;
+
+    DocumentReference justScan;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +58,15 @@ public class NewCodeActivity2 extends AppCompatActivity {
         recordCode = findViewById(R.id.record_code_button);
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
+//        owner = getIntent().getParcelableExtra("Current Owner");
+
+        //set the owner object, still need to discuss what is happening with this list of qrcodes
+        loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+            @Override
+            public void onGetInfo(Owner owner) {
+                currentOwner = owner;
+            }
+        });
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +118,27 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 intent.putExtra("Comment", descBox.getText().toString());
                 intent.putExtra("Image", encodedImage);
                 startActivity(intent);
+
+                currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
+                    @Override
+                    public void onCheckExitedComplete(DocumentReference existQrRef) {
+                        if (existQrRef != null) {
+                            currentOwner.checkDuplicateCodeScanned(existQrRef, new Owner.CheckDuplicateCallback() {
+                                @Override
+                                public void onCheckDuplicateComplete(Boolean duplicated) {
+                                    if(!duplicated) {
+                                            Toast.makeText(NewCodeActivity2.this, "Not Duplicated",Toast.LENGTH_SHORT).show();
+                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                    } else {
+                                        Toast.makeText(NewCodeActivity2.this, "Duplicated",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } else {
+                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                        }
+                    }
+                });
             }
         });
     }

@@ -1,5 +1,7 @@
 package com.example.qr_code_hunter;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class Owner extends Player {
+public class Owner extends Player implements Parcelable {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference player = db.collection("Players");
@@ -36,11 +38,30 @@ public class Owner extends Player {
     Boolean codeDuplicated = false;
     DocumentReference existedQrRef;
 
+    public Owner(){}
+
     public Owner(String phone, String email, String username, Boolean privacy,
-                 ArrayList<DocumentReference> codeScanned, int score, int rank) {
-        super(phone, email, username, privacy, codeScanned, score, rank);
+                 ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned) {
+        super(phone, email, username, privacy, codeScanned, score, rank, totalCodeScanned);
         this.ownerRef = this.player.document(username);
     }
+
+    protected Owner(Parcel in) {
+        byte tmpCodeDuplicated = in.readByte();
+        codeDuplicated = tmpCodeDuplicated == 0 ? null : tmpCodeDuplicated == 1;
+    }
+
+    public static final Creator<Owner> CREATOR = new Creator<Owner>() {
+        @Override
+        public Owner createFromParcel(Parcel in) {
+            return new Owner(in);
+        }
+
+        @Override
+        public Owner[] newArray(int size) {
+            return new Owner[size];
+        }
+    };
 
     /**
      * This function add new QrCode
@@ -64,6 +85,33 @@ public class Owner extends Player {
                     updateRank();
                     }
         });
+    }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable
+     * instance's marshaled representation. For example, if the object will
+     * include a file descriptor in the output of {@link #writeToParcel(Parcel, int)},
+     * the return value of this method must include the
+     * {@link #CONTENTS_FILE_DESCRIPTOR} bit.
+     *
+     * @return a bitmask indicating the set of special object types marshaled
+     * by this Parcelable object instance.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeByte((byte) (codeDuplicated == null ? 0 : codeDuplicated ? 1 : 2));
     }
 
     public interface CheckExistCallback {

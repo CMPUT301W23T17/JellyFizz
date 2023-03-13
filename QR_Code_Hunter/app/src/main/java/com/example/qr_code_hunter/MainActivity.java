@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     //ActivityMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
 
+    Owner currentOwner = new Owner();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +34,8 @@ public class MainActivity extends AppCompatActivity {
         if (accountCreated) {
             //set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
-
-            //set the owner object, still need to discuss what is happening with this list of qrcodes
-            loginActivity.setCurrentOwnerObject(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
+//            startActivity(intent);
         } else {
             Intent intent = new Intent(this, loginActivity.class);
             startActivity(intent);

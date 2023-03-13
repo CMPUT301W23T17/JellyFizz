@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,21 +40,29 @@ public class loginActivity extends AppCompatActivity {
 
     //Owner of the account(username of player on current device)
     private static String owner;
-    private static Owner currentOwnerObject;
+    static Owner currentOwnerObject;
+
+    // Database
+    static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    static CollectionReference playersRef = db.collection("Players");
 
     public static String getOwnerName() {
         return owner;
     }
-
     public static void setOwnerName(String username) {
         owner = username;
     }
 
-    public static void setCurrentOwnerObject(String inputOwner) {
+    public interface getAllInfo {
+        void onGetInfo(Owner owner);
+    }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference playersRef = db.collection("Players");
-
+    /**
+     * This read the data of current player from database and assign it to a Owner object
+     * @param inputOwner The username of current player
+     * @param callback  when to stop function when fetching data completes
+     */
+    public static void setCurrentOwnerObject(String inputOwner, getAllInfo callback) {
         playersRef.document(inputOwner).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -61,18 +70,20 @@ public class loginActivity extends AppCompatActivity {
                     String email = document.getString("email");
                     boolean hideInfo = document.getBoolean("hideInfo");
                     String phoneNumber = document.getString("phoneNumber");
-                    long rank = document.getLong("rank");
-                    long score = document.getLong("score");
-                    long totalCodeScanned = document.getLong("totalCodeScanned");
+                    int rank = document.getLong("rank").intValue();
+                    int score = document.getLong("score").intValue();
+                    int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
                     //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
-                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner, false, new ArrayList<>(), (int)score, (int)rank);
+                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
+                            false, new ArrayList<>(), score, rank, totalCodeScanned);
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
                 }
             } else {
                 Log.d("Database error", "Could not fetch data from database");
             }
+            callback.onGetInfo(currentOwnerObject);
         });
     }
 
@@ -235,6 +246,10 @@ public class loginActivity extends AppCompatActivity {
                     //all checks passed, register key to shared Permissions to allow not to register next time
                     registerKey(username);
 
+                    //  set up Owner object for new player
+                    currentOwnerObject = new Owner(phoneNumber, email, username,
+                            false, new ArrayList<DocumentReference>(), 0,0, 0);
+
                     //now add user to database
                     Map<String, Object> currentPlayer = new HashMap<>();
 
@@ -263,6 +278,12 @@ public class loginActivity extends AppCompatActivity {
             });
 
     }
+
+    /**
+     * This function is used to return owner object.
+     * @return return Owner object.
+     */
+    public Owner getOwnerNew() {return currentOwnerObject;}
 
     /**
      * Register a username with the accountCreatedKey in SharedPreferences.
