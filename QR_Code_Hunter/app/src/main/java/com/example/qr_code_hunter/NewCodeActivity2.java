@@ -31,6 +31,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
     Button saveBtn;
     QrCode newCode;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
         recordCode = findViewById(R.id.record_code_button);
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
+
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +81,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(saveGeo.isChecked()) {
-                    // newCode.setLocation(); -- save the location based on user's current location
+                    newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                     // is not geolocation, must implement a method setGeolocation()?
                 }
                 if(recordCode.isChecked()) {
@@ -105,7 +107,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         Bundle bundle = data.getExtras();
                         Bitmap finalPhoto = (Bitmap) bundle.get("data");
                         picture.setImageBitmap(finalPhoto);
+                    }
                 }
-            }
-    });
+            });
 }

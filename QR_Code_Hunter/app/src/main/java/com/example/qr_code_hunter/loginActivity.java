@@ -239,7 +239,7 @@ public class loginActivity extends AppCompatActivity {
 
     private void goToHomepage() {
         //Use intent
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, HomepageFragment.class);
         startActivity(intent);
     }
 }
