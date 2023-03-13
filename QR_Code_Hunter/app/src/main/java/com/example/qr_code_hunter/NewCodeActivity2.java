@@ -22,6 +22,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This is the second page of the new code details (editable fields)
+ */
 public class NewCodeActivity2 extends AppCompatActivity {
     ImageView picture;
     EditText descBox;
@@ -30,7 +33,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
     CheckBox recordCode;
     Button saveBtn;
     QrCode newCode;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,11 +46,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
 
-
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent openCam = new Intent("android.media.action.IMAGE_CAPTURE");
                 Intent openCam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 takePhoto.launch(openCam);
             }
@@ -59,6 +59,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
+            /**
+             * This increments the character count everytime the user types
+             */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String countLabel = String.valueOf(s.length()) + "/150";
@@ -76,13 +79,11 @@ public class NewCodeActivity2 extends AppCompatActivity {
             }
         });
 
-
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(saveGeo.isChecked()) {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
-                    // is not geolocation, must implement a method setGeolocation()?
                 }
                 if(recordCode.isChecked()) {
                     newCode.setPrivacy(false); // actual code is saved
@@ -97,6 +98,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
         });
     }
 
+    /**
+     * This opens the camera app and set the taken photograph to an ImageView
+     */
     ActivityResultLauncher<Intent> takePhoto = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {

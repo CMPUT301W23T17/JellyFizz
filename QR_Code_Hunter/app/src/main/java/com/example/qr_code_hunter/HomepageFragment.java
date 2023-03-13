@@ -202,6 +202,9 @@ public class HomepageFragment extends Fragment {
         instruction_dialog.show(getParentFragmentManager(),"dede");
     }
 
+    /**
+     * This gets the user current location when they scan a QrCode
+     */
     @SuppressLint("MissingPermission")
     private void setCurrentLocation() {
         // Initialize location manager
@@ -230,6 +233,9 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * This opens the QR Scanner screen using a built-in library
+     */
     private void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
@@ -238,6 +244,9 @@ public class HomepageFragment extends Fragment {
         barLauncher.launch(options);
     }
 
+    /**
+     * This scans a QrCode object and sends data to an activity
+     */
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if(result.getContents() != null) {
             String inputString = result.getContents();

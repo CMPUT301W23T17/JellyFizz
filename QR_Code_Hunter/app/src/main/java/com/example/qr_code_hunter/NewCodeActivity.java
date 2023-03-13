@@ -21,6 +21,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This is the first page of the new code details (non-editable fields)
+ */
 public class NewCodeActivity extends AppCompatActivity {
     TextView codeName;
     TextView visualRep;
@@ -29,9 +32,6 @@ public class NewCodeActivity extends AppCompatActivity {
     TextView otherPlayers;
     Button nextPageBtn;
     QrCode newCode;
-    String scannedString;
-    Location curLoc;
-    LatLng latLng;
     Geocoder geocoder;
     List<Address> myAddress;
 
@@ -46,11 +46,11 @@ public class NewCodeActivity extends AppCompatActivity {
         otherPlayers = findViewById(R.id.others_scan_list);
         nextPageBtn = findViewById(R.id.next_button);
 
-        scannedString = getIntent().getExtras().getString("scanned string");
-        curLoc = getIntent().getParcelableExtra("current location");
+        String scannedString = getIntent().getExtras().getString("scanned string");
+        Location curLoc = getIntent().getParcelableExtra("current location");
 
         geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
-        latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+        LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         try {
             myAddress = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
         } catch (IOException e) {
