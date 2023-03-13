@@ -81,7 +81,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(saveGeo.isChecked()) {
-                    // newCode.setLocation(); -- save the location based on user's current location
+                    newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                     // is not geolocation, must implement a method setGeolocation()?
                 }
                 if(recordCode.isChecked()) {
