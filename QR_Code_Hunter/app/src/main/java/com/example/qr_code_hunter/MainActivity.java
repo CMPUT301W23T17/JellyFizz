@@ -10,20 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    //ActivyMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
+    //ActivityMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
 
     @Override

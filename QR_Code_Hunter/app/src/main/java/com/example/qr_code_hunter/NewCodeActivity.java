@@ -1,16 +1,29 @@
 package com.example.qr_code_hunter;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.security.NoSuchAlgorithmException;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Locale;
+
+/**
+ * This is the first page of the new code details (non-editable fields)
+ */
 public class NewCodeActivity extends AppCompatActivity {
     TextView codeName;
     TextView visualRep;
@@ -19,7 +32,8 @@ public class NewCodeActivity extends AppCompatActivity {
     TextView otherPlayers;
     Button nextPageBtn;
     QrCode newCode;
-    String scannedString;
+    Geocoder geocoder;
+    List<Address> myAddress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +46,18 @@ public class NewCodeActivity extends AppCompatActivity {
         otherPlayers = findViewById(R.id.others_scan_list);
         nextPageBtn = findViewById(R.id.next_button);
 
-        scannedString = getIntent().getExtras().getString("scanned string");
+        String scannedString = getIntent().getExtras().getString("scanned string");
+        Location curLoc = getIntent().getParcelableExtra("current location");
+
+        geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
+        LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
+        try {
+            myAddress = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String address = myAddress.get(0).getAddressLine(0);
+        codeLoc.setText(address);
 
         try {
             newCode = new QrCode(scannedString);
@@ -64,6 +89,7 @@ public class NewCodeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(NewCodeActivity.this, NewCodeActivity2.class);
                 intent.putExtra("New QrCode", newCode);
+                intent.putExtra("Coordinates", latLng);
                 startActivity(intent);
             }
         });
