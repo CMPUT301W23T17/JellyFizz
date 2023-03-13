@@ -15,15 +15,15 @@
 
         <TextView
             android:id="@+id/score_display"
-            android:layout_width="212dp"
-            android:layout_height="168dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@string/_0"
+            android:text="256"
             android:textAlignment="textEnd"
             android:textColor="#191847"
             android:textSize="150sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.09"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/welcome_box" />
 
@@ -36,14 +36,14 @@
             android:text="@string/pts"
             android:textAlignment="textStart"
             android:textColor="#191847"
-            android:textSize="34sp"
+            android:textSize="30sp"
 
             app:layout_constraintBottom_toTopOf="@+id/my_ranking_number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/score_display"
             app:layout_constraintTop_toTopOf="@+id/score_display"
-            app:layout_constraintVertical_bias="0.895" />
+            app:layout_constraintVertical_bias="0.756" />
 
         <TextView
             android:id="@+id/my_ranking_number"
