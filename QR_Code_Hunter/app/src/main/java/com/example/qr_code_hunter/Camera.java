@@ -1,11 +1,9 @@
 package com.example.qr_code_hunter;
 
 /**
-*
-The Camera class allows users to take pictures using their device's camera.
-The class handles the permissions required for camera usage and saving pictures.
-*
-*/
+ *The Camera class allows users to take pictures using their device's camera.
+ *The class handles the permissions required for camera usage and saving pictures.
+ */
 
 import android.Manifest;
 import android.app.Activity;
@@ -83,7 +81,6 @@ public class Camera {
     public void setOnPictureTakenListener(OnPictureTakenListener onPictureTakenListener) {
         this.onPictureTakenListener = onPictureTakenListener;
     }
-
 /**
  * Method to handle the permission request result.
  * @param requestCode the request code associated with the permission request.
@@ -119,10 +116,10 @@ public class Camera {
     }
 
 /**
-*
-*Checks whether all required permissions have been granted by the user.
-*@return true if all required permissions have been granted, false otherwise
-*/
+ *
+ *Checks whether all required permissions have been granted by the user.
+ *@return true if all required permissions have been granted, false otherwise
+ */
     private boolean allPermissionsGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -133,11 +130,11 @@ public class Camera {
     }
     
 /**
-*Creates a new image file with a unique name and stores it in the external storage directory
-*for pictures.
-*@return the newly created image file
-*@throws Exception if an error occurs while creating the file
-*/
+ *Creates a new image file with a unique name and stores it in the external storage directory
+ *for pictures.
+ *@return the newly created image file
+ *@throws Exception if an error occurs while creating the file
+ */
     private File createImageFile() throws Exception {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
