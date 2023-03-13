@@ -82,7 +82,7 @@ public class PlayerProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get the owner name
-        String ownerName = loginActivity.getOwner();
+        String ownerName = loginActivity.getOwnerName();
         userName = (TextView) getView().findViewById(R.id.user_name);
         userName.setText(ownerName);
         // Access to the player collection

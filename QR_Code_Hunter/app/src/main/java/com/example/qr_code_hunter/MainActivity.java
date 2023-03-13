@@ -40,8 +40,11 @@ public class MainActivity extends AppCompatActivity {
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
         if (accountCreated) {
-            //set the owner
-            loginActivity.setOwner( prefs.getString(accountCreatedKey, ""));
+            //set the ownerName to userName
+            loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
+
+            //set the owner object, still need to discuss what is happening with this list of qrcodes
+            loginActivity.setCurrentOwnerObject(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
         } else {
             Intent intent = new Intent(this, loginActivity.class);
