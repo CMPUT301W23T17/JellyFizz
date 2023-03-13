@@ -261,8 +261,6 @@ import com.google.android.gms.tasks.Task;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import java.util.List;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomepageFragment#newInstance} factory method to
