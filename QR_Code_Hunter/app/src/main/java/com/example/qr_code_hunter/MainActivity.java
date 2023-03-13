@@ -23,9 +23,9 @@ import java.util.Arrays;
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    //Activy MainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
+    //ActivyMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
     }
 
     private void replaceFragment(Fragment fragment ){
