@@ -10,11 +10,26 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     //ActivyMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
+    
+    Search search;
+    ListView listView;
+    ArrayAdapter adapter;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +71,34 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
             return true;
+        });
+        
+        search = new Search();
+        ArrayList<String> list = new ArrayList<>();
+
+        View searchbutton = findViewById(R.id.search_bar);
+
+        searchbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText text = findViewById(R.id.enter_username);
+                search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {
+                    @Override
+                    public void onSearchPlayerComplete(ArrayList<String> usernames) {
+                        if(list.isEmpty()){
+                            list.addAll(usernames);
+                        }else{
+                            list.clear();
+                            list.addAll(usernames);
+                        }
+                        listView = findViewById(R.id.search_list);
+                        adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.searching_context, list);
+                        listView.setAdapter(adapter);
+                        System.out.println(list);
+                    }
+                });
+
+            }
         });
     }
 
