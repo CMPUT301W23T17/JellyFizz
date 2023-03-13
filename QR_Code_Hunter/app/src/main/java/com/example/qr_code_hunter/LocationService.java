@@ -11,8 +11,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 
+import androidx.core.content.ContextCompat;
 
 
 public class LocationService implements LocationListener  {
@@ -30,7 +30,10 @@ public class LocationService implements LocationListener  {
     private LocationManager locationManager;
     public Location location;
     public double longitude;
-    public double latitude; 
+    public double latitude;
+    private boolean isGPSEnabled;
+    private boolean isNetworkEnabled;
+    private boolean locationServiceAvailable;
 
 
     /**
@@ -49,10 +52,17 @@ public class LocationService implements LocationListener  {
      */
     private LocationService( Context context )     {
 
-        initLocationService(context); 
-        LogService.log("LocationService created");
+        initLocationService(context);
     }
+    
+    //update coordinates
 
+    private void updateCoordinates() {
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+    }
 
 
     /**
@@ -62,8 +72,8 @@ public class LocationService implements LocationListener  {
 
 
         if ( Build.VERSION.SDK_INT >= 23 &&
-             ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-             ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return  ;
         }
 
@@ -82,7 +92,7 @@ public class LocationService implements LocationListener  {
                 // cannot get location
                 this.locationServiceAvailable = false;
             }
-            //else
+            else
             {
                 this.locationServiceAvailable = true;
 
@@ -108,14 +118,12 @@ public class LocationService implements LocationListener  {
                 }
             }
         } catch (Exception ex)  {
-            LogService.log( "Error creating location service: " + ex.getMessage() );
-
         }
-    }       
+    }
 
 
     @Override
     public void onLocationChanged(Location location)     {
-        // do stuff here with location object 
+        // do stuff here with location object
     }
 }
