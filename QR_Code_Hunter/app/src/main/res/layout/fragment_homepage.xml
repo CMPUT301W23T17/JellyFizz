@@ -49,7 +49,7 @@
             android:id="@+id/my_ranking_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ranking: #9999"
+            android:text="Ranking: #0"
             android:textAlignment="viewEnd"
             android:textColor="#191847"
             android:textSize="34sp"
