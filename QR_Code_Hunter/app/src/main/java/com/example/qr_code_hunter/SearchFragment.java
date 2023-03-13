@@ -2,11 +2,18 @@ package com.example.qr_code_hunter;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +21,10 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class SearchFragment extends Fragment {
+
+    Search search;
+    ListView listView;
+    ArrayAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +70,45 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        return inflater.inflate(R.layout.searching, container, false);
     }
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        search = new Search();
+        ArrayList<String> list = new ArrayList<>();
+
+        View searchbutton = getView().findViewById(R.id.search_bar);
+
+        searchbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText text = getView().findViewById(R.id.enter_username);
+                search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {
+                    @Override
+                    public void onSearchPlayerComplete(ArrayList<String> usernames) {
+                        if(list.isEmpty()){
+                            list.addAll(usernames);
+                        }else{
+                            list.clear();
+                            list.addAll(usernames);
+                        }
+                        listView = getView().findViewById(R.id.search_list);
+                        adapter = new ArrayAdapter<>(getActivity(), R.layout.searching_context, list);
+                        listView.setAdapter(adapter);
+                        System.out.println(list);
+                    }
+                });
+
+            }
+        });
+
+
+
+    }
+
+
+
+
 }
