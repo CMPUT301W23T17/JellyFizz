@@ -21,67 +21,76 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class Owner extends Player{
+public class Owner extends Player {
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference player = db.collection("Players");
     private final CollectionReference qrcode = db.collection("QrCodes");
     private final CollectionReference scanned = db.collection("scannedBy");
 
     private DocumentReference ownerRef;
-    private int totalCodeScanned;
-    DocumentReference existedQrRef = null;
     Boolean codeDuplicated = false;
+    DocumentReference existedQrRef;
 
-    public Owner(String phone, String email, String username, Boolean privacy, ArrayList<DocumentReference> codeScanned, int score, int rank) {
+    public Owner(String phone, String email, String username, Boolean privacy,
+                 ArrayList<DocumentReference> codeScanned, int score, int rank) {
         super(phone, email, username, privacy, codeScanned, score, rank);
         this.ownerRef = this.player.document(username);
-        setTotalCodeScanned();
     }
 
     /**
      * This function add new QrCode
-     * @param code
-     *       object of QrCode class, store newly created code info
-     * @param comment
-     *       comment string of that player for new qrcode
-     * @param image
-     *       image go along with the qrcode just scanned
+     *
+     * @param code    object of QrCode class, store newly created code info
+     * @param comment comment string of that player for new qrcode
+     * @param image   image go along with the qrcode just scanned
      */
     public void addQRCode(QrCode code, String comment, String image) {
-        DocumentReference qrRef = checkQrCodeExist(code.getHashString());
-        if (qrRef == null) {
-            // assign document reference to newly create QrCode in case it isn't in the database
-            qrRef = createNewCode(code, comment, image);
-        }
-        addRelationship(qrRef);
-        updateSumScore(code);
-        updateRank();
+        final DocumentReference[] qrRef = new DocumentReference[1];
+        checkQrCodeExist(code.getHashString(), new CheckExistCallback() {
+            @Override
+            public void onCheckExitedComplete(DocumentReference qrRef) {
+                // Do something with the documentReference object here
+                    if (qrRef == null) {
+                        // assign document reference to newly create QrCode in case it isn't in the database
+                        qrRef = createNewCode(code, comment, image);
+                    }
+                    addRelationship(qrRef);
+                    updateSumScore(code);
+                    updateRank();
+                    }
+        });
     }
 
+    public interface CheckExistCallback {
+        void onCheckExitedComplete(DocumentReference existedQrRef);
+    }
 
     /**
      * Check to see if qrcode already exists in collection
-     * @param hashString
-     *      SHA-256 string of the newly scanned qr code
-     * @return
-     *      document reference to scanned code in database if possible, null otherwise
+     *
+     * @param hashString SHA-256 string of the newly scanned qr code
+     * @param callback
+     *      interface deal with asynchronous problem when check code existence
      */
-    public DocumentReference checkQrCodeExist(String hashString) {
-        DocumentReference newCode = null;
-        Task<DocumentSnapshot> documentSnapshotTask = qrcode.document(hashString).get();
-        if (documentSnapshotTask.isSuccessful()) {
-            DocumentSnapshot documentSnapshot = documentSnapshotTask.getResult();
-            if (documentSnapshot.exists()) {
-                newCode = qrcode.document(hashString);
+    public void checkQrCodeExist(String hashString, CheckExistCallback callback) {
+        DocumentReference docRef = qrcode.document(hashString);
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().exists()) {
+                    existedQrRef = qrcode.document(hashString);
+                    Log.d("Working", "Document exists!");
+                }
+            } else {
+                Log.d("Working", "Failed with: ", task.getException());
             }
-        }
-        return newCode;
+            callback.onCheckExitedComplete(existedQrRef);
+        });
     }
-
 
     /**
      * This create add new QrCode into QrCodes collection on Firebase
@@ -162,7 +171,7 @@ public class Owner extends Player{
     public void addRelationship(DocumentReference qrRef) {
         Map<String, Object> data = new HashMap<>();
         data.put("Player",ownerRef);
-        data.put("qrCodesScanned",qrRef);
+        data.put("qrCodeScanned",qrRef);
         scanned
                 .document()
                 .set(data)
@@ -188,7 +197,7 @@ public class Owner extends Player{
      */
     public void updateSumScore(QrCode qrCode) {
         int newScore = this.getTotalScore() + qrCode.getScore();
-        int newTotalCodeScanned = getTotalCodeScanned() + 1;
+        int newTotalCodeScanned = this.getTotalCodeScanned() + 1;
         Map<String, Object> data = new HashMap<>();
         data.put("score",newScore);
         data.put("totalCodeScanned",newTotalCodeScanned);
@@ -207,32 +216,38 @@ public class Owner extends Player{
                 });
     }
 
+    public interface CheckDuplicateCallback {
+        void onCheckDuplicateComplete(Boolean duplicated);
+    }
 
-    /**
+        /**
      * This returns duplication check of newly scanned QrCode
      * @param qrRef
      *      document reference of code just scanned
-     * @return
-     *      Returns true if duplicated, false otherwise
+     * @param callback
+     *      interface deal with asynchronous problem when check duplicated
      */
-    public Boolean checkDuplicateCodeScanned(DocumentReference qrRef) {
-        Boolean duplicated = false;
+    public void checkDuplicateCodeScanned(DocumentReference qrRef, CheckDuplicateCallback callback) {
         // Get query of players scan newly scanned code
         Query query = scanned.whereEqualTo("Player",ownerRef)
-                        .whereEqualTo("qrCodeScanned",qrRef).limit(1);
-        // Check if query is empty
-        Task<QuerySnapshot> querySnapshotTask = query.get();
-        if (querySnapshotTask.isSuccessful()) {
-            QuerySnapshot querySnapshot = querySnapshotTask.getResult();
-            if (!querySnapshot.isEmpty()) {
-                duplicated = true;
+                .whereEqualTo("qrCodeScanned",qrRef)
+                .limit(1) ;
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (!task.getResult().isEmpty()) {
+                    codeDuplicated = true;
+                    Log.d("Working", "Document exists!");
+                }
+            } else {
+                Log.d("Working", "Failed with: ", task.getException());
             }
-        }
-        return duplicated;
+            callback.onCheckDuplicateComplete(codeDuplicated);
+        });
     }
 
+
     public void deleteQRCode(QrCode code) {
-    // We need to access the QrCode list to see how it works first, cause it is real time update
+        // We need to access the QrCode list to see how it works first, cause it is real time update
     }
 
     /**
@@ -270,5 +285,4 @@ public class Owner extends Player{
             }
         });
     }
-    
 }
