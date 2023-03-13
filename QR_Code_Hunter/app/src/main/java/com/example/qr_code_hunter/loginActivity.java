@@ -140,12 +140,6 @@ public class loginActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
-        if (accountCreated) {
-            //set the owner
-            owner = prefs.getString(accountCreatedKey, "");
-            goToHomepage();
-        }
-
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference playersRef = db.collection("Players");
 

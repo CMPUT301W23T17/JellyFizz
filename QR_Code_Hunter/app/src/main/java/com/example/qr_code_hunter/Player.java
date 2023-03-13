@@ -30,10 +30,6 @@ public class Player {
     protected int minScore = Integer.MAX_VALUE;
     protected DocumentReference minScoreQrCode = null;
 
-
-    //Have to discuss how the arraylist of qrcodes in the app will be handled. I was thinking it will be initialized once and then
-    // add qrCode and delete Code will update it
-
     public Player(String phone, String email, String username, Boolean privacy, ArrayList<DocumentReference> codeScanned, int score, int rank) {
         this.profileInfo = new PlayerProfile(phone, email, privacy);
         this.uniqueUsername = username;
