@@ -38,6 +38,7 @@ public class QrCode implements Parcelable {
         setName(sha.shaGeneratorBinary(scannedString));
         setVisualRep(sha.shaGeneratorBinary(scannedString));
         setScore(sha.shaGeneratorHexadecimal(scannedString));
+        this.hashString = sha.shaGeneratorHexadecimal(scannedString);
     }
 
     protected QrCode(Parcel in) {
