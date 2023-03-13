@@ -1,12 +1,25 @@
 package com.example.qr_code_hunter;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,7 +27,11 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class PlayerProfileFragment extends Fragment {
-
+    TextView userName;
+    TextView email;
+    TextView mobile_number;
+    TextView rank;
+    TextView score;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,5 +77,106 @@ public class PlayerProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_player_profile, container, false);
+    }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Get the owner name
+        String ownerName = loginActivity.getOwner();
+        userName = (TextView) getView().findViewById(R.id.user_name);
+        userName.setText(ownerName);
+        // Access to the player collection
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference OwnerRef = db.collection("Players").document(ownerName);
+        // Display Email
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            String myAttribute = documentSnapshot.getString("email");
+                            // Do something with the value
+                            email = (TextView) getView().findViewById(R.id.email);
+                            email.setText("Email: "+myAttribute);
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
+        // Display Mobile Phone
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            String myAttribute = documentSnapshot.getString("phoneNumber");
+                            // Do something with the value
+                            mobile_number = (TextView) getView().findViewById(R.id.mobile_phone);
+                            mobile_number.setText("Mobile Phone: "+ myAttribute);
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            Integer myAttribute = Math.toIntExact(documentSnapshot.getLong("score"));
+                            // Do something with the value
+                            score = (TextView) getView().findViewById(R.id.number_points);
+                            score.setText(myAttribute.toString());
+
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            Integer myAttribute = Math.toIntExact(documentSnapshot.getLong("rank"));
+                            // Do something with the value
+                            rank = (TextView) getView().findViewById(R.id.number_rank);
+                            rank.setText(myAttribute.toString());
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
     }
 }

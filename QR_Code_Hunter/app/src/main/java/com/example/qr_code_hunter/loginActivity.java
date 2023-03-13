@@ -207,6 +207,7 @@ public class loginActivity extends AppCompatActivity {
                     currentPlayer.put("phoneNumber", phoneNumber);
                     currentPlayer.put("rank", 0);
                     currentPlayer.put("score", 0);
+                    currentPlayer.put("totalCodeScanned",0);
 
                     playersRef.document(username).set(currentPlayer)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
