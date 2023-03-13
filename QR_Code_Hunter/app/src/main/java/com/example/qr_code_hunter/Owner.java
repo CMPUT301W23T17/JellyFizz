@@ -271,26 +271,4 @@ public class Owner extends Player{
         });
     }
     
-     /**
-     * this get the total code scanned by owner
-     */
-    public void setTotalCodeScanned() {
-        ownerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        totalCodeScanned = document.getLong("totalCodeScanned").intValue();
-                    } else {
-                        Log.d("working", "No such document");
-                    }
-                } else {
-                    Log.d("working", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
-
-
 }
