@@ -1,5 +1,12 @@
 package com.example.qr_code_hunter;
 
+/**
+*
+The Camera class allows users to take pictures using their device's camera.
+The class handles the permissions required for camera usage and saving pictures.
+*
+*/
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -30,14 +37,24 @@ public class Camera {
     private Uri photoUri;
     private OnPictureTakenListener onPictureTakenListener;
 
+/**
+ * The interface OnPictureTakenListener is used to notify clients when a picture has been taken.
+ */
     public interface OnPictureTakenListener {
         void onPictureTaken(Uri photoUri);
     }
 
+/**
+ * Constructor for the Camera class.
+ * @param activity the activity from which the Camera object is created.
+ */
     public Camera(Activity activity) {
         this.activity = activity;
     }
 
+/**
+ * Method to take a picture using the device's camera.
+ */
     public void takePicture() {
         if (allPermissionsGranted()) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -59,10 +76,20 @@ public class Camera {
         }
     }
 
+/**
+ * Method to set the listener for the picture taken event.
+ * @param onPictureTakenListener the listener to be set.
+ */
     public void setOnPictureTakenListener(OnPictureTakenListener onPictureTakenListener) {
         this.onPictureTakenListener = onPictureTakenListener;
     }
 
+/**
+ * Method to handle the permission request result.
+ * @param requestCode the request code associated with the permission request.
+ * @param permissions the requested permissions.
+ * @param grantResults the grant results for the requested permissions.
+ */
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS) {
             if (allPermissionsGranted()) {
@@ -73,6 +100,12 @@ public class Camera {
         }
     }
 
+/**
+ * Method to handle the picture taken event.
+ * @param requestCode the request code associated with the picture taken event.
+ * @param resultCode the result code associated with the picture taken event.
+ * @param data the data associated with the picture taken event.
+ */
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             if (photoUri != null) {
@@ -85,7 +118,11 @@ public class Camera {
         }
     }
 
-    // Returns True if all app permissions are granted by the user.
+/**
+*
+*Checks whether all required permissions have been granted by the user.
+*@return true if all required permissions have been granted, false otherwise
+*/
     private boolean allPermissionsGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -95,7 +132,12 @@ public class Camera {
         return true;
     }
     
-    // Returns image file to be saved.
+/**
+*Creates a new image file with a unique name and stores it in the external storage directory
+*for pictures.
+*@return the newly created image file
+*@throws Exception if an error occurs while creating the file
+*/
     private File createImageFile() throws Exception {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
