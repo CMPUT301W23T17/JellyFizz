@@ -16,6 +16,16 @@
 
         <item name="android:textSize">
             24sp
+
+    <style name="scan_now">
+
+        <item name="android:textSize">
+            30sp
+        </item>
+
+        <item name="android:letterSpacing">
+            -0.01
+
         </item>
 
         <item name="android:textColor">
@@ -23,6 +33,7 @@
         </item>
 
     </style>
+
 
     <style name="qr_code">
 
@@ -32,6 +43,15 @@
 
         <item name="android:textColor">
             #FFFFFF
+
+    <style name="welcome_use">
+
+        <item name="android:textSize">
+            30sp
+        </item>
+
+        <item name="android:textColor">
+            #191847
         </item>
 
     </style>
