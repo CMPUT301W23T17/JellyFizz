@@ -66,7 +66,7 @@ public class loginActivity extends AppCompatActivity {
                     long totalCodeScanned = document.getLong("totalCodeScanned");
 
                     //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
-                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner, false, new ArrayList<>(), 0, 0);
+                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner, false, new ArrayList<>(), (int)score, (int)rank);
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
                 }
@@ -263,8 +263,6 @@ public class loginActivity extends AppCompatActivity {
             });
 
     }
-
-
 
     /**
      * Register a username with the accountCreatedKey in SharedPreferences.
