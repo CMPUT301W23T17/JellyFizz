@@ -51,9 +51,11 @@ public class Player {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Get all the QR code references for the current player
-        ArrayList<DocumentReference> qrCodeRefs = getQR_Codes(loginActivity.getOwner());
+        ArrayList<DocumentReference> qrCodeRefs = getQR_Codes(loginActivity.getOwnerName());
 
         // Set the total score to 0 initially
+        maxScore = Integer.MIN_VALUE;
+        minScore = Integer.MAX_VALUE;
         this.totalScore = 0;
 
         // Iterate over each QR code and update the min, max, and total scores
@@ -100,7 +102,7 @@ public class Player {
         CollectionReference playersRef = db.collection("Players");
 
         //Get owner of account
-        String playerReference = "/" + loginActivity.getOwner();
+        String playerReference = "/" + loginActivity.getOwnerName();
 
         ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
 
@@ -134,7 +136,7 @@ public class Player {
         final String[] lowestQr = {null};
 
         //Initialize the list with all the qr codes of the owner
-        myQrCodes = getQR_Codes(loginActivity.getOwner());
+        myQrCodes = getQR_Codes(loginActivity.getOwnerName());
 
         for (DocumentReference hashString : myQrCodes) {
             hashString.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

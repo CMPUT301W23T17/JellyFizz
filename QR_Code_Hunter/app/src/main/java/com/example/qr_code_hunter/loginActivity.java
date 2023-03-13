@@ -26,10 +26,12 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,15 +39,49 @@ public class loginActivity extends AppCompatActivity {
 
     //Owner of the account(username of player on current device)
     private static String owner;
+    private static Owner currentOwnerObject;
 
-    public static String getOwner() {
+    public static String getOwnerName() {
         return owner;
     }
 
-    public static void setOwner(String inputOwner) {
-        owner = inputOwner;
+    public static void setOwnerName(String username) {
+        owner = username;
     }
 
+    public static void setCurrentOwnerObject(String inputOwner) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference playersRef = db.collection("Players");
+
+        playersRef.document(inputOwner).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String email = document.getString("email");
+                    boolean hideInfo = document.getBoolean("hideInfo");
+                    String phoneNumber = document.getString("phoneNumber");
+                    long rank = document.getLong("rank");
+                    long score = document.getLong("score");
+                    long totalCodeScanned = document.getLong("totalCodeScanned");
+
+                    //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
+                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner, false, new ArrayList<>(), (int)score, (int)rank);
+                } else {
+                    Log.d("Database Program Logic Error", "This player does not exist in database");
+                }
+            } else {
+                Log.d("Database error", "Could not fetch data from database");
+            }
+        });
+    }
+
+
+    /**
+     This class handles the user login and registration process.
+     It includes methods for verifying user input, checking if a user already exists in the database,
+     and creating a new user in the database. It also saves the user's information locally using SharedPreferences.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -228,18 +264,30 @@ public class loginActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Register a username with the accountCreatedKey in SharedPreferences.
+     * @param username The username to register.
+     */
     private void registerKey(String username) {
+        // Get the key to use for storing the account creation timestamp in SharedPreferences.
         String accountCreatedKey = getString(R.string.accountCreated);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(accountCreatedKey, username);
+
+        // Save the changes to SharedPreferences.
         editor.apply();
     }
 
+    /**
+     * Navigate to the homepage activity.
+     */
     private void goToHomepage() {
-        //Use intent
-        Intent intent = new Intent(this, HomepageFragment.class);
+        // Create an Intent to start the MainActivity.
+        Intent intent = new Intent(this, MainActivity.class);
+
+        // Start the MainActivity.
         startActivity(intent);
     }
 }
