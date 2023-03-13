@@ -113,7 +113,7 @@ public class HomepageFragment extends Fragment {
         // Access to the player collection
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference OwnerRef = db.collection("Players").document(ownerName);
-        // Display Email
+        // Display Rank
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -136,6 +136,7 @@ public class HomepageFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
+        // Display Score
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
