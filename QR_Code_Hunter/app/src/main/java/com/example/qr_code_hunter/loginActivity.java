@@ -26,9 +26,12 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -49,8 +52,53 @@ public class loginActivity extends AppCompatActivity {
         owner = username;
     }
 
-    public static void setCurrentOwnerObject(String inputOwner) {
+    private static void setOwner(Owner owner1) {
+        currentOwnerObject = owner1;
+    }
 
+    /**
+     * Retrieves all the QR code references for a specific player from the database and returns them
+     * as an ArrayList. This method queries the "Players" collection to find all documents that reference
+     * the player's document and retrieves the QR code references from those documents.
+     *
+     * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
+     * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
+     */
+    public static ArrayList<DocumentReference> getQR_Codes(String currentPlayer) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference scannedBy = db.collection("scannedBy");
+
+        //Get owner of account reference
+        String playerReference = "/Players/" + loginActivity.getOwnerName();
+
+        ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
+
+        // Query the scannedBy collection to get all documents that reference the player's document
+        Query query = scannedBy.whereEqualTo("Player", playerReference);
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Iterate over the query results and add the QR code references to the ArrayList
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
+                    qrCodeRefs.add(qrCodeRef);
+                }
+            } else {
+                // Display error
+                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
+            }
+        });
+
+        return qrCodeRefs;
+    }
+
+
+    /**
+     Sets the owner object based on the input owner string
+     by retrieving owner data from the "Players" collection in Firestore.
+     @param inputOwner the unique identifier of the owner to retrieve data for
+     */
+    public static void setOwnerObject(String inputOwner) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
 
@@ -61,12 +109,12 @@ public class loginActivity extends AppCompatActivity {
                     String email = document.getString("email");
                     boolean hideInfo = document.getBoolean("hideInfo");
                     String phoneNumber = document.getString("phoneNumber");
-                    long rank = document.getLong("rank");
-                    long score = document.getLong("score");
-                    long totalCodeScanned = document.getLong("totalCodeScanned");
+                    int rank = document.getLong("rank").intValue();
+                    int score = document.getLong("score").intValue();
+                    int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
-                    //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
-                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner, false, new ArrayList<>(), (int)score, (int)rank);
+                    Owner returnedOwner = new Owner(phoneNumber, email, inputOwner, false, getQR_Codes(inputOwner), (int)score, (int)rank);
+                    setOwner(returnedOwner);
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
                 }
@@ -79,7 +127,7 @@ public class loginActivity extends AppCompatActivity {
 
     /**
      This class handles the user login and registration process.
-     It includes methods for verifying user input, checking if a user already exists in the database,
+     It includes methods for verifying user input, registering the user key, registering the user
      and creating a new user in the database. It also saves the user's information locally using SharedPreferences.
      */
     @Override
@@ -155,6 +203,8 @@ public class loginActivity extends AppCompatActivity {
                 }
             };
 
+
+            //Watch as user types text
             userNameViewer.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -178,91 +228,137 @@ public class loginActivity extends AppCompatActivity {
             register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //verify Email adress
+                    //get Email adress
                     EditText emailEditText = findViewById(R.id.editTextEmail);
-                    TextView emailError = findViewById(R.id.emailError);
                     String email = emailEditText.getText().toString().trim();
 
-                    if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        // Email entered was invalid
-                        emailError.setVisibility(View.VISIBLE);
-                        emailEditText.requestFocus();
-                        return;
-                    } else {
-                        emailError.setVisibility(View.INVISIBLE);
-                    }
 
-                    //verify Phone Number
+                    //get Phone Number
                     EditText phoneNumbertext = findViewById(R.id.editTextPhone);
-                    TextView phoneError = findViewById(R.id.phoneError);
                     String phoneNumber = phoneNumbertext.getText().toString().trim();
 
-                    if (phoneNumber.length() < 10) {
-                        phoneError.setVisibility(View.VISIBLE);
-                        phoneNumbertext.requestFocus();
-                        return;
-                    } else {
-                        phoneError.setVisibility(View.INVISIBLE);
-                    }
-
-                    //verify UserName error button is invisible
+                    //get UserName
                     EditText userNameView = findViewById(R.id.editTextUsername);
                     String username = userNameView.getText().toString().trim();
-                    TextView userNameError = findViewById(R.id.userNameTaken);
 
-                    if (username.length() < 1) {
-                        userNameError.setVisibility(View.VISIBLE);
-                        userNameView.requestFocus();
+                    //if checks failed return
+                    if (!verifyInput()) {
                         return;
-                    }
-
-                    // Make sure string only contains letters and numbers
-                    if (!username.matches("^[a-zA-Z0-9]*$")) {
-                        userNameError.setText("username can only contain letters or numbers");
-                        Log.d("String Checking", username);
-                        userNameError.setVisibility(View.VISIBLE);
-                        userNameView.requestFocus();
-                        return;
-                    }
-
-                    if (userNameError.getVisibility() != View.INVISIBLE) {
-                        // the TextView is currently visible
-                        userNameView.requestFocus();
-                        return;
-                    }
+                    };
 
                     //all checks passed, register key to shared Permissions to allow not to register next time
                     registerKey(username);
 
-                    //now add user to database
-                    Map<String, Object> currentPlayer = new HashMap<>();
-
-                    currentPlayer.put("email", email);
-                    currentPlayer.put("hideInfo", false);
-                    currentPlayer.put("phoneNumber", phoneNumber);
-                    currentPlayer.put("rank", 0);
-                    currentPlayer.put("score", 0);
-                    currentPlayer.put("totalCodeScanned",0);
-
-                    playersRef.document(username).set(currentPlayer)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // Player added successfully, time to go to homepage
-                                    goToHomepage();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("Database Error", "Could not add a player to the database");
-                                }
-                            });
+                    //Register user and go to homepage
+                    registerUser(username, email, phoneNumber, playersRef);
                 }
             });
 
     }
+
+    /**
+     This method is used to verify user input when registering for an account.
+     It verifies that the email entered is a valid email address and that the phone number entered
+     is at least 10 digits long. It also checks that a username has been entered and that it only contains
+     letters or numbers. Finally, it returns true if all checks pass.
+
+     @return true if all checks pass, false otherwise.
+     */
+    private boolean verifyInput() {
+        //verify Email adress
+        EditText emailEditText = findViewById(R.id.editTextEmail);
+        TextView emailError = findViewById(R.id.emailError);
+        String email = emailEditText.getText().toString().trim();
+
+
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            // Email entered was invalid
+            emailError.setVisibility(View.VISIBLE);
+            emailEditText.requestFocus();
+            return false;
+        } else {
+            emailError.setVisibility(View.INVISIBLE);
+        }
+
+        //verify Phone Number
+        EditText phoneNumbertext = findViewById(R.id.editTextPhone);
+        TextView phoneError = findViewById(R.id.phoneError);
+        String phoneNumber = phoneNumbertext.getText().toString().trim();
+
+        if (phoneNumber.length() < 10) {
+            phoneError.setVisibility(View.VISIBLE);
+            phoneNumbertext.requestFocus();
+            return false;
+        } else {
+            phoneError.setVisibility(View.INVISIBLE);
+        }
+
+        //verify UserName error button is invisible
+        EditText userNameView = findViewById(R.id.editTextUsername);
+        String username = userNameView.getText().toString().trim();
+        TextView userNameError = findViewById(R.id.userNameTaken);
+
+        if (username.length() < 1) {
+            userNameError.setVisibility(View.VISIBLE);
+            userNameView.requestFocus();
+            return false;
+        }
+
+        // Make sure string only contains letters and numbers
+        if (!username.matches("^[a-zA-Z0-9]*$")) {
+            userNameError.setText("username can only contain letters or numbers");
+            Log.d("String Checking", username);
+            userNameError.setVisibility(View.VISIBLE);
+            userNameView.requestFocus();
+             return false;
+        }
+
+        if (userNameError.getVisibility() != View.INVISIBLE) {
+            // the TextView is currently visible
+            userNameView.requestFocus();
+            return false;
+        }
+
+        //passed all checks
+        return true;
+    }
+
+
+    /**
+     Registers a new user in the Firebase Firestore database with the given username, email, phone number, and CollectionReference.
+
+     @param username the username of the new user
+     @param email the email of the new user
+     @param phoneNumber the phone number of the new user
+     @param playersRef the CollectionReference object for the "Players" collection in Firestore database
+     */
+    private void registerUser(String username, String email, String phoneNumber, CollectionReference playersRef) {
+        //now add user to database
+        Map<String, Object> currentPlayer = new HashMap<>();
+
+        currentPlayer.put("email", email);
+        currentPlayer.put("hideInfo", false);
+        currentPlayer.put("phoneNumber", phoneNumber);
+        currentPlayer.put("rank", 0);
+        currentPlayer.put("score", 0);
+        currentPlayer.put("totalCodeScanned",0);
+
+        playersRef.document(username).set(currentPlayer)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Player added successfully, time to go to homepage
+                        goToHomepage();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Database Error", "Could not add a player to the database");
+                    }
+                });
+    }
+
 
     /**
      * Register a username with the accountCreatedKey in SharedPreferences.
@@ -280,14 +376,14 @@ public class loginActivity extends AppCompatActivity {
         editor.apply();
     }
 
+
     /**
      * Navigate to the homepage activity.
      */
     private void goToHomepage() {
         // Create an Intent to start the MainActivity.
         Intent intent = new Intent(this, MainActivity.class);
-
-        // Start the MainActivity.
         startActivity(intent);
     }
 }
+

@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
             //set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
 
-            //set the owner object, still need to discuss what is happening with this list of qrcodes
-            loginActivity.setCurrentOwnerObject(prefs.getString(accountCreatedKey, ""));
+            //set the owner object, still need to discuss how to properly handle long asynchornous operations
+            loginActivity.setOwnerObject(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
         } else {
             Intent intent = new Intent(this, loginActivity.class);
