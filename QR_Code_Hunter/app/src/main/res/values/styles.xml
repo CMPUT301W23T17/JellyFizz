@@ -16,6 +16,8 @@
 
         <item name="android:textSize">
             24sp
+        </item>
+    </style>
 
     <style name="scan_now">
 
@@ -43,6 +45,8 @@
 
         <item name="android:textColor">
             #FFFFFF
+        </item>
+    </style>
 
     <style name="welcome_use">
 
