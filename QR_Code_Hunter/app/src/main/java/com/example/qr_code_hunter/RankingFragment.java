@@ -7,12 +7,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -24,8 +32,12 @@ import java.util.Objects;
  */
 public class RankingFragment extends Fragment {
     ListView rankings;
-    ArrayList<Rank> rankArr = new ArrayList<>();
     TextView header;
+    RankAdapter adapter;
+//    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    final CollectionReference player = db.collection("Players");
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -81,56 +93,25 @@ public class RankingFragment extends Fragment {
         header = getView().findViewById(R.id.ranking_header);
         rankings = getView().findViewById(R.id.leaderboard);
 
-        String[] names = {
-                "Jerry West", "Jane Doe", "John Smith", "James Bond", "Jonathan Gulliver", "Juan Carlos Montana", "Jerome Haystack"};
+        Rank rankLists = new Rank();
+        ArrayList<Rank> rankArr = new ArrayList<>();
 
-        Integer[] points = {
-                117, 800, 900, 300, 500, 1000, 150
-        };
-
-        Integer[] positions = {
-                7, 3, 2, 5, 4, 1, 6
-        };
-
-        for (int i = 0; i < names.length; i++) {
-            rankArr.add(new Rank(names[i], points[i], positions[i]));
-        }
-
-        // add entries here
-        sortRank();
-
-        RankAdapter adapter = new RankAdapter(getActivity(), 0, rankArr);
-        rankings.setAdapter(adapter);
-
-        displayYourRank("John Smith");
-    }
-
-    public void updateEntry(Rank rank, int newPos) {
-        rank.position = newPos;
-    }
-
-    public void sortRank() {
-        for (int i = 1; i < rankArr.size(); i++) {
-            int j = i - 1;
-            int k = i;
-            Rank temp = null;
-            int tempRank = rankArr.get(i).position;
-            while (j >= 0 && rankArr.get(j).score < rankArr.get(k).score) {
-                temp = rankArr.get(k);
-                rankArr.set(k, rankArr.get(j));
-                updateEntry(rankArr.get(j), k+1);
-                rankArr.set(j, temp);
-                updateEntry(rankArr.get(j), j+1);
-                j--;
-                k--;
+        // add rank to adapter
+        rankLists.arrangeRank(new Rank.ArrangeRankCallback() {
+            @Override
+            public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+                if (!rankArr.isEmpty()) {
+                    rankArr.clear();
+                }
+                rankArr.addAll(ranking);
+                adapter = new RankAdapter(getActivity(), 0, ranking);
+                rankings.setAdapter(adapter);
+                displayYourRank(loginActivity.getOwnerName(),rankArr);
             }
-            if(rankArr.get(k).position == tempRank) {
-                updateEntry(rankArr.get(i), i+1);
-            }
-        }
+        });
     }
 
-    public void displayYourRank(String yourUsername) {
+    public void displayYourRank(String yourUsername, ArrayList<Rank> rankArr) {
         TextView yourName = getView().findViewById(R.id.yourName);
         TextView yourPts = getView().findViewById(R.id.yourPoints);
 
