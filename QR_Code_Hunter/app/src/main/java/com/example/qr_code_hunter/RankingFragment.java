@@ -100,17 +100,13 @@ public class RankingFragment extends Fragment {
         rankLists.arrangeRank(new Rank.ArrangeRankCallback() {
             @Override
             public void onArrangeRankComplete(ArrayList<Rank> ranking) {
-                if (rankArr.isEmpty()) {
-                    Toast.makeText(getActivity(),"Empty",Toast.LENGTH_SHORT).show();
-                } else {
+                if (!rankArr.isEmpty()) {
                     rankArr.clear();
-                    Toast.makeText(getActivity(),ranking.size() + "--not empty",Toast.LENGTH_SHORT).show();
                 }
                 rankArr.addAll(ranking);
                 adapter = new RankAdapter(getActivity(), 0, ranking);
                 rankings.setAdapter(adapter);
                 displayYourRank(loginActivity.getOwnerName(),rankArr);
-                Toast.makeText(getActivity(),rankArr.size() + "--not empty",Toast.LENGTH_SHORT).show();
             }
         });
     }
