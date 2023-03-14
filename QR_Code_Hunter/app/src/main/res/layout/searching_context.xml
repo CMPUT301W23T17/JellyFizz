@@ -6,5 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="200sp"
-    android:background="@drawable/rectangle_s">
+    android:textColor="@color/black"
+    android:background="@drawable/rectangle_a">
 </TextView>
