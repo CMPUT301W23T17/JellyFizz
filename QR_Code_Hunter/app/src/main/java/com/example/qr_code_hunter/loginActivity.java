@@ -34,9 +34,14 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+
 
 public class loginActivity extends AppCompatActivity {
 
@@ -64,8 +69,7 @@ public class loginActivity extends AppCompatActivity {
      * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
      * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
      */
-    public static ArrayList<DocumentReference> getQR_Codes(String currentPlayer) {
-
+    public static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference scannedBy = db.collection("scannedBy");
 
@@ -73,6 +77,9 @@ public class loginActivity extends AppCompatActivity {
         String playerReference = "/Players/" + loginActivity.getOwnerName();
 
         ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
+
+        // Create a new CompletableFuture that completes with the ArrayList of DocumentReferences
+        CompletableFuture<ArrayList<DocumentReference>> futureQrCodeRefs = new CompletableFuture<>();
 
         // Query the scannedBy collection to get all documents that reference the player's document
         Query query = scannedBy.whereEqualTo("Player", playerReference);
@@ -83,13 +90,18 @@ public class loginActivity extends AppCompatActivity {
                     DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
                     qrCodeRefs.add(qrCodeRef);
                 }
+
+                // Complete the future with the ArrayList of DocumentReferences
+                futureQrCodeRefs.complete(qrCodeRefs);
             } else {
-                // Display error
-                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
+                // Complete the future exceptionally with the task's exception, return the error
+                Log.d("Database Error", "Error getting QRCodes");
+                futureQrCodeRefs.completeExceptionally(task.getException());
             }
         });
 
-        return qrCodeRefs;
+        // Return the CompletableFuture immediately, will have to check if complete in future
+        return futureQrCodeRefs;
     }
 
 
@@ -98,9 +110,12 @@ public class loginActivity extends AppCompatActivity {
      by retrieving owner data from the "Players" collection in Firestore.
      @param inputOwner the unique identifier of the owner to retrieve data for
      */
-    public static void setOwnerObject(String inputOwner) {
+
+    public static CompletableFuture<Void> setOwnerObject(String inputOwner) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
 
         playersRef.document(inputOwner).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -113,17 +128,32 @@ public class loginActivity extends AppCompatActivity {
                     int score = document.getLong("score").intValue();
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
-                    Owner returnedOwner = new Owner(phoneNumber, email, inputOwner, false, getQR_Codes(inputOwner), (int)score, (int)rank);
-                    setOwner(returnedOwner);
+                    CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = getQR_Codes("currentPlayer");
+
+                    //calls thenaccept when finished
+                    qrCodesFuture.thenAccept(qrCodes -> {
+                        Owner returnedOwner = new Owner(phoneNumber, email, inputOwner, false, qrCodes, (int)score, (int)rank);
+                        setOwner(returnedOwner);
+                        future.complete(null);
+                    }).exceptionally(e -> {
+                        // Handle any exceptions thrown during the completion of the future
+                        Log.d("Completion error", "Error getting all qrcodes for a player", e);
+                        future.completeExceptionally(e);
+                        return null;
+                    });
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
+                    future.completeExceptionally(new Exception("Player does not exist in database"));
                 }
             } else {
-                Log.d("Database error", "Could not fetch data from database");
+                Log.d("Database error", "Could not fetch document data from database");
+                future.completeExceptionally(new Exception("Could not fetch data from database"));
             }
         });
-    }
 
+        //this future Object should be checked to see if process finished when trying to get Owner
+        return future;
+    }
 
     /**
      This class handles the user login and registration process.
@@ -132,6 +162,8 @@ public class loginActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Futures, CompletableFuture, Handler, Executionservice(isShudown(), isTerminated()) are methods for handling asynchronocity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -142,12 +174,15 @@ public class loginActivity extends AppCompatActivity {
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference playersRef = db.collection("Players");
+            Boolean noActiveTask = true;
 
             EditText userNameViewer = findViewById(R.id.editTextUsername);
 
             //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
             //if pressure still to much, can make it not in realtime
             Handler handler = new Handler(Looper.getMainLooper());
+
+
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -157,6 +192,9 @@ public class loginActivity extends AppCompatActivity {
                             EditText userNameView = findViewById(R.id.editTextUsername);
                             String username = userNameView.getText().toString().trim();
                             TextView userNameError = findViewById(R.id.userNameTaken);
+
+                            //this empty message is used as a key to handle asynchornosity
+                            handler.sendEmptyMessage(12);
 
                             if (!username.isEmpty()) {
                                 playersRef.whereEqualTo(FieldPath.documentId(), username)
@@ -188,6 +226,7 @@ public class loginActivity extends AppCompatActivity {
                     // Wait for the thread to finish executing
                     try {
                         currentThread.join();
+                        handler.removeMessages(12);
                     } catch (InterruptedException e) {
                         Log.d("Thread Error", "Could not execute thread");
                     }
@@ -234,6 +273,12 @@ public class loginActivity extends AppCompatActivity {
                     //get UserName
                     EditText userNameView = findViewById(R.id.editTextUsername);
                     String username = userNameView.getText().toString().trim();
+
+
+                    //stall program to ensure database queries have been completed
+                    while (handler.hasMessages(12)) {
+
+                    }
 
                     //if checks failed return
                     if (!verifyInput()) {
