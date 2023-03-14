@@ -39,17 +39,17 @@
                         >
 
                         <item
-                            android:color="#EEF4F4"
+                            android:color="#FFFFFF"
                             android:offset="0"
                             />
 
                         <item
-                            android:color="#C8C8C8"
+                            android:color="#FAFAFA"
                             android:offset="0.542"
                             />
 
                         <item
-                            android:color="#6D6E6E"
+                            android:color="#FFFFFF"
                             android:offset="0.75"
                             />
 
