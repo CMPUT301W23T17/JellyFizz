@@ -184,7 +184,7 @@ public class loginActivity extends AppCompatActivity {
                                                     QuerySnapshot querySnapshot = task.getResult();
                                                     if (!querySnapshot.isEmpty()) {
                                                         // A player with the same username already exists
-                                                        userNameError.setText("This username has been taken, please choose another");
+                                                        userNameError.setText("The username is taken or invalid (Maximum 13 characters)");
                                                         userNameError.setVisibility(View.VISIBLE);
                                                         userNameView.requestFocus();
                                                     } else {
