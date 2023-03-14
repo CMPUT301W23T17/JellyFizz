@@ -6,13 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="91ff62bb-2043-487c-a042-91b8b96a7eae" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable-v24/gradient_sign_in.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable-v24/sky.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/sky/6-62003_vast-starry-sky-background-vast-starry-sky-png.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable-v24/img.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/loginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/java/com/example/qr_code_hunter/loginActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable-v24/askbutton.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/drawable/insert_photo.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/activity_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/fragment_player_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/QR_Code_Hunter/app/src/main/res/layout/fragment_player_profile.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
