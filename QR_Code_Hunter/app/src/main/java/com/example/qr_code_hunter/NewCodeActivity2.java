@@ -3,10 +3,9 @@ package com.example.qr_code_hunter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,7 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
@@ -43,7 +41,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
-    Owner currentOwner;
+    Owner currentOwner = new Owner();
 
     DocumentReference justScan;
 
@@ -58,9 +56,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
         recordCode = findViewById(R.id.record_code_button);
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
-//        owner = getIntent().getParcelableExtra("Current Owner");
+        //currentOwner = getIntent().getParcelableExtra("Current Owner");
 
-        //set the owner object, still need to discuss what is happening with this list of qrcodes
+        // Set the owner object, still need to discuss what is happening with this list of qrcodes
         loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
             @Override
             public void onGetInfo(Owner owner) {
@@ -113,12 +111,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setPrivacy(true);
                 }
 
-                Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
-                intent.putExtra("Save code", newCode);
-                intent.putExtra("Comment", descBox.getText().toString());
-                intent.putExtra("Image", encodedImage);
-                startActivity(intent);
-
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
                     public void onCheckExitedComplete(DocumentReference existQrRef) {
@@ -127,18 +119,36 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 @Override
                                 public void onCheckDuplicateComplete(Boolean duplicated) {
                                     if(!duplicated) {
-                                            Toast.makeText(NewCodeActivity2.this, "Not Duplicated",Toast.LENGTH_SHORT).show();
-                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                        Toast.makeText(NewCodeActivity2.this, "Saving to database...",Toast.LENGTH_SHORT).show();
+                                        if((int) charCount.getText().toString().charAt(0) > 0) {
+                                            currentOwner.addQRCode(newCode, descBox.getText().toString(), encodedImage);
+                                        } else {
+                                            currentOwner.addQRCode(newCode, null, encodedImage);
+                                        }
+
                                     } else {
-                                        Toast.makeText(NewCodeActivity2.this, "Duplicated",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                         } else {
-                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            //currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            if((int) charCount.getText().toString().charAt(0) > 0) {
+                                currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            } else {
+                                currentOwner.addQRCode(newCode, null, encodedImage);
+                            }
                         }
+                        Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startActivity(intent);
+                            }
+                        }, 2000);
                     }
                 });
+
             }
         });
     }
