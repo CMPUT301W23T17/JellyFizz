@@ -2,7 +2,7 @@ package com.example.qr_code_hunter;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * This is a class that tests the various elements of the UI
