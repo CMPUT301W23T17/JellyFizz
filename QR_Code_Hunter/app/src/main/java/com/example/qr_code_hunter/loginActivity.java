@@ -47,6 +47,11 @@ public class loginActivity extends AppCompatActivity {
 
     //Owner of the account(username of player on current device)
     private static String owner;
+
+    //Can check this future with .get() to see if owner has been set
+    private static CompletableFuture<?> ownerHasBeenSet = new CompletableFuture<>();
+
+    //Actual Owner object
     private static Owner currentOwnerObject;
 
     public static String getOwnerName() {
@@ -70,47 +75,44 @@ public class loginActivity extends AppCompatActivity {
      * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
      */
     public static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference scannedBy = db.collection("scannedBy");
 
-        //Get owner of account reference
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference scannedByRef = db.collection("scannedBy");
+
+        //Get owner of account
         String playerReference = "/Players/" + loginActivity.getOwnerName();
 
-        ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
-
-        // Create a new CompletableFuture that completes with the ArrayList of DocumentReferences
-        CompletableFuture<ArrayList<DocumentReference>> futureQrCodeRefs = new CompletableFuture<>();
+        CompletableFuture<ArrayList<DocumentReference>> qrCodeRefs = new CompletableFuture<>();
 
         // Query the scannedBy collection to get all documents that reference the player's document
-        Query query = scannedBy.whereEqualTo("Player", playerReference);
+        Query query = scannedByRef.whereEqualTo("Player", playerReference);
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+
+                ArrayList<DocumentReference> qrCodeRefsTemp = new ArrayList<>();
+
                 // Iterate over the query results and add the QR code references to the ArrayList
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
-                    qrCodeRefs.add(qrCodeRef);
+                    DocumentReference qrCodeRef = document.getDocumentReference("qrCodeScanned");
+                    qrCodeRefsTemp.add(qrCodeRef);
                 }
 
-                // Complete the future with the ArrayList of DocumentReferences
-                futureQrCodeRefs.complete(qrCodeRefs);
+                qrCodeRefs.complete(qrCodeRefsTemp);
             } else {
-                // Complete the future exceptionally with the task's exception, return the error
-                Log.d("Database Error", "Error getting QRCodes");
-                futureQrCodeRefs.completeExceptionally(task.getException());
+                // Display error
+                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
             }
         });
 
-        // Return the CompletableFuture immediately, will have to check if complete in future
-        return futureQrCodeRefs;
+        //this is a future, can do .get() to get value in future
+        return qrCodeRefs;
     }
-
 
     /**
      Sets the owner object based on the input owner string
      by retrieving owner data from the "Players" collection in Firestore.
      @param inputOwner the unique identifier of the owner to retrieve data for
      */
-
     public static CompletableFuture<Void> setOwnerObject(String inputOwner) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
@@ -135,6 +137,8 @@ public class loginActivity extends AppCompatActivity {
                         Owner returnedOwner = new Owner(phoneNumber, email, inputOwner, false, qrCodes, (int)score, (int)rank);
                         setOwner(returnedOwner);
                         future.complete(null);
+                        Log.d("Future Tracking", "Owner has been sucessfully completed");
+
                     }).exceptionally(e -> {
                         // Handle any exceptions thrown during the completion of the future
                         Log.d("Completion error", "Error getting all qrcodes for a player", e);
@@ -152,6 +156,8 @@ public class loginActivity extends AppCompatActivity {
         });
 
         //this future Object should be checked to see if process finished when trying to get Owner
+        Log.d("Future Tracking", "Owner has been fetched");
+        ownerHasBeenSet = future;
         return future;
     }
 
@@ -337,7 +343,15 @@ public class loginActivity extends AppCompatActivity {
         String username = userNameView.getText().toString().trim();
         TextView userNameError = findViewById(R.id.userNameTaken);
 
+        if (username.length() > 13) {
+            userNameError.setText("Username length must be less than 13 characters");
+            userNameError.setVisibility(View.VISIBLE);
+            userNameView.requestFocus();
+            return false;
+        }
+
         if (username.length() < 1) {
+            userNameError.setText("Please enter a username of at least one character");
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;

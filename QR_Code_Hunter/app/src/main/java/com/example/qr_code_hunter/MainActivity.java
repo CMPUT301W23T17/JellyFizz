@@ -1,5 +1,7 @@
 package com.example.qr_code_hunter;
 
+import static com.example.qr_code_hunter.loginActivity.setOwnerObject;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
+
+import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
     //ActivityMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
@@ -33,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
             //set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
 
-            //set the owner object, still need to discuss how to properly handle long asynchornous operations
-            loginActivity.setOwnerObject(prefs.getString(accountCreatedKey, ""));
+            //Can do testDone.get() to make sure owner has been sucessfully gotten
+            CompletableFuture<?> testDone = loginActivity.setOwnerObject(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
         } else {
             Intent intent = new Intent(this, loginActivity.class);
