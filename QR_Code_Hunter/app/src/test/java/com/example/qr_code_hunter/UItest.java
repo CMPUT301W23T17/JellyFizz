@@ -23,7 +23,7 @@ public class UItest {
         // Click on the instruction button
         instructionButton.performClick();
 
-        // Wait for the dialog to appear
+        // Wait for the dialog to appear 
         onView(withText("Instructions")).inRoot(isDialog()).check(matches(isDisplayed()));
 
         // Check that the welcome owner text view displays the correct message
