@@ -20,7 +20,7 @@ public class UItest {
         String ownerName = "John";
         loginActivity.setOwnerName(ownerName);
 
-        // Click on the instruction button
+        // Click on the instruction button 
         instructionButton.performClick();
 
         // Wait for the dialog to appear 
