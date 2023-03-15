@@ -4,6 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * This is a class that tests the various elements of the UI
+ */
+
 public class UItest {
   
     @Test
