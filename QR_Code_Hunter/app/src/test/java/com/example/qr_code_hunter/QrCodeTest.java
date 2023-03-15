@@ -37,4 +37,40 @@ public class QrCodeTest {
         QrCode testQR_Code = new QrCode("BFG5DGW54");
         assertEquals("19", testQR_Code.getScore().toString());
     }
+    
+    @Test
+    public void testInstructionButton() {
+        // First, find the instruction button and welcome owner text view
+        ImageButton instructionButton = (ImageButton) activityRule.getActivity().findViewById(R.id.ask_button);
+        TextView welcomeOwner = (TextView) activityRule.getActivity().findViewById(R.id.welcome_user);
+
+        // Set the owner name to a known value
+        String ownerName = "John";
+        loginActivity.setOwnerName(ownerName);
+
+        // Click on the instruction button
+        instructionButton.performClick();
+
+        // Wait for the dialog to appear
+        onView(withText("Instructions")).inRoot(isDialog()).check(matches(isDisplayed()));
+
+        // Check that the welcome owner text view displays the correct message
+        onView(withId(R.id.welcome_user)).check(matches(withText("WELCOME " + ownerName)));
+    }
+    
+    @Test
+    public void testSetPrivacy() {
+        QrCode qrCode = new QrCode();
+        qrCode.setPrivacy(true);
+        assertTrue(qrCode.getDataPrivacy());
+    }
+
+    @Test
+    public void testSetLocation() {
+        QrCode qrCode = new QrCode();
+        LatLng location = new LatLng(40.7128, -74.0060);
+        qrCode.setLocation(location);
+        assertEquals(location, qrCode.getGeolocation());
+    }
+    
 }
