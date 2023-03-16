@@ -1,11 +1,7 @@
 package com.example.qr_code_hunter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,7 +36,7 @@ import java.util.Map;
 
 public class loginActivity extends AppCompatActivity {
 
-    //Owner of the account(username of player on current device)
+    // Owner of the account(username of player on current device)
     private static String owner;
     static Owner currentOwnerObject;
 
@@ -54,8 +50,6 @@ public class loginActivity extends AppCompatActivity {
     public static void setOwnerName(String username) {
         owner = username;
     }
-
-
 
     private static void setOwner(Owner owner1) {
         currentOwnerObject = owner1;
@@ -74,7 +68,7 @@ public class loginActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference scannedBy = db.collection("scannedBy");
 
-        //Get owner of account reference
+        // Get owner of account reference
         String playerReference = "/Players/" + loginActivity.getOwnerName();
 
         ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
@@ -96,7 +90,6 @@ public class loginActivity extends AppCompatActivity {
 
         return qrCodeRefs;
     }
-
 
     /**
      Sets the owner object based on the input owner string
@@ -128,7 +121,7 @@ public class loginActivity extends AppCompatActivity {
                     int score = document.getLong("score").intValue();
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
-                    //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
+                    // Discuss about this list of QR codes, not sure if necessary, passing an empty list for now
                     currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
                             false, new ArrayList<>(), score, rank, totalCodeScanned);;
                 } else {
@@ -141,7 +134,6 @@ public class loginActivity extends AppCompatActivity {
         });
     }
 
-
     /**
      This class handles the user login and registration process.
      It includes methods for verifying user input, registering the user key, registering the user
@@ -152,147 +144,143 @@ public class loginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //Check if user has created an account before on this specific device, 1) if yes go to homepage 2) if no go to loginPage
+        // Check if user has created an account before on this specific device,
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            CollectionReference playersRef = db.collection("Players");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference playersRef = db.collection("Players");
 
-            EditText userNameViewer = findViewById(R.id.editTextUsername);
+        EditText userNameViewer = findViewById(R.id.editTextUsername);
 
-            //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
-            //if pressure still to much, can make it not in realtime
-            Handler handler = new Handler(Looper.getMainLooper());
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    Thread currentThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            EditText userNameView = findViewById(R.id.editTextUsername);
-                            String username = userNameView.getText().toString().trim();
-                            TextView userNameError = findViewById(R.id.userNameTaken);
+        // Verify username in realtime as user is typing, use a handler to minimize pressure on database
+        // If the pressure is still too much, we can make it not in realtime
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Thread currentThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        EditText userNameView = findViewById(R.id.editTextUsername);
+                        String username = userNameView.getText().toString().trim();
+                        TextView userNameError = findViewById(R.id.userNameTaken);
 
-                            if (!username.isEmpty()) {
-                                playersRef.whereEqualTo(FieldPath.documentId(), username)
-                                        .get()
-                                        .addOnCompleteListener(task -> {
-                                            if (!Thread.currentThread().isInterrupted()) {
-                                                if (task.isSuccessful()) {
-                                                    QuerySnapshot querySnapshot = task.getResult();
-                                                    if (!querySnapshot.isEmpty()) {
-                                                        // A player with the same username already exists
-                                                        userNameError.setText("The username is taken or invalid (Maximum 13 characters)");
-                                                        userNameError.setVisibility(View.VISIBLE);
-                                                        userNameView.requestFocus();
-                                                    } else {
-                                                        // The username is available
-                                                        userNameError.setVisibility(View.INVISIBLE);
-                                                    }
+                        if (!username.isEmpty()) {
+                            playersRef.whereEqualTo(FieldPath.documentId(), username)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (!Thread.currentThread().isInterrupted()) {
+                                            if (task.isSuccessful()) {
+                                                QuerySnapshot querySnapshot = task.getResult();
+                                                if (!querySnapshot.isEmpty()) {
+                                                    // A player with the same username already exists
+                                                    userNameError.setText(getString((R.string.userNameTaken)));
+                                                    userNameError.setVisibility(View.VISIBLE);
+                                                    userNameView.requestFocus();
                                                 } else {
-                                                    Log.d("Database Error", "Could not fetch data from the database");
+                                                    // The username is available
+                                                    userNameError.setVisibility(View.INVISIBLE);
                                                 }
+                                            } else {
+                                                Log.d("Database Error", "Could not fetch data from the database");
                                             }
-                                        });
-                            }
+                                        }
+                                    });
                         }
-                    });
-
-                    currentThread.start();
-
-                    // Wait for the thread to finish executing
-                    try {
-                        currentThread.join();
-                    } catch (InterruptedException e) {
-                        Log.d("Thread Error", "Could not execute thread");
                     }
+                });
 
-                    // Free the thread
-                    currentThread.interrupt();
-                }
-            };
+                currentThread.start();
 
-
-            //Watch as user types text
-            userNameViewer.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    // nothing
+                // Wait for the thread to finish executing
+                try {
+                    currentThread.join();
+                } catch (InterruptedException e) {
+                    Log.d("Thread Error", "Could not execute thread");
                 }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    handler.removeCallbacksAndMessages(null);
-                    handler.postDelayed(runnable, 500);
-                }
+                // Free the thread
+                currentThread.interrupt();
+            }
+        };
 
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    //nothing
-                }
-            });
+        // Watch as user types text
+        userNameViewer.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(runnable, 500);
+            }
 
-            Button register = findViewById(R.id.registerButton);
-            register.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //get Email adress
-                    EditText emailEditText = findViewById(R.id.editTextEmail);
-                    String email = emailEditText.getText().toString().trim();
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Do nothing
+            }
+        });
 
+        Button register = findViewById(R.id.registerButton);
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get email address
+                EditText emailEditText = findViewById(R.id.editTextEmail);
+                String email = emailEditText.getText().toString().trim();
 
-                    //get Phone Number
-                    EditText phoneNumbertext = findViewById(R.id.editTextPhone);
-                    String phoneNumber = phoneNumbertext.getText().toString().trim();
+                // Get phone number
+                EditText phoneNumberText = findViewById(R.id.editTextPhone);
+                String phoneNumber = phoneNumberText.getText().toString().trim();
 
-                    //get UserName
-                    EditText userNameView = findViewById(R.id.editTextUsername);
-                    String username = userNameView.getText().toString().trim();
+                // Get username
+                EditText userNameView = findViewById(R.id.editTextUsername);
+                String username = userNameView.getText().toString().trim();
 
-                    //if checks failed return
-                    if (!verifyInput()) {
-                        return;
-                    };
+                // If checks failed return
+                if (!verifyInput()) {
+                    return;
+                };
 
-                    //all checks passed, register key to shared Permissions to allow not to register next time
-                    registerKey(username);
+                // All checks passed, register key to shared Permissions to allow not to register next time
+                registerKey(username);
 
-                    //  set up Owner object for new player
-                    currentOwnerObject = new Owner(phoneNumber, email, username,
-                            false, new ArrayList<DocumentReference>(), 0,0, 0);
+                // Set up Owner object for new player
+                currentOwnerObject = new Owner(phoneNumber, email, username,
+                        false, new ArrayList<DocumentReference>(), 0,0, 0);
 
-                    //now add user to database
-                    Map<String, Object> currentPlayer = new HashMap<>();
+                // Now add user to database
+                Map<String, Object> currentPlayer = new HashMap<>();
 
-                    currentPlayer.put("email", email);
-                    currentPlayer.put("hideInfo", false);
-                    currentPlayer.put("phoneNumber", phoneNumber);
-                    currentPlayer.put("rank", 0);
-                    currentPlayer.put("score", 0);
-                    currentPlayer.put("totalCodeScanned",0);
+                currentPlayer.put("email", email);
+                currentPlayer.put("hideInfo", false);
+                currentPlayer.put("phoneNumber", phoneNumber);
+                currentPlayer.put("rank", 0);
+                currentPlayer.put("score", 0);
+                currentPlayer.put("totalCodeScanned",0);
 
-                    playersRef.document(username).set(currentPlayer)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // Player added successfully, time to go to homepage
-                                    goToHomepage();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("Database Error", "Could not add a player to the database");
-                                }
-                            });
-                    //Register user and go to homepage
-                    registerUser(username, email, phoneNumber, playersRef);
-                }
-            });
-
+                playersRef.document(username).set(currentPlayer)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Player added successfully, time to go to homepage
+                                goToHomepage();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("Database Error", "Could not add a player to the database");
+                            }
+                        });
+                // Register user and go to homepage
+                registerUser(username, email, phoneNumber, playersRef);
+            }
+        });
     }
 
     /**
@@ -310,14 +298,14 @@ public class loginActivity extends AppCompatActivity {
      @return true if all checks pass, false otherwise.
      */
     private boolean verifyInput() {
-        //verify Email adress
+        // Verify email address
         EditText emailEditText = findViewById(R.id.editTextEmail);
         TextView emailError = findViewById(R.id.emailError);
         String email = emailEditText.getText().toString().trim();
 
-
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Email entered was invalid
+            emailError.setText(getString(R.string.invalidEmail));
             emailError.setVisibility(View.VISIBLE);
             emailEditText.requestFocus();
             return false;
@@ -325,14 +313,14 @@ public class loginActivity extends AppCompatActivity {
             emailError.setVisibility(View.INVISIBLE);
         }
 
-        //verify Phone Number
-        EditText phoneNumbertext = findViewById(R.id.editTextPhone);
+        // Verify phone number
+        EditText phoneNumberText = findViewById(R.id.editTextPhone);
         TextView phoneError = findViewById(R.id.phoneError);
-        String phoneNumber = phoneNumbertext.getText().toString().trim();
+        String phoneNumber = phoneNumberText.getText().toString().trim();
 
         if (phoneNumber.length() < 10) {
             phoneError.setVisibility(View.VISIBLE);
-            phoneNumbertext.requestFocus();
+            phoneNumberText.requestFocus();
             return false;
         } else {
             phoneError.setVisibility(View.INVISIBLE);
@@ -344,6 +332,7 @@ public class loginActivity extends AppCompatActivity {
         TextView userNameError = findViewById(R.id.userNameTaken);
 
         if (username.length() < 1) {
+            userNameError.setText(getString(R.string.userNameLength));
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;
@@ -351,23 +340,22 @@ public class loginActivity extends AppCompatActivity {
 
         // Make sure string only contains letters and numbers
         if (!username.matches("^[a-zA-Z0-9]*$")) {
-            userNameError.setText("username can only contain letters or numbers");
+            userNameError.setText(R.string.userNameInvalidCharacters);
             Log.d("String Checking", username);
             userNameError.setVisibility(View.VISIBLE);
-            userNameView.requestFocus();
-             return false;
-        }
-
-        if (userNameError.getVisibility() != View.INVISIBLE) {
-            // the TextView is currently visible
             userNameView.requestFocus();
             return false;
         }
 
-        //passed all checks
+        if (userNameError.getVisibility() != View.INVISIBLE) {
+            // The TextView is currently visible
+            userNameView.requestFocus();
+            return false;
+        }
+
+        // Passed all checks
         return true;
     }
-
 
     /**
      Registers a new user in the Firebase Firestore database with the given username, email, phone number, and CollectionReference.
@@ -378,7 +366,7 @@ public class loginActivity extends AppCompatActivity {
      @param playersRef the CollectionReference object for the "Players" collection in Firestore database
      */
     private void registerUser(String username, String email, String phoneNumber, CollectionReference playersRef) {
-        //now add user to database
+        // Now add user to the database
         Map<String, Object> currentPlayer = new HashMap<>();
 
         currentPlayer.put("email", email);
@@ -404,7 +392,6 @@ public class loginActivity extends AppCompatActivity {
                 });
     }
 
-
     /**
      * Register a username with the accountCreatedKey in SharedPreferences.
      * @param username The username to register.
@@ -421,7 +408,6 @@ public class loginActivity extends AppCompatActivity {
         editor.apply();
     }
 
-
     /**
      * Navigate to the homepage activity.
      */
@@ -431,4 +417,3 @@ public class loginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
-
