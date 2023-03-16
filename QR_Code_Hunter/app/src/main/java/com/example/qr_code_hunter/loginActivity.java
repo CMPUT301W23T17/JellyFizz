@@ -176,7 +176,7 @@ public class loginActivity extends AppCompatActivity {
                                                 QuerySnapshot querySnapshot = task.getResult();
                                                 if (!querySnapshot.isEmpty()) {
                                                     // A player with the same username already exists
-                                                    userNameError.setText("This username has been taken, please choose another");
+                                                    userNameError.setText(getString((R.string.userNameTaken)));
                                                     userNameError.setVisibility(View.VISIBLE);
                                                     userNameView.requestFocus();
                                                 } else {
@@ -305,6 +305,7 @@ public class loginActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Email entered was invalid
+            emailError.setText(getString(R.string.invalidEmail));
             emailError.setVisibility(View.VISIBLE);
             emailEditText.requestFocus();
             return false;
@@ -331,6 +332,7 @@ public class loginActivity extends AppCompatActivity {
         TextView userNameError = findViewById(R.id.userNameTaken);
 
         if (username.length() < 1) {
+            userNameError.setText(getString(R.string.userNameLength));
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;
@@ -338,7 +340,7 @@ public class loginActivity extends AppCompatActivity {
 
         // Make sure string only contains letters and numbers
         if (!username.matches("^[a-zA-Z0-9]*$")) {
-            userNameError.setText("Username can only contain letters or numbers");
+            userNameError.setText(R.string.userNameInvalidCharacters);
             Log.d("String Checking", username);
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
