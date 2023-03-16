@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             //set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
 
-            //Can do testDone.get() to make sure owner has been sucessfully gotten
+            //Can do logInActivity..get() to make sure owner has been sucessfully gotten
             CompletableFuture<?> testDone = loginActivity.setOwnerObject(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
         } else {

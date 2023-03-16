@@ -49,13 +49,17 @@ public class loginActivity extends AppCompatActivity {
     private static String owner;
 
     //Can check this future with .get() to see if owner has been set
-    private static CompletableFuture<?> ownerHasBeenSet = new CompletableFuture<>();
+    public static CompletableFuture<?> ownerHasBeenSet = new CompletableFuture<>();
 
     //Actual Owner object
     private static Owner currentOwnerObject;
 
     public static String getOwnerName() {
         return owner;
+    }
+
+    public static Owner getOwnerObject() {
+        return currentOwnerObject;
     }
 
     public static void setOwnerName(String username) {

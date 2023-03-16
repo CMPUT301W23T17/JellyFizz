@@ -59,6 +59,12 @@ public class loginIntentTest {
 
         // Assert that user is redirected to homepage
         assertTrue(solo.waitForActivity(MainActivity.class));
+
+        while(!loginActivity.ownerHasBeenSet.isDone()) {
+
+        }
+
+        assertTrue(loginActivity.getOwnerObject() != null);
     }
 
     @Test
