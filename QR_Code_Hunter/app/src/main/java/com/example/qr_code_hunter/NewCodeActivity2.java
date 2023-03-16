@@ -114,10 +114,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
-                intent.putExtra("Save code", newCode);
-                intent.putExtra("Comment", descBox.getText().toString());
-                intent.putExtra("Image", encodedImage);
-                startActivity(intent);
+
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
@@ -139,6 +136,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         }
                     }
                 });
+                startActivity(intent);
             }
         });
     }

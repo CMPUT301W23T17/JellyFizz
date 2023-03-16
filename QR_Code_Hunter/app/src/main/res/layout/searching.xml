@@ -7,6 +7,20 @@
     android:layout_height="match_parent"
     android:textAlignment="textEnd">
 
+    <View
+        android:id="@+id/user_name"
+        android:layout_width="350dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rectangle11"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/choose_your"
+        tools:ignore="SpeakableTextPresentCheck" />
+
     <ListView
         android:id="@+id/search_list"
         android:layout_width="405dp"
@@ -37,20 +51,6 @@
         app:layout_constraintTop_toTopOf="@+id/search_bar"
         app:layout_constraintVertical_bias="0.6"
         app:srcCompat="@drawable/img_2" />
-
-    <View
-        android:id="@+id/user_name"
-        android:layout_width="350dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rectangle11"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choose_your"
-        tools:ignore="SpeakableTextPresentCheck" />
 
     <View
         android:id="@+id/search_bar"
