@@ -45,6 +45,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
     String encodedImage;
     Owner currentOwner;
 
+    // New variable to add new QrCode
+    private Boolean codePrivacy;
+
     DocumentReference justScan;
 
     @Override
@@ -108,9 +111,11 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                 }
                 if(recordCode.isChecked()) {
-                    newCode.setPrivacy(false); // actual code is saved
+//                    newCode.setPrivacy(false); // actual code is saved
+                    codePrivacy = false;
                 } else {
-                    newCode.setPrivacy(true);
+//                    newCode.setPrivacy(true);
+                    codePrivacy = true;
                 }
 
                 Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
@@ -127,15 +132,15 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 @Override
                                 public void onCheckDuplicateComplete(Boolean duplicated) {
                                     if(!duplicated) {
-                                            Toast.makeText(NewCodeActivity2.this, "Not Duplicated",Toast.LENGTH_SHORT).show();
-                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                        Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                                        currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
                                     } else {
-                                        Toast.makeText(NewCodeActivity2.this, "Duplicated",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(NewCodeActivity2.this, "Cannot add duplicate code",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         } else {
-                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
                         }
                     }
                 });
