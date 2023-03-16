@@ -69,8 +69,9 @@ public class Owner extends Player implements Parcelable {
      * @param code    object of QrCode class, store newly created code info
      * @param comment comment string of that player for new qrcode
      * @param image   image go along with the qrcode just scanned
+     * @param privacy  true indicates private code, false means public
      */
-    public void addQRCode(QrCode code, String comment, String image) {
+    public void addQRCode(QrCode code, Boolean privacy, String comment, String image) {
         final DocumentReference[] qrRef = new DocumentReference[1];
         checkQrCodeExist(code.getHashString(), new CheckExistCallback() {
             @Override
@@ -78,9 +79,9 @@ public class Owner extends Player implements Parcelable {
                 // Do something with the documentReference object here
                     if (qrRef == null) {
                         // assign document reference to newly create QrCode in case it isn't in the database
-                        qrRef = createNewCode(code, comment, image);
+                        qrRef = createNewCode(code, privacy, comment, image);
                     }
-                    addRelationship(qrRef);
+                    addRelationship(qrRef, comment, image);
                     updateSumScore(code);
                     updateRank();
                     }
@@ -134,7 +135,7 @@ public class Owner extends Player implements Parcelable {
                     Log.d("Working", "Document exists!");
                 }
             } else {
-                Log.d("Working", "Failed with: ", task.getException());
+                Log.e("Working", "Failed with: ", task.getException());
             }
             callback.onCheckExitedComplete(existedQrRef);
         });
@@ -151,7 +152,7 @@ public class Owner extends Player implements Parcelable {
      * @return
      *      Returns document reference to new code added in QrCode collection
      */
-    public DocumentReference createNewCode(QrCode qrCode, String comment, String image) {
+    public DocumentReference createNewCode(QrCode qrCode, Boolean privacy, String comment, String image) {
         // Hashing geolocation for new qrcode
         double latitude = qrCode.getGeolocation().latitude;
         double longitude = qrCode.getGeolocation().longitude;
@@ -160,7 +161,7 @@ public class Owner extends Player implements Parcelable {
         data.put("latitude",latitude);
         data.put("longitude",longitude);
         data.put("Score",qrCode.getScore());
-        data.put("Privacy",qrCode.getPrivacy());
+        data.put("Privacy",privacy);
         data.put("codeName",qrCode.getName());
         // Create new document whose ID is the hash string
         DocumentReference newRef = qrcode.document(qrCode.getHashString());
@@ -174,52 +175,27 @@ public class Owner extends Player implements Parcelable {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Data not added" + e.toString());
+                        Log.e("Working", "Data not added" + e.toString());
                     }
                 });
-        addSubCollection(newRef, comment, image);
         return newRef;
     }
 
     /**
-     * This add comment and photo into QrCode document, stored as subcollection
-     * @param newRef
-     *       document reference of new code
+     * This add new document (represents relationship) into scannedBy collection
+     * @param qrRef
+     *       document reference to newly scanned QrCode
      * @param comment
      *       comment string of that player for new qrcode
      * @param image
      *       image go along with the qrcode just scanned
      */
-    public void addSubCollection(DocumentReference newRef, String comment, String image) {
-        // Create a subcollection called "CommentAndPhoto" and add a new document with "username"
-        Map<String, Object> subData = new HashMap<>();
-        subData.put("Comment", comment);
-        subData.put("Photo", image);
-        newRef.collection("CommentAndPhoto").document(this.getUsername()).set(subData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Working", "Data added successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Data not added" + e.toString());
-                    }
-                });
-    }
-
-
-    /**
-     * This add new document (represents relationship) into scannedBy collection
-     * @param
-     *      qrRef document reference to newly scanned QrCode
-     */
-    public void addRelationship(DocumentReference qrRef) {
+    public void addRelationship(DocumentReference qrRef, String comment, String image) {
         Map<String, Object> data = new HashMap<>();
-        data.put("Player",ownerRef);
-        data.put("qrCodeScanned",qrRef);
+        data.put("Player", ownerRef);
+        data.put("qrCodeScanned", qrRef);
+        data.put("Comment", comment);
+        data.put("Photo", image);
         scanned
                 .document()
                 .set(data)
@@ -232,7 +208,7 @@ public class Owner extends Player implements Parcelable {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Data not added" + e.toString());
+                        Log.e("Working", "Data not added" + e.toString());
                     }
                 });
     }
@@ -259,7 +235,7 @@ public class Owner extends Player implements Parcelable {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Score & CodeNum not updated" + e.toString());
+                        Log.e("Working", "Score & CodeNum not updated" + e.toString());
                     }
                 });
     }
@@ -287,7 +263,7 @@ public class Owner extends Player implements Parcelable {
                     Log.d("Working", "Document exists!");
                 }
             } else {
-                Log.d("Working", "Failed with: ", task.getException());
+                Log.e("Working", "Failed with: ", task.getException());
             }
             callback.onCheckDuplicateComplete(codeDuplicated);
         });
@@ -303,7 +279,6 @@ public class Owner extends Player implements Parcelable {
      * @param visibility
      *      true indicates shows info, false will hide info
      */
-
 //    public void setPrivacy(Boolean visibility) {
 //        this.profileInfo.privacy = visibility;
 //    }
