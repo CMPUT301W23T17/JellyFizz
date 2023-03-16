@@ -33,12 +33,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class loginActivity extends AppCompatActivity {
 
     // Owner of the account(username of player on current device)
     private static String owner;
-    static Owner currentOwnerObject;
+    static CompletableFuture<Owner> currentOwnerSet;
 
     // Database
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -49,10 +51,6 @@ public class loginActivity extends AppCompatActivity {
     }
     public static void setOwnerName(String username) {
         owner = username;
-    }
-
-    private static void setOwner(Owner owner1) {
-        currentOwnerObject = owner1;
     }
 
     /**
@@ -102,7 +100,7 @@ public class loginActivity extends AppCompatActivity {
     }
 
     public interface getAllInfo {
-        void onGetInfo(Owner owner);
+        void onGetInfo(CompletableFuture<Owner> owner1 ) throws ExecutionException, InterruptedException;
     }
     /**
      * This read the data of current player from database and assign it to a Owner object
@@ -122,15 +120,24 @@ public class loginActivity extends AppCompatActivity {
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
                     // Discuss about this list of QR codes, not sure if necessary, passing an empty list for now
-                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                            false, new ArrayList<>(), score, rank, totalCodeScanned);;
+                    Owner currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
+                            false, new ArrayList<>(), score, rank, totalCodeScanned);
+
+                    currentOwnerSet.complete(currentOwnerObject);
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
                 }
             } else {
                 Log.d("Database error", "Could not fetch data from database");
             }
-            callback.onGetInfo(currentOwnerObject);
+
+            try {
+                callback.onGetInfo(currentOwnerSet);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
@@ -249,10 +256,6 @@ public class loginActivity extends AppCompatActivity {
                 // All checks passed, register key to shared Permissions to allow not to register next time
                 registerKey(username);
 
-                // Set up Owner object for new player
-                currentOwnerObject = new Owner(phoneNumber, email, username,
-                        false, new ArrayList<DocumentReference>(), 0,0, 0);
-
                 // Now add user to database
                 Map<String, Object> currentPlayer = new HashMap<>();
 
@@ -282,12 +285,6 @@ public class loginActivity extends AppCompatActivity {
             }
         });
     }
-
-    /**
-     * This function is used to return owner object.
-     * @return return Owner object.
-     */
-    public Owner getOwnerNew() {return currentOwnerObject;}
 
     /**
      This method is used to verify user input when registering for an account.
