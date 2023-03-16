@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, loginActivity.class);
             startActivity(intent);
         }
-
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:

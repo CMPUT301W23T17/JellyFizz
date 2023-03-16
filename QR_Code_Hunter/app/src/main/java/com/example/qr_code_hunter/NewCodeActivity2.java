@@ -111,6 +111,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setPrivacy(true);
                 }
 
+
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
                     public void onCheckExitedComplete(DocumentReference existQrRef) {

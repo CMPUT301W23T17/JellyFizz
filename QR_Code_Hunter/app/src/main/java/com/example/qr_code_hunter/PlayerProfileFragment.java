@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,6 +35,8 @@ public class PlayerProfileFragment extends Fragment {
     TextView rank;
     TextView score;
     TextView numberCode;
+    Switch privacySwitch;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -201,5 +205,16 @@ public class PlayerProfileFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
+        // Update privacy profile information of owner in database
+        privacySwitch = getView().findViewById(R.id.switch_privacy);
+        privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Handle the switch state change
+                boolean isOn = isChecked;
+                // Do something with the boolean value, such as updating a database or UI element
+                OwnerRef.update("hideInfo", isOn);
+            }
+        });
     }
 }
