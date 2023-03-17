@@ -136,9 +136,10 @@ public class HomepageFragment extends Fragment {
         instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
+        // Display user name
         String ownerName = loginActivity.getOwnerName();
         welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
-        welcomeOwner.setText("WELCOME "+ ownerName);
+        welcomeOwner.setText("HELLO, "+ ownerName+ " !");
 
         instruction_button.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -36,7 +36,7 @@ public class RankAdapter extends ArrayAdapter<Rank> {
             Rank r = rankArr.get(position);
             ImageView trophy = convertView.findViewById(R.id.rankIcon);
             TextView pos = convertView.findViewById(R.id.rankNum);
-            if(r.position < 4) {
+            if(r.position < 4 && r.position != 0 ) {
                 if(r.position == 1) {
                     trophy.setImageResource(R.drawable.gold_trophy);
                 }
@@ -54,7 +54,6 @@ public class RankAdapter extends ArrayAdapter<Rank> {
                 trophy.setVisibility(View.INVISIBLE);
                 pos.setText(Html.fromHtml(String.valueOf(r.position) + "<sup><small>th</small></sup>"));
             }
-
             TextView nameString = convertView.findViewById(R.id.userName);
             TextView userPoints = convertView.findViewById(R.id.userPoints);
             nameString.setText(r.username);

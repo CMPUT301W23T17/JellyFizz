@@ -18,9 +18,9 @@ public class Rank {
 
     public Rank(){}
 
-    public Rank(String username, int score, int position) {
+    public Rank(String username, int score, int ranking) {
         this.username = username;
-        this.position = position;
+        this.position = ranking;
         this.score = score;
     }
 
@@ -34,18 +34,16 @@ public class Rank {
      */
     public void arrangeRank(ArrangeRankCallback callback) {
         ArrayList<Rank> rankArrs = new ArrayList<>();
-        player.orderBy("score", Query.Direction.DESCENDING)
+        player.orderBy("rank", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        int index = 1;
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String username = document.getId();
                             int userRank = document.getLong("rank").intValue();
                             int score = document.getLong("score").intValue();
-                            Rank playerR = new Rank(username,score,index);
+                            Rank playerR = new Rank(username,score,userRank);
                             rankArrs.add(playerR);
-                            index += 1;
                         }
                     } else {
                         Log.e("TAG", "Error getting documents: ", task.getException());
