@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,8 +28,6 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This is the second page of the new code details (editable fields)
@@ -44,9 +41,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
-
-    CompletableFuture<Owner> currentOwnerSet = null;
-    Owner currentOwner;
+    Owner currentOwner = new Owner();
 
     DocumentReference justScan;
 
@@ -66,9 +61,8 @@ public class NewCodeActivity2 extends AppCompatActivity {
         // Set the owner object, still need to discuss what is happening with this list of qrcodes
         loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
             @Override
-            public void onGetInfo(CompletableFuture<Owner> owner) throws ExecutionException, InterruptedException {
-                currentOwnerSet = owner;
-                currentOwner = owner.get();
+            public void onGetInfo(Owner owner) {
+                currentOwner = owner;
             }
         });
 
@@ -105,8 +99,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
             }
         });
 
-
-
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,11 +111,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setPrivacy(true);
                 }
 
-
-                //Wait for owner to be set
-                while(currentOwnerSet == null) {
-
-                }
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override

@@ -6,10 +6,16 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -17,7 +23,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class Owner extends Player implements Parcelable {
 
@@ -29,6 +37,8 @@ public class Owner extends Player implements Parcelable {
     private DocumentReference ownerRef;
     Boolean codeDuplicated = false;
     DocumentReference existedQrRef;
+
+    public Owner(){}
 
     public Owner(String phone, String email, String username, Boolean privacy,
                  ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned) {
@@ -61,6 +71,7 @@ public class Owner extends Player implements Parcelable {
      * @param image   image go along with the qrcode just scanned
      */
     public void addQRCode(QrCode code, String comment, String image) {
+        final DocumentReference[] qrRef = new DocumentReference[1];
         checkQrCodeExist(code.getHashString(), new CheckExistCallback() {
             @Override
             public void onCheckExitedComplete(DocumentReference qrRef) {
