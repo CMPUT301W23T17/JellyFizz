@@ -85,6 +85,7 @@ public class Owner extends Player implements Parcelable {
                     addRelationship(qrRef, comment, image);
                     updateSumScore(code);
                     updateRank();
+                    updateHighestCode(code);
                     }
         });
     }
