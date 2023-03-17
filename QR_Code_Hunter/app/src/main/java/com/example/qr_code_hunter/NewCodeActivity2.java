@@ -47,6 +47,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
 
     // New variable to add new QrCode
     private Boolean codePrivacy;
+    String binaryStr;
 
     DocumentReference justScan;
 
@@ -123,6 +124,8 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 intent.putExtra("Comment", descBox.getText().toString());
                 intent.putExtra("Image", encodedImage);
                 startActivity(intent);
+
+
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
