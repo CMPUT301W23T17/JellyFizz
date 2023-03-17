@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class loginActivity extends AppCompatActivity {
 
@@ -144,9 +145,13 @@ public class loginActivity extends AppCompatActivity {
                     int score = document.getLong("score").intValue();
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
-                    //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
-                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                            false, new ArrayList<>(), score, rank, totalCodeScanned);;
+                    CompletableFuture<ArrayList<DocumentReference>> currentCodes = getQR_Codes(inputOwner);
+
+                    getQR_Codes(inputOwner).thenAccept(returnedCodes -> {
+                        currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
+                                false, returnedCodes, score, rank, totalCodeScanned);;
+                    });
+
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
                 }
