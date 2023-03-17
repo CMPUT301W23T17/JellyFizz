@@ -22,7 +22,7 @@ public class Search{
 
 
     public interface SearchPlayerCallback {
-        void onSearchPlayerComplete(ArrayList<String> usernames);
+        void onSearchPlayerComplete(ArrayList<ArrayList<String>> usernames);
     }
 
     /**
@@ -31,7 +31,7 @@ public class Search{
      * @param callback stops the listener when task is complete
      */
     public void searchPlayer(String string, SearchPlayerCallback callback) {
-        ArrayList<String> usernames = new ArrayList<>();
+        ArrayList<ArrayList<String>> usernames = new ArrayList<>();
         if(string.length() != 0) {
             Query query = player.whereGreaterThanOrEqualTo(FieldPath.documentId(), string)
                     .orderBy(FieldPath.documentId())
@@ -41,7 +41,10 @@ public class Search{
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String id = document.getId();
                         if (id.startsWith(string)) {
-                            usernames.add(id + ": " + document.getLong("score") + "pts");
+                            ArrayList<String> innerList = new ArrayList<String>();
+                            innerList.add(id);
+                            innerList.add(String.valueOf(document.getLong("score")));
+                            usernames.add(innerList);
                         }
                     }
                 } else {
