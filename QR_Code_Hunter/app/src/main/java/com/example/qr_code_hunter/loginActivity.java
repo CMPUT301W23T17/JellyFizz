@@ -33,16 +33,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class loginActivity extends AppCompatActivity {
 
     // Owner of the account(username of player on current device)
     private static String owner;
     static Owner currentOwnerObject;
-
-    // Database
-    static FirebaseFirestore db = FirebaseFirestore.getInstance();
-    static CollectionReference playersRef = db.collection("Players");
 
     public static String getOwnerName() {
         return owner;
@@ -63,75 +60,84 @@ public class loginActivity extends AppCompatActivity {
      * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
      * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
      */
-    public static ArrayList<DocumentReference> getQR_Codes(String currentPlayer) {
+    public static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference scannedBy = db.collection("scannedBy");
 
         // Get owner of account reference
-        String playerReference = "/Players/" + loginActivity.getOwnerName();
+        DocumentReference playerReference = db.collection("Players").document(currentPlayer);
+
+        CompletableFuture<ArrayList<DocumentReference>> returnCode = new CompletableFuture<>();
 
         ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
 
+
         // Query the scannedBy collection to get all documents that reference the player's document
         Query query = scannedBy.whereEqualTo("Player", playerReference);
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Iterate over the query results and add the QR code references to the ArrayList
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
-                    qrCodeRefs.add(qrCodeRef);
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                if (querySnapshot.isEmpty()) {
+                    Log.d("GetTest", "No documents found for player: " + playerReference);
+                    return;
                 }
-            } else {
+
+                // Iterate over the query results and add the QR code references to the ArrayList
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    DocumentReference docRef = document.getReference();
+                    qrCodeRefs.add(docRef);
+                }
+
+                returnCode.complete(qrCodeRefs);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
                 // Display error
-                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
+                Log.d("Database error", "Error getting all qrcodes for a player", e);
             }
         });
 
-        return qrCodeRefs;
-    }
-
-    /**
-     Sets the owner object based on the input owner string
-     by retrieving owner data from the "Players" collection in Firestore.
-     @param inputOwner the unique identifier of the owner to retrieve data for
-     */
-    public static void setOwnerObject(String inputOwner) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference playersRef = db.collection("Players");
+        return returnCode;
     }
 
     public interface getAllInfo {
         void onGetInfo(Owner owner);
     }
+
+
     /**
      * This read the data of current player from database and assign it to a Owner object
      * @param inputOwner The username of current player
      * @param callback  when to stop function when fetching data completes
      */
     public static void setCurrentOwnerObject(String inputOwner, getAllInfo callback) {
-        playersRef.document(inputOwner).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String email = document.getString("email");
-                    boolean hideInfo = document.getBoolean("hideInfo");
-                    String phoneNumber = document.getString("phoneNumber");
-                    int rank = document.getLong("rank").intValue();
-                    int score = document.getLong("score").intValue();
-                    int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference playersRef = db.collection("/Players");
 
-                    // Discuss about this list of QR codes, not sure if necessary, passing an empty list for now
-                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                            false, new ArrayList<>(), score, rank, totalCodeScanned);;
-                } else {
-                    Log.d("Database Program Logic Error", "This player does not exist in database");
-                }
-            } else {
-                Log.d("Database error", "Could not fetch data from database");
-            }
-            callback.onGetInfo(currentOwnerObject);
-        });
+        playersRef.document(inputOwner).get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        String email = document.getString("email");
+                        boolean hideInfo = document.getBoolean("hideInfo");
+                        String phoneNumber = document.getString("phoneNumber");
+                        int rank = document.getLong("rank").intValue();
+                        int score = document.getLong("score").intValue();
+                        int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
+
+                        // Discuss about this list of QR codes, not sure if necessary, passing an empty list for now
+                        currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
+                                false, new ArrayList<>(), score, rank, totalCodeScanned);
+                        callback.onGetInfo(currentOwnerObject);
+
+                    } else {
+                        Log.d("Database Program Logic Error", "This player does not exist in database");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Database error", "Could not fetch data from database", e);
+                });
     }
 
     /**
@@ -141,22 +147,27 @@ public class loginActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Futures, CompletableFuture, Handler, Executionservice(isShudown(), isTerminated()) are methods for handling asynchronocity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Check if user has created an account before on this specific device,
+        //Check if user has created an account before on this specific device, 1) if yes go to homepage 2) if no go to loginPage
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
+        Boolean noActiveTask = true;
 
         EditText userNameViewer = findViewById(R.id.editTextUsername);
 
-        // Verify username in realtime as user is typing, use a handler to minimize pressure on database
-        // If the pressure is still too much, we can make it not in realtime
+        //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
+        //if pressure still to much, can make it not in realtime
         Handler handler = new Handler(Looper.getMainLooper());
+
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -167,6 +178,9 @@ public class loginActivity extends AppCompatActivity {
                         String username = userNameView.getText().toString().trim();
                         TextView userNameError = findViewById(R.id.userNameTaken);
 
+                        //this empty message is used as a key to handle asynchornosity
+                        handler.sendEmptyMessage(12);
+
                         if (!username.isEmpty()) {
                             playersRef.whereEqualTo(FieldPath.documentId(), username)
                                     .get()
@@ -176,7 +190,7 @@ public class loginActivity extends AppCompatActivity {
                                                 QuerySnapshot querySnapshot = task.getResult();
                                                 if (!querySnapshot.isEmpty()) {
                                                     // A player with the same username already exists
-                                                    userNameError.setText(getString((R.string.userNameTaken)));
+                                                    userNameError.setText("This username has been taken, please choose another");
                                                     userNameError.setVisibility(View.VISIBLE);
                                                     userNameView.requestFocus();
                                                 } else {
@@ -197,6 +211,7 @@ public class loginActivity extends AppCompatActivity {
                 // Wait for the thread to finish executing
                 try {
                     currentThread.join();
+                    handler.removeMessages(12);
                 } catch (InterruptedException e) {
                     Log.d("Thread Error", "Could not execute thread");
                 }
@@ -206,11 +221,12 @@ public class loginActivity extends AppCompatActivity {
             }
         };
 
-        // Watch as user types text
+
+        //Watch as user types text
         userNameViewer.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
+                // nothing
             }
 
             @Override
@@ -221,66 +237,47 @@ public class loginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                // Do nothing
+                //nothing
             }
         });
+
 
         Button register = findViewById(R.id.registerButton);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get email address
+                //get Email adress
                 EditText emailEditText = findViewById(R.id.editTextEmail);
                 String email = emailEditText.getText().toString().trim();
 
-                // Get phone number
-                EditText phoneNumberText = findViewById(R.id.editTextPhone);
-                String phoneNumber = phoneNumberText.getText().toString().trim();
 
-                // Get username
+                //get Phone Number
+                EditText phoneNumbertext = findViewById(R.id.editTextPhone);
+                String phoneNumber = phoneNumbertext.getText().toString().trim();
+
+                //get UserName
                 EditText userNameView = findViewById(R.id.editTextUsername);
                 String username = userNameView.getText().toString().trim();
 
-                // If checks failed return
+
+                //stall program to ensure database queries have been completed
+                while (handler.hasMessages(12)) {
+
+                }
+
+                //if checks failed return
                 if (!verifyInput()) {
                     return;
                 };
 
-                // All checks passed, register key to shared Permissions to allow not to register next time
+                //all checks passed, register key to shared Permissions to allow not to register next time
                 registerKey(username);
 
-                // Set up Owner object for new player
-                currentOwnerObject = new Owner(phoneNumber, email, username,
-                        false, new ArrayList<DocumentReference>(), 0,0, 0);
-
-                // Now add user to database
-                Map<String, Object> currentPlayer = new HashMap<>();
-
-                currentPlayer.put("email", email);
-                currentPlayer.put("hideInfo", false);
-                currentPlayer.put("phoneNumber", phoneNumber);
-                currentPlayer.put("rank", 0);
-                currentPlayer.put("score", 0);
-                currentPlayer.put("totalCodeScanned",0);
-
-                playersRef.document(username).set(currentPlayer)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Player added successfully, time to go to homepage
-                                goToHomepage();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("Database Error", "Could not add a player to the database");
-                            }
-                        });
-                // Register user and go to homepage
+                //Register user and go to homepage
                 registerUser(username, email, phoneNumber, playersRef);
             }
         });
+
     }
 
     /**

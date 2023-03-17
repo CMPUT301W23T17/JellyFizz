@@ -41,7 +41,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
-    Owner currentOwner = new Owner();
+    Owner currentOwner = null;
 
     DocumentReference justScan;
 
@@ -110,7 +110,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 } else {
                     newCode.setPrivacy(true);
                 }
-
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
