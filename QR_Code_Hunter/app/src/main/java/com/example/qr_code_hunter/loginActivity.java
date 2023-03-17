@@ -1,7 +1,11 @@
 package com.example.qr_code_hunter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,13 +37,16 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class loginActivity extends AppCompatActivity {
 
-    // Owner of the account(username of player on current device)
+    //Owner of the account(username of player on current device)
     private static String owner;
     static Owner currentOwnerObject;
+
+    // Database
+    static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    static CollectionReference playersRef = db.collection("Players");
 
     public static String getOwnerName() {
         return owner;
@@ -47,6 +54,8 @@ public class loginActivity extends AppCompatActivity {
     public static void setOwnerName(String username) {
         owner = username;
     }
+
+
 
     private static void setOwner(Owner owner1) {
         currentOwnerObject = owner1;
@@ -60,87 +69,78 @@ public class loginActivity extends AppCompatActivity {
      * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
      * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
      */
-    public static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
+    public static ArrayList<DocumentReference> getQR_Codes(String currentPlayer) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference scannedBy = db.collection("scannedBy");
 
-        // Get owner of account reference
-        DocumentReference playerReference = db.collection("Players").document(currentPlayer);
-
-        CompletableFuture<ArrayList<DocumentReference>> returnCode = new CompletableFuture<>();
+        //Get owner of account reference
+        String playerReference = "/Players/" + loginActivity.getOwnerName();
 
         ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
 
-
         // Query the scannedBy collection to get all documents that reference the player's document
         Query query = scannedBy.whereEqualTo("Player", playerReference);
-        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                if (querySnapshot.isEmpty()) {
-                    Log.d("GetTest", "No documents found for player: " + playerReference);
-                    return;
-                }
-
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 // Iterate over the query results and add the QR code references to the ArrayList
-                for (QueryDocumentSnapshot document : querySnapshot) {
-                    DocumentReference docRef = document.getReference();
-                    qrCodeRefs.add(docRef);
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
+                    qrCodeRefs.add(qrCodeRef);
                 }
-
-                returnCode.complete(qrCodeRefs);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+            } else {
                 // Display error
-                Log.d("Database error", "Error getting all qrcodes for a player", e);
+                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
             }
         });
 
-        return returnCode;
+        return qrCodeRefs;
     }
 
 
     /**
-     * This read the data of current player from database and assign it to a Owner object
-     * @param inputOwner The username of current player
+     Sets the owner object based on the input owner string
+     by retrieving owner data from the "Players" collection in Firestore.
+     @param inputOwner the unique identifier of the owner to retrieve data for
      */
-    public static CompletableFuture<Owner> getOwnerFuture(String inputOwner) {
+    public static void setOwnerObject(String inputOwner) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
-
-        CompletableFuture<Owner> retOwner = new CompletableFuture<>();
-
-        playersRef.document(inputOwner).get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        String email = document.getString("email");
-                        boolean hideInfo = document.getBoolean("hideInfo");
-                        String phoneNumber = document.getString("phoneNumber");
-                        int rank = document.getLong("rank").intValue();
-                        int score = document.getLong("score").intValue();
-                        int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
-
-                        CompletableFuture<ArrayList<DocumentReference>> qrCodeFuture = getQR_Codes(inputOwner);
-                        qrCodeFuture.thenAccept(qrCodeRefs -> {
-                            // Create the Owner object and set its properties
-                            currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                                    false, qrCodeRefs, score, rank, totalCodeScanned);
-                            retOwner.complete(currentOwnerObject);
-                        });
-
-                    } else {
-                        Log.d("Database Program Logic Error", "This player does not exist in database");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.d("Database error", "Could not fetch data from database", e);
-                });
-
-        return retOwner;
     }
+
+    public interface getAllInfo {
+        void onGetInfo(Owner owner);
+    }
+    /**
+     * This read the data of current player from database and assign it to a Owner object
+     * @param inputOwner The username of current player
+     * @param callback  when to stop function when fetching data completes
+     */
+    public static void setCurrentOwnerObject(String inputOwner, getAllInfo callback) {
+        playersRef.document(inputOwner).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String email = document.getString("email");
+                    boolean hideInfo = document.getBoolean("hideInfo");
+                    String phoneNumber = document.getString("phoneNumber");
+                    int rank = document.getLong("rank").intValue();
+                    int score = document.getLong("score").intValue();
+                    int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
+
+                    //Discus about this list of QR codes, not sure if necessary, passing an empty list for now
+                    currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
+                            false, new ArrayList<>(), score, rank, totalCodeScanned);;
+                } else {
+                    Log.d("Database Program Logic Error", "This player does not exist in database");
+                }
+            } else {
+                Log.d("Database error", "Could not fetch data from database");
+            }
+            callback.onGetInfo(currentOwnerObject);
+        });
+    }
+
 
     /**
      This class handles the user login and registration process.
@@ -149,8 +149,6 @@ public class loginActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        //Futures, CompletableFuture, Handler, Executionservice(isShudown(), isTerminated()) are methods for handling asynchronocity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -161,15 +159,12 @@ public class loginActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
-        Boolean noActiveTask = true;
 
         EditText userNameViewer = findViewById(R.id.editTextUsername);
 
         //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
         //if pressure still to much, can make it not in realtime
         Handler handler = new Handler(Looper.getMainLooper());
-
-
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -179,9 +174,6 @@ public class loginActivity extends AppCompatActivity {
                         EditText userNameView = findViewById(R.id.editTextUsername);
                         String username = userNameView.getText().toString().trim();
                         TextView userNameError = findViewById(R.id.userNameTaken);
-
-                        //this empty message is used as a key to handle asynchornosity
-                        handler.sendEmptyMessage(12);
 
                         if (!username.isEmpty()) {
                             playersRef.whereEqualTo(FieldPath.documentId(), username)
@@ -213,7 +205,6 @@ public class loginActivity extends AppCompatActivity {
                 // Wait for the thread to finish executing
                 try {
                     currentThread.join();
-                    handler.removeMessages(12);
                 } catch (InterruptedException e) {
                     Log.d("Thread Error", "Could not execute thread");
                 }
@@ -261,12 +252,6 @@ public class loginActivity extends AppCompatActivity {
                 EditText userNameView = findViewById(R.id.editTextUsername);
                 String username = userNameView.getText().toString().trim();
 
-
-                //stall program to ensure database queries have been completed
-                while (handler.hasMessages(12)) {
-
-                }
-
                 //if checks failed return
                 if (!verifyInput()) {
                     return;
@@ -275,6 +260,34 @@ public class loginActivity extends AppCompatActivity {
                 //all checks passed, register key to shared Permissions to allow not to register next time
                 registerKey(username);
 
+                //  set up Owner object for new player
+                currentOwnerObject = new Owner(phoneNumber, email, username,
+                        false, new ArrayList<DocumentReference>(), 0,0, 0);
+
+                //now add user to database
+                Map<String, Object> currentPlayer = new HashMap<>();
+
+                currentPlayer.put("email", email);
+                currentPlayer.put("hideInfo", false);
+                currentPlayer.put("phoneNumber", phoneNumber);
+                currentPlayer.put("rank", 0);
+                currentPlayer.put("score", 0);
+                currentPlayer.put("totalCodeScanned",0);
+
+                playersRef.document(username).set(currentPlayer)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Player added successfully, time to go to homepage
+                                goToHomepage();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("Database Error", "Could not add a player to the database");
+                            }
+                        });
                 //Register user and go to homepage
                 registerUser(username, email, phoneNumber, playersRef);
             }
@@ -297,14 +310,14 @@ public class loginActivity extends AppCompatActivity {
      @return true if all checks pass, false otherwise.
      */
     private boolean verifyInput() {
-        // Verify email address
+        //verify Email adress
         EditText emailEditText = findViewById(R.id.editTextEmail);
         TextView emailError = findViewById(R.id.emailError);
         String email = emailEditText.getText().toString().trim();
 
+
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Email entered was invalid
-            emailError.setText(getString(R.string.invalidEmail));
             emailError.setVisibility(View.VISIBLE);
             emailEditText.requestFocus();
             return false;
@@ -312,14 +325,14 @@ public class loginActivity extends AppCompatActivity {
             emailError.setVisibility(View.INVISIBLE);
         }
 
-        // Verify phone number
-        EditText phoneNumberText = findViewById(R.id.editTextPhone);
+        //verify Phone Number
+        EditText phoneNumbertext = findViewById(R.id.editTextPhone);
         TextView phoneError = findViewById(R.id.phoneError);
-        String phoneNumber = phoneNumberText.getText().toString().trim();
+        String phoneNumber = phoneNumbertext.getText().toString().trim();
 
         if (phoneNumber.length() < 10) {
             phoneError.setVisibility(View.VISIBLE);
-            phoneNumberText.requestFocus();
+            phoneNumbertext.requestFocus();
             return false;
         } else {
             phoneError.setVisibility(View.INVISIBLE);
@@ -331,7 +344,6 @@ public class loginActivity extends AppCompatActivity {
         TextView userNameError = findViewById(R.id.userNameTaken);
 
         if (username.length() < 1) {
-            userNameError.setText(getString(R.string.userNameLength));
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;
@@ -339,7 +351,7 @@ public class loginActivity extends AppCompatActivity {
 
         // Make sure string only contains letters and numbers
         if (!username.matches("^[a-zA-Z0-9]*$")) {
-            userNameError.setText(R.string.userNameInvalidCharacters);
+            userNameError.setText("username can only contain letters or numbers");
             Log.d("String Checking", username);
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
@@ -347,14 +359,15 @@ public class loginActivity extends AppCompatActivity {
         }
 
         if (userNameError.getVisibility() != View.INVISIBLE) {
-            // The TextView is currently visible
+            // the TextView is currently visible
             userNameView.requestFocus();
             return false;
         }
 
-        // Passed all checks
+        //passed all checks
         return true;
     }
+
 
     /**
      Registers a new user in the Firebase Firestore database with the given username, email, phone number, and CollectionReference.
@@ -365,7 +378,7 @@ public class loginActivity extends AppCompatActivity {
      @param playersRef the CollectionReference object for the "Players" collection in Firestore database
      */
     private void registerUser(String username, String email, String phoneNumber, CollectionReference playersRef) {
-        // Now add user to the database
+        //now add user to database
         Map<String, Object> currentPlayer = new HashMap<>();
 
         currentPlayer.put("email", email);
@@ -374,7 +387,6 @@ public class loginActivity extends AppCompatActivity {
         currentPlayer.put("rank", 0);
         currentPlayer.put("score", 0);
         currentPlayer.put("totalCodeScanned",0);
-        currentPlayer.put("highestCode", 0);
 
         playersRef.document(username).set(currentPlayer)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -392,6 +404,7 @@ public class loginActivity extends AppCompatActivity {
                 });
     }
 
+
     /**
      * Register a username with the accountCreatedKey in SharedPreferences.
      * @param username The username to register.
@@ -407,6 +420,7 @@ public class loginActivity extends AppCompatActivity {
         // Save the changes to SharedPreferences.
         editor.apply();
     }
+
 
     /**
      * Navigate to the homepage activity.
