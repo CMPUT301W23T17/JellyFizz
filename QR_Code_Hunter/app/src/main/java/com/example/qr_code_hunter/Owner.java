@@ -37,6 +37,7 @@ public class Owner extends Player implements Parcelable {
     private DocumentReference ownerRef;
     Boolean codeDuplicated = false;
     DocumentReference existedQrRef;
+    DocumentReference highestQrCode;
 
     public Owner(){}
 
@@ -163,6 +164,7 @@ public class Owner extends Player implements Parcelable {
         data.put("Score",qrCode.getScore());
         data.put("Privacy",privacy);
         data.put("codeName",qrCode.getName());
+        data.put("binaryString",qrCode.getBinaryString());
         // Create new document whose ID is the hash string
         DocumentReference newRef = qrcode.document(qrCode.getHashString());
         newRef.set(data)
@@ -244,7 +246,7 @@ public class Owner extends Player implements Parcelable {
         void onCheckDuplicateComplete(Boolean duplicated);
     }
 
-        /**
+    /**
      * This returns duplication check of newly scanned QrCode
      * @param qrRef
      *      document reference of code just scanned
@@ -273,6 +275,9 @@ public class Owner extends Player implements Parcelable {
     public void deleteQRCode(QrCode code) {
         // We need to access the QrCode list to see how it works first, cause it is real time update
     }
+
+
+
 
     /**
      * This set privacy for owner's info (email and phone number) on their user profile
@@ -308,4 +313,67 @@ public class Owner extends Player implements Parcelable {
             }
         });
     }
+    /**
+     * This get current highest score of player and compare to new code's score
+     * @param newCode
+     *      QrCode object that just scanned
+     */
+    public void updateHighestCode(QrCode newCode) {
+        findHighestCode(new FindHighestCallback() {
+            @Override
+            public void onFindHighestComplete(int highestCode) {
+                if (highestCode < newCode.getScore()) {
+                    updateNewHighestCodePoint(newCode.getScore());
+                }
+            }
+        });
+    }
+
+
+    public interface FindHighestCallback {
+        void onFindHighestComplete(int highestCode);
+    }
+
+    /**
+     * This get the highest score code of current player (owner)
+     * @param
+     *      callback start until get data finishes
+     */
+    public void findHighestCode(FindHighestCallback callback) {
+        ownerRef.get().addOnCompleteListener(task -> {
+            int highestCode = 0;
+            if (task.isSuccessful()) {
+                DocumentSnapshot result = task.getResult();
+                highestCode = result.getLong("highestCode").intValue();
+                Log.d("Working", "Code highest exists!");
+            } else {
+                Log.e("Working", "Failed with: ", task.getException());
+            }
+            callback.onFindHighestComplete(highestCode);
+        });
+    }
+
+    /**
+     * Update new highest score code for current player
+     * @param
+     *      newHighestScore new highest score to be update in database
+     */
+    public void updateNewHighestCodePoint (int newHighestScore) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("highestCode",newHighestScore);
+        ownerRef.update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Working", "Highest code updated successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Working", "Highest code not updated" + e.toString());
+                    }
+                });
+    }
+
 }
