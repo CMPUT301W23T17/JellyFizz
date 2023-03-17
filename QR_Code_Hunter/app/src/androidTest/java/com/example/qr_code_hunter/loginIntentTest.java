@@ -68,14 +68,18 @@ public class loginIntentTest {
         assertTrue(solo.waitForActivity(MainActivity.class));
 
         FirebaseFirestore tester = FirebaseFirestore.getInstance();
-        CollectionReference playerRefs = tester.collection("/Players");
+        CollectionReference playerRefs = tester.collection("Players");
 
         //Test GetQrCodes
         CompletableFuture<ArrayList<DocumentReference>> testData = loginActivity.getQR_Codes("QuinNguyen");
-        assertTrue(testData.get().size() ==  1);
 
-        //Delete test user
-        playerRefs.document("testuser").delete();
+
+        assertTrue(testData.get().size() ==  2);
+
+        //Test Owner
+        CompletableFuture<Owner> testOwner = loginActivity.getOwnerFuture("QuinNguyen");
+
+        assertTrue(testOwner.get().myQrCodes.size() == 2);
     }
 
     @Test

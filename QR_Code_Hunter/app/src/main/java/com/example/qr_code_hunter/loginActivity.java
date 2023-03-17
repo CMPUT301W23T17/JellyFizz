@@ -102,19 +102,16 @@ public class loginActivity extends AppCompatActivity {
         return returnCode;
     }
 
-    public interface getAllInfo {
-        void onGetInfo(Owner owner);
-    }
-
 
     /**
      * This read the data of current player from database and assign it to a Owner object
      * @param inputOwner The username of current player
-     * @param callback  when to stop function when fetching data completes
      */
-    public static void setCurrentOwnerObject(String inputOwner, getAllInfo callback) {
+    public static CompletableFuture<Owner> getOwnerFuture(String inputOwner) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference playersRef = db.collection("/Players");
+        CollectionReference playersRef = db.collection("Players");
+
+        CompletableFuture<Owner> retOwner = new CompletableFuture<>();
 
         playersRef.document(inputOwner).get()
                 .addOnSuccessListener(document -> {
@@ -126,10 +123,13 @@ public class loginActivity extends AppCompatActivity {
                         int score = document.getLong("score").intValue();
                         int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
-                        // Discuss about this list of QR codes, not sure if necessary, passing an empty list for now
-                        currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                                false, new ArrayList<>(), score, rank, totalCodeScanned);
-                        callback.onGetInfo(currentOwnerObject);
+                        CompletableFuture<ArrayList<DocumentReference>> qrCodeFuture = getQR_Codes(inputOwner);
+                        qrCodeFuture.thenAccept(qrCodeRefs -> {
+                            // Create the Owner object and set its properties
+                            currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
+                                    false, qrCodeRefs, score, rank, totalCodeScanned);
+                            retOwner.complete(currentOwnerObject);
+                        });
 
                     } else {
                         Log.d("Database Program Logic Error", "This player does not exist in database");
@@ -138,6 +138,8 @@ public class loginActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.d("Database error", "Could not fetch data from database", e);
                 });
+
+        return retOwner;
     }
 
     /**
@@ -372,6 +374,7 @@ public class loginActivity extends AppCompatActivity {
         currentPlayer.put("rank", 0);
         currentPlayer.put("score", 0);
         currentPlayer.put("totalCodeScanned",0);
+        currentPlayer.put("highestCode", 0);
 
         playersRef.document(username).set(currentPlayer)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

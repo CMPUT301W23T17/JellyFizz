@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This is the second page of the new code details (editable fields)
@@ -41,7 +43,8 @@ public class NewCodeActivity2 extends AppCompatActivity {
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
-    Owner currentOwner = null;
+    CompletableFuture<Owner> currentOwnerDone = null;
+    Owner currentOwner;
 
     DocumentReference justScan;
 
@@ -59,12 +62,16 @@ public class NewCodeActivity2 extends AppCompatActivity {
         //currentOwner = getIntent().getParcelableExtra("Current Owner");
 
         // Set the owner object, still need to discuss what is happening with this list of qrcodes
-        loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
-            @Override
-            public void onGetInfo(Owner owner) {
-                currentOwner = owner;
-            }
-        });
+        currentOwnerDone = loginActivity.getOwnerFuture(loginActivity.getOwnerName());
+
+        try {
+            currentOwner = currentOwnerDone.get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override

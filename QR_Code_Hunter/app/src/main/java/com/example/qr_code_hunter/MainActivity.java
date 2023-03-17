@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         if (accountCreated) {
             // Set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
-            loginActivity.getQR_Codes("QuinNguyen");
+
             replaceFragment(new HomepageFragment());
 
         } else {
