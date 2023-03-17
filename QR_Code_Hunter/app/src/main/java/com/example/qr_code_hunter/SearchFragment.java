@@ -85,12 +85,13 @@ public class SearchFragment extends Fragment {
         search = new Search();
         ArrayList<String> list = new ArrayList<>();
         ArrayList<ArrayList<String>> listArrayList = new ArrayList<>();
+//        System.out.println(list);
 
         View searchbutton = getView().findViewById(R.id.search_bar);
         listView = getView().findViewById(R.id.search_list);
         TextView textView = getView().findViewById(R.id.textView4);
         textView.setVisibility(View.GONE);
-        listView.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
 
         searchbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +101,6 @@ public class SearchFragment extends Fragment {
                     @Override
                     public void onSearchPlayerComplete(ArrayList<ArrayList<String>> usernames){
                         listArrayList.addAll(usernames);
-                        System.out.println(usernames);
                         if(list.isEmpty()){
                             for(int i = 0; i < usernames.size(); i++){
                                 list.add(usernames.get(i).get(0) + ":   " + usernames.get(i).get(1) + "pts");
@@ -139,6 +139,7 @@ public class SearchFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 }
