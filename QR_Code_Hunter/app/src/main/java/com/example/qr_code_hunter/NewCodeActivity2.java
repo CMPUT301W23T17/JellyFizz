@@ -106,10 +106,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
         });
 
 
-        //Wait for owner to be set
-        while(currentOwnerSet == null) {
-
-        }
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +119,11 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setPrivacy(true);
                 }
 
+
+                //Wait for owner to be set
+                while(currentOwnerSet == null) {
+
+                }
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
