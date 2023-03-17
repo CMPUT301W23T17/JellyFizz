@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -80,6 +81,9 @@ public class SearchFragment extends Fragment {
         ArrayList<String> list = new ArrayList<>();
 
         View searchbutton = getView().findViewById(R.id.search_bar);
+        ListView listView1 = getView().findViewById(R.id.search_list);
+        TextView textView = getView().findViewById(R.id.textView4);
+        textView.setVisibility(View.GONE);
 
         searchbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +91,7 @@ public class SearchFragment extends Fragment {
                 EditText text = getView().findViewById(R.id.enter_username);
                 search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {
                     @Override
-                    public void onSearchPlayerComplete(ArrayList<String> usernames) {
+                    public void onSearchPlayerComplete(ArrayList<String> usernames){
                         if(list.isEmpty()){
                             list.addAll(usernames);
                         }else{
@@ -97,12 +101,22 @@ public class SearchFragment extends Fragment {
                         listView = getView().findViewById(R.id.search_list);
                         adapter = new ArrayAdapter<>(getActivity(), R.layout.searching_context, list);
                         listView.setAdapter(adapter);
-                        System.out.println(list);
+
+                        if (adapter.getCount() == 0) {
+                            textView.setVisibility(View.VISIBLE);
+                            listView1.setVisibility(View.GONE);
+                        } else {
+                            textView.setVisibility(View.GONE);
+                            listView1.setVisibility(View.VISIBLE);
+                        }
+
                     }
                 });
 
             }
         });
+
+
 
 
 

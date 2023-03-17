@@ -49,6 +49,8 @@ public class Search{
                 }
                 callback.onSearchPlayerComplete(usernames);
             });
+        }else{
+            callback.onSearchPlayerComplete(usernames);
         }
     }
 }
