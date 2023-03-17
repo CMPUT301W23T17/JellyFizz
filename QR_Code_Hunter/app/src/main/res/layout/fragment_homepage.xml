@@ -14,32 +14,35 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/welcome_user"
+
+            android:layout_width="283dp"
+            android:layout_height="83dp"
+            android:elevation="50dp"
+            android:gravity="center"
+            android:lineSpacingExtra="0sp"
+            android:text="@string/welcome_use"
+            android:textAppearance="@style/welcome_use"
+            app:layout_constraintBottom_toBottomOf="@+id/welcome_box"
+            app:layout_constraintEnd_toEndOf="@+id/welcome_box"
+            app:layout_constraintHorizontal_bias="0.55"
+            app:layout_constraintStart_toStartOf="@+id/welcome_box"
+            app:layout_constraintTop_toTopOf="@+id/welcome_box"
+            app:layout_constraintVertical_bias="0.454" />
+
+        <TextView
             android:id="@+id/score_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="0"
+            android:text="2222"
             android:textAlignment="textEnd"
             android:textColor="#191847"
-            android:textSize="150sp"
+            android:textSize="120sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcome_box" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:contentDescription="TODO"
-            android:elevation="200dp"
-            app:layout_constraintBottom_toBottomOf="@+id/ask_button"
-            app:layout_constraintEnd_toEndOf="@+id/ask_button"
-            app:layout_constraintHorizontal_bias="0.636"
-            app:layout_constraintStart_toStartOf="@+id/ask_button"
-            app:layout_constraintTop_toTopOf="@+id/ask_button"
-            app:layout_constraintVertical_bias="0.571"
-            app:srcCompat="@drawable/img_1" />
+            app:layout_constraintTop_toBottomOf="@+id/welcome_box"/>
 
         <TextView
             android:id="@+id/pts_string"
@@ -58,6 +61,20 @@
             app:layout_constraintStart_toEndOf="@+id/score_display"
             app:layout_constraintTop_toTopOf="@+id/score_display"
             app:layout_constraintVertical_bias="0.756" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:contentDescription="TODO"
+            android:elevation="200dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ask_button"
+            app:layout_constraintEnd_toEndOf="@+id/ask_button"
+            app:layout_constraintHorizontal_bias="0.636"
+            app:layout_constraintStart_toStartOf="@+id/ask_button"
+            app:layout_constraintTop_toTopOf="@+id/ask_button"
+            app:layout_constraintVertical_bias="0.571"
+            app:srcCompat="@drawable/img_1" />
 
         <TextView
             android:id="@+id/my_ranking_number"
@@ -132,23 +149,6 @@
             app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/welcome_user"
-
-            android:layout_width="283dp"
-            android:layout_height="83dp"
-            android:elevation="50dp"
-            android:gravity="center"
-            android:lineSpacingExtra="0sp"
-            android:text="@string/welcome_use"
-            android:textAppearance="@style/welcome_use"
-            app:layout_constraintBottom_toBottomOf="@+id/welcome_box"
-            app:layout_constraintEnd_toEndOf="@+id/welcome_box"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintStart_toStartOf="@+id/welcome_box"
-            app:layout_constraintTop_toTopOf="@+id/welcome_box"
-            app:layout_constraintVertical_bias="0.454" />
 
         <ImageButton
             android:id="@+id/ask_button"
