@@ -126,6 +126,7 @@ public class loginActivity extends AppCompatActivity {
     public interface getAllInfo {
         void onGetInfo(Owner owner);
     }
+
     /**
      * This read the data of current player from database and assign it to a Owner object
      * @param inputOwner The username of current player
@@ -164,6 +165,8 @@ public class loginActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Futures, CompletableFuture, Handler, Executionservice(isShudown(), isTerminated()) are methods for handling asynchronocity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -174,12 +177,15 @@ public class loginActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference playersRef = db.collection("Players");
+        Boolean noActiveTask = true;
 
         EditText userNameViewer = findViewById(R.id.editTextUsername);
 
         //verify UserName in realtime as user is typing, use a handler to minimize pressure on database
         //if pressure still to much, can make it not in realtime
         Handler handler = new Handler(Looper.getMainLooper());
+
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -189,6 +195,9 @@ public class loginActivity extends AppCompatActivity {
                         EditText userNameView = findViewById(R.id.editTextUsername);
                         String username = userNameView.getText().toString().trim();
                         TextView userNameError = findViewById(R.id.userNameTaken);
+
+                        //this empty message is used as a key to handle asynchornosity
+                        handler.sendEmptyMessage(12);
 
                         if (!username.isEmpty()) {
                             playersRef.whereEqualTo(FieldPath.documentId(), username)
@@ -220,6 +229,7 @@ public class loginActivity extends AppCompatActivity {
                 // Wait for the thread to finish executing
                 try {
                     currentThread.join();
+                    handler.removeMessages(12);
                 } catch (InterruptedException e) {
                     Log.d("Thread Error", "Could not execute thread");
                 }
@@ -267,6 +277,12 @@ public class loginActivity extends AppCompatActivity {
                 EditText userNameView = findViewById(R.id.editTextUsername);
                 String username = userNameView.getText().toString().trim();
 
+
+                //stall program to ensure database queries have been completed
+                while (handler.hasMessages(12)) {
+
+                }
+
                 //if checks failed return
                 if (!verifyInput()) {
                     return;
@@ -275,40 +291,13 @@ public class loginActivity extends AppCompatActivity {
                 //all checks passed, register key to shared Permissions to allow not to register next time
                 registerKey(username);
 
-                //  set up Owner object for new player
-                currentOwnerObject = new Owner(phoneNumber, email, username,
-                        false, new ArrayList<DocumentReference>(), 0,0, 0);
-
-                //now add user to database
-                Map<String, Object> currentPlayer = new HashMap<>();
-
-                currentPlayer.put("email", email);
-                currentPlayer.put("hideInfo", false);
-                currentPlayer.put("phoneNumber", phoneNumber);
-                currentPlayer.put("rank", 0);
-                currentPlayer.put("score", 0);
-                currentPlayer.put("totalCodeScanned",0);
-
-                playersRef.document(username).set(currentPlayer)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Player added successfully, time to go to homepage
-                                goToHomepage();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("Database Error", "Could not add a player to the database");
-                            }
-                        });
                 //Register user and go to homepage
                 registerUser(username, email, phoneNumber, playersRef);
             }
         });
 
     }
+
 
     /**
      * This function is used to return owner object.
@@ -401,6 +390,7 @@ public class loginActivity extends AppCompatActivity {
         currentPlayer.put("rank", 0);
         currentPlayer.put("score", 0);
         currentPlayer.put("totalCodeScanned",0);
+        currentPlayer.put("highestCode", 0);
 
         playersRef.document(username).set(currentPlayer)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
