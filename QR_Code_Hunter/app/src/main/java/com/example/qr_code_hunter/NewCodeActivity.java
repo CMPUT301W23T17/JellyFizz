@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,7 +46,6 @@ public class NewCodeActivity extends AppCompatActivity {
 
         String scannedString = getIntent().getExtras().getString("scanned string");
         Location curLoc = getIntent().getParcelableExtra("current location");
-        Owner owner = getIntent().getParcelableExtra("current owner");
 
         geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
         LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
@@ -92,7 +89,6 @@ public class NewCodeActivity extends AppCompatActivity {
                 Intent intent = new Intent(NewCodeActivity.this, NewCodeActivity2.class);
                 intent.putExtra("New QrCode", newCode);
                 intent.putExtra("Coordinates", latLng);
-                intent.putExtra("Current Owner", owner);
                 startActivity(intent);
             }
         });
