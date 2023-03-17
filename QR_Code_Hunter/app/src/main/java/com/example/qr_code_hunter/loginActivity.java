@@ -145,8 +145,6 @@ public class loginActivity extends AppCompatActivity {
                     int score = document.getLong("score").intValue();
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
 
-                    CompletableFuture<ArrayList<DocumentReference>> currentCodes = getQR_Codes(inputOwner);
-
                     getQR_Codes(inputOwner).thenAccept(returnedCodes -> {
                         currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
                                 false, returnedCodes, score, rank, totalCodeScanned);;
