@@ -37,6 +37,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class loginActivity extends AppCompatActivity {
 
@@ -69,32 +70,46 @@ public class loginActivity extends AppCompatActivity {
      * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
      * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
      */
-    public static ArrayList<DocumentReference> getQR_Codes(String currentPlayer) {
+    public static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference scannedBy = db.collection("scannedBy");
 
-        //Get owner of account reference
-        String playerReference = "/Players/" + loginActivity.getOwnerName();
+        // Get owner of account reference
+        DocumentReference playerReference = db.collection("Players").document(currentPlayer);
+
+        CompletableFuture<ArrayList<DocumentReference>> returnCode = new CompletableFuture<>();
 
         ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
 
+
         // Query the scannedBy collection to get all documents that reference the player's document
         Query query = scannedBy.whereEqualTo("Player", playerReference);
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Iterate over the query results and add the QR code references to the ArrayList
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
-                    qrCodeRefs.add(qrCodeRef);
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                if (querySnapshot.isEmpty()) {
+                    Log.d("GetTest", "No documents found for player: " + playerReference);
+                    return;
                 }
-            } else {
+
+                // Iterate over the query results and add the QR code references to the ArrayList
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    DocumentReference docRef = document.getReference();
+                    qrCodeRefs.add(docRef);
+                }
+
+                returnCode.complete(qrCodeRefs);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
                 // Display error
-                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
+                Log.d("Database error", "Error getting all qrcodes for a player", e);
             }
         });
 
-        return qrCodeRefs;
+        return returnCode;
     }
 
 
@@ -306,18 +321,17 @@ public class loginActivity extends AppCompatActivity {
      It verifies that the email entered is a valid email address and that the phone number entered
      is at least 10 digits long. It also checks that a username has been entered and that it only contains
      letters or numbers. Finally, it returns true if all checks pass.
-
      @return true if all checks pass, false otherwise.
      */
     private boolean verifyInput() {
-        //verify Email adress
+        // Verify email address
         EditText emailEditText = findViewById(R.id.editTextEmail);
         TextView emailError = findViewById(R.id.emailError);
         String email = emailEditText.getText().toString().trim();
 
-
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             // Email entered was invalid
+            emailError.setText(getString(R.string.invalidEmail));
             emailError.setVisibility(View.VISIBLE);
             emailEditText.requestFocus();
             return false;
@@ -325,14 +339,14 @@ public class loginActivity extends AppCompatActivity {
             emailError.setVisibility(View.INVISIBLE);
         }
 
-        //verify Phone Number
-        EditText phoneNumbertext = findViewById(R.id.editTextPhone);
+        // Verify phone number
+        EditText phoneNumberText = findViewById(R.id.editTextPhone);
         TextView phoneError = findViewById(R.id.phoneError);
-        String phoneNumber = phoneNumbertext.getText().toString().trim();
+        String phoneNumber = phoneNumberText.getText().toString().trim();
 
         if (phoneNumber.length() < 10) {
             phoneError.setVisibility(View.VISIBLE);
-            phoneNumbertext.requestFocus();
+            phoneNumberText.requestFocus();
             return false;
         } else {
             phoneError.setVisibility(View.INVISIBLE);
@@ -344,6 +358,7 @@ public class loginActivity extends AppCompatActivity {
         TextView userNameError = findViewById(R.id.userNameTaken);
 
         if (username.length() < 1) {
+            userNameError.setText(getString(R.string.userNameLength));
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;
@@ -351,7 +366,7 @@ public class loginActivity extends AppCompatActivity {
 
         // Make sure string only contains letters and numbers
         if (!username.matches("^[a-zA-Z0-9]*$")) {
-            userNameError.setText("username can only contain letters or numbers");
+            userNameError.setText(R.string.userNameInvalidCharacters);
             Log.d("String Checking", username);
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
@@ -359,15 +374,14 @@ public class loginActivity extends AppCompatActivity {
         }
 
         if (userNameError.getVisibility() != View.INVISIBLE) {
-            // the TextView is currently visible
+            // The TextView is currently visible
             userNameView.requestFocus();
             return false;
         }
 
-        //passed all checks
+        // Passed all checks
         return true;
     }
-
 
     /**
      Registers a new user in the Firebase Firestore database with the given username, email, phone number, and CollectionReference.
