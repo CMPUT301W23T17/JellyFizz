@@ -13,10 +13,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    //ActivityMainBinding is an android library that allows a way to access the views in the activity_main.xml (navigation bar is stored there)
+    // ActivityMainBinding is an android library that allows a way to access the views
+    // in the activity_main.xml (navigation bar is stored there)
     ActivityMainBinding binding;
-
-    Owner currentOwner = new Owner();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +24,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-        //Check if user has created an account before on this specific device, 1) if yes go to homepage 2) if no go to loginPage
+        // Check if user has created an account before on this specific device,
+        // 1) if yes: go to homepage, 2) if no: go to loginPage
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
         if (accountCreated) {
-            //set the ownerName to userName
+            // Set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
 

@@ -70,7 +70,7 @@ public class loginIntentTest {
         solo.clickOnButton("Register");
 
         // Assert that error message is displayed
-        assertTrue(solo.searchText("This username has been taken, please choose another"));
+        assertTrue(solo.searchText(solo.getString(R.string.userNameTaken)));
     }
     @Test
     public void testInvalidEmail() throws Exception {
@@ -82,7 +82,7 @@ public class loginIntentTest {
         solo.clickOnButton("Register");
 
         // Assert that error message is displayed
-        assertTrue(solo.searchText("Please enter a valid email address"));
+        assertTrue(solo.searchText(solo.getString(R.string.invalidEmail)));
     }
     @Test
     public void testInvalidPhoneNumber() throws Exception {
@@ -94,7 +94,7 @@ public class loginIntentTest {
         solo.clickOnButton("Register");
 
         // Assert that error message is displayed
-        assertTrue(solo.searchText("Please enter a valid phone number"));
+        assertTrue(solo.searchText(solo.getString(R.string.invalidNumber)));
     }
 
 }

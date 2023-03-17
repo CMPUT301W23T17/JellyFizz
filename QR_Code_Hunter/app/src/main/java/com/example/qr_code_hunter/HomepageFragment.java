@@ -55,7 +55,7 @@ public class HomepageFragment extends Fragment {
     TextView welcomeOwner;
     TextView rank;
     TextView score;
-    Owner owner;
+    //Owner owner = new Owner();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -95,7 +95,7 @@ public class HomepageFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        owner = getActivity().getIntent().getParcelableExtra("current owner");
+        //owner = getActivity().getIntent().getParcelableExtra("current owner");
     }
 
     @Override
@@ -256,7 +256,6 @@ public class HomepageFragment extends Fragment {
             Intent intent = new Intent(getActivity(), NewCodeActivity.class);
             intent.putExtra("scanned string", inputString);
             intent.putExtra("current location", currentLocation);
-            intent.putExtra("Current Owner", owner);
             startActivity(intent);
         }
     });
