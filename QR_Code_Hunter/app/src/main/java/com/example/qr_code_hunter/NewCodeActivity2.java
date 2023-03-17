@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,12 +22,21 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -183,4 +193,104 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     }
                 }
             });
+
+
+    /**
+     * Retrieves all the QR code references for a specific player from the database and returns them
+     * as an ArrayList. This method queries the "Players" collection to find all documents that reference
+     * the player's document and retrieves the QR code references from those documents.
+     *
+     * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
+     * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
+     */
+    private static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference scannedBy = db.collection("scannedBy");
+
+        // Get owner of account reference
+        DocumentReference playerReference = db.collection("Players").document(currentPlayer);
+
+        CompletableFuture<ArrayList<DocumentReference>> returnCode = new CompletableFuture<>();
+
+        ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
+
+
+        // Query the scannedBy collection to get all documents that reference the player's document
+        Query query = scannedBy.whereEqualTo("Player", playerReference);
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                if (querySnapshot.isEmpty()) {
+                    Log.d("GetTest", "No documents found for player: " + playerReference);
+                    return;
+                }
+
+                // Iterate over the query results and add the QR code references to the ArrayList
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    DocumentReference docRef = document.getReference();
+                    qrCodeRefs.add(docRef);
+                }
+
+                returnCode.complete(qrCodeRefs);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Display error
+                Log.d("Database error", "Error getting all qrcodes for a player", e);
+            }
+        });
+
+        return returnCode;
+    }
+
+
+    /**
+     * Retrieves the owner details for the given input owner from the Firestore database
+     * and returns a CompletableFuture that completes with the Owner object.
+     *
+     * @param inputOwner The owner ID for which to fetch the details.
+     * @return A CompletableFuture that completes with the Owner object once the data is fetched from the database.
+     * @throws NullPointerException if inputOwner is null.
+     */
+    private static CompletableFuture<Owner> getOwnerFuture(String inputOwner) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference playersRef = db.collection("Players");
+
+        CompletableFuture<Owner> retOwner = new CompletableFuture<>();
+
+
+        playersRef.document(inputOwner).get()
+                .addOnSuccessListener(document -> {
+                    Log.d("Future", "ran");
+
+
+                    if (document.exists()) {
+                        String email = document.getString("email");
+                        boolean hideInfo = document.getBoolean("hideInfo");
+                        String phoneNumber = document.getString("phoneNumber");
+                        int rank = document.getLong("rank").intValue();
+                        int score = document.getLong("score").intValue();
+                        int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
+
+                        CompletableFuture<ArrayList<DocumentReference>> qrCodeFuture = getQR_Codes(inputOwner);
+                        qrCodeFuture.thenAccept(qrCodeRefs -> {
+                            // Create the Owner object and set its properties
+                            Owner filler = new Owner(phoneNumber, email, inputOwner,
+                                    false, qrCodeRefs, score, rank, totalCodeScanned);
+                            retOwner.complete(filler);
+                        });
+
+                    } else {
+                        Log.d("Database Program Logic Error", "This player does not exist in database");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Database error", "Could not fetch data from database", e);
+                });
+
+        Log.d("Future", "ran");
+        return retOwner;
+    }
 }
