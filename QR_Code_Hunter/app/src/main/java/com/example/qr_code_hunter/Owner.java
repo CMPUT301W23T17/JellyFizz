@@ -255,13 +255,12 @@ public class Owner extends Player implements Parcelable {
      *      Returns document reference to new code added in QrCode collection
      */
     public DocumentReference createNewCode(QrCode qrCode, String comment, String image) {
-        // Hashing geolocation for new qrcode
-        double latitude = qrCode.getGeolocation().latitude;
-        double longitude = qrCode.getGeolocation().longitude;
         // Input into database
         Map<String, Object> data = new HashMap<>();
-        data.put("latitude",latitude);
-        data.put("longitude",longitude);
+        if (qrCode.getGeolocation() != null) {
+            data.put("latitude",qrCode.getGeolocation().latitude);
+            data.put("longitude",qrCode.getGeolocation().longitude);
+        }
         data.put("Score",qrCode.getScore());
         data.put("codeName",qrCode.getName());
         data.put("binaryString",qrCode.getBinaryString());
