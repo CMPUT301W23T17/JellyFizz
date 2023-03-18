@@ -39,7 +39,6 @@ public class Owner extends Player implements Parcelable {
     Boolean codeDuplicated = false;
     Boolean codeUnique = false;
     DocumentReference existedQrRef;
-    private int highestCode;
 
     public Owner(){}
 
