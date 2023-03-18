@@ -1,19 +1,29 @@
 package com.example.qr_code_hunter;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 
+import android.media.Image;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Map;
 
-public class QRCode {
-    //QR_Code Attribute
-    private String code_name = "";
+public class QrCode implements Parcelable {
+    //    private ArrayList<DocumentReference> playerList = new ArrayList<>();
+    private String codeName = "";
+    //    private String visualRep = "";
+    private String hashString;
+    private String binaryString;
     private Integer score;
-    private String visual_rep = "";
+    //    private Boolean dataPrivacy;
+    private LatLng geolocation;
+    ShaGenerator sha = new ShaGenerator();
 
-
-    //Supported Attribute
     private static Map<Character, Integer> alphabetPoints = Map.of(
             'a', 10,
             'b', 11,
@@ -23,61 +33,46 @@ public class QRCode {
             'f', 15
     );
 
-
-    QRCode(String scannedString) throws NoSuchAlgorithmException {
-        setName(this.shaGeneratorBinary(scannedString));
-        setVisualRep(this.shaGeneratorBinary(scannedString));
-        setScore(this.shaGeneratorHexadecimal(scannedString));
+    QrCode(String scannedString) throws NoSuchAlgorithmException {
+        setName(sha.shaGeneratorBinary(scannedString));
+//        setVisualRep(sha.shaGeneratorBinary(scannedString));
+        setScore(sha.shaGeneratorHexadecimal(scannedString));
+        this.hashString = sha.shaGeneratorHexadecimal(scannedString);
+        this.binaryString = sha.shaGeneratorBinary(scannedString);
     }
 
+    protected QrCode(Parcel in) {
+        codeName = in.readString();
+//        visualRep = in.readString();
+        hashString = in.readString();
+        if (in.readByte() == 0) {
+            score = null;
+        } else {
+            score = in.readInt();
+        }
+//        byte tmpDataPrivacy = in.readByte();
+//        dataPrivacy = tmpDataPrivacy == 0 ? null : tmpDataPrivacy == 1;
+    }
 
-    /**
-     * Returns a string using SHA-256
-     * @param input a scanned string
-     * @return  a string representation of QR code
-     */
-    public String shaGeneratorHexadecimal(String input) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hash = md.digest(input.getBytes(StandardCharsets.UTF_8));
-        StringBuilder hexString = new StringBuilder();
-
-        for (byte b : hash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
+    public static final Creator<QrCode> CREATOR = new Creator<QrCode>() {
+        @Override
+        public QrCode createFromParcel(Parcel in) {
+            return new QrCode(in);
         }
 
-        return hexString.toString();
-    }
-
-
-    /**
-     * Returns a binary string using SHA-256
-     * @param input a scanned string
-     * @return  a binary string representation of QR code
-     */
-    public String shaGeneratorBinary(String input) throws NoSuchAlgorithmException {
-        String target = this.shaGeneratorHexadecimal(input);
-        target = target.substring(0,5);
-        byte[] bytes = target.getBytes();
-        StringBuilder binary = new StringBuilder();
-        for (byte b : bytes) {
-            int value = b;
-            for (int i = 0; i < 8; i++) {
-                binary.append((value & 128) == 0 ? 0 : 1);
-                value <<= 1;
-            }
+        @Override
+        public QrCode[] newArray(int size) {
+            return new QrCode[size];
         }
-        return binary.toString();
-    }
+    };
 
     /**
-     * This creates a unique name corresponding to one QR code using the first 10 bits of the binary value
+     * This creates a unique name corresponding to the QrCode using 10 bits
      * @param binary
-     *      This is the binary value of the SHA-256 hash of the code
+     *      This is the binary representation string of the SHA-256 hash of the code
      */
     public void setName(String binary) {
-        char bin[] = binary.toCharArray();
+        char[] bin = binary.toCharArray();
         String[][] namesArray = new String[][]{
                 new String[]{"Red", "Jet"},
                 new String[]{"Sea", "Bay"},
@@ -93,16 +88,17 @@ public class QRCode {
 
         for (int i = 0; i < 10; i++) {
             if (bin[i] == '1') {
-                code_name = code_name.concat(namesArray[i][1]);
+                codeName = codeName.concat(namesArray[i][1]);
             } else {
-                code_name = code_name.concat(namesArray[i][0]);
+                codeName = codeName.concat(namesArray[i][0]);
             }
         }
     }
 
     /**
-     * @param hashString this is the hash of the QR_Code scanned representation
-     * @return this methods returns the score of the QR_Code based on the scoring system on eclass
+     * This determines how many points the QrCode is worth for
+     * @param
+     *     hashString the SHA-hash-string of the QrCode
      */
     public void setScore(String hashString) {
         this.score = 0;
@@ -135,104 +131,207 @@ public class QRCode {
         }
     }
 
-
     /**
-     * Returns a visual representation of the QR code
-     * @param binary binary number that will determine the attributes of the visual
-     * @return string representation of QR code
+     * This creates and sets the visual representation of the QrCode
+     * @param
+     *     binary binary string that determines how the visual representation will look like
+     * @return
+     *     string symbolize visual representation of the QR code
      */
-    public void setVisualRep(String binary){
-        char bin[] = binary.toCharArray();
+    public String setVisualRep(String binary){
+        String visualRep = "";
+        char[] bin = binary.toCharArray();
         if(bin[0] == '1'){
-            visual_rep ="  _||||||||||||||_ ";
+            visualRep ="  _||||||||||||||_  ";
         }else{
-            visual_rep ="  _--------------_ ";
+            visualRep ="  _--------------_  ";
         }
         if(bin[1] == '1'){
-            visual_rep = visual_rep.concat("\n { ----      ---- }");
+            visualRep = visualRep.concat("\n { ----      ---- } ");
         }else{
-            visual_rep = visual_rep.concat("\n { ~~~>      <~~~ }");
+            visualRep = visualRep.concat("\n { ~~~)      (~~~ } ");
         }
         if(bin[2] == '1'){
-            visual_rep = visual_rep.concat("\n{| < + > || < + > |}");
+            visualRep = visualRep.concat("\n{| ( + ) || ( + ) |}");
         }else{
-            visual_rep = visual_rep.concat("\n>|-[ @]--||--[ @]-|<");
+            visualRep = visualRep.concat("\n)|-[ @]--||--[ @]-|(");
         }
         if(bin[3] == '1'){
-            visual_rep = visual_rep.concat("\n{|       ||       |}");
-            visual_rep = visual_rep.concat("\n |      {__}      | ");
+            visualRep = visualRep.concat("\n{|       ||       |}");
+            visualRep = visualRep.concat("\n |      {__}      | ");
         }else{
-            visual_rep = visual_rep.concat("\n>|       ||       |<");
-            visual_rep = visual_rep.concat("\n |      <..>      | ");
+            visualRep = visualRep.concat("\n)|       ||       |(");
+            visualRep = visualRep.concat("\n |      (..)      | ");
         }
         if(bin[4] == '1'){
-            visual_rep = visual_rep.concat("\n |   _~~~~~~~~_   | ");
+            visualRep = visualRep.concat("\n |   _~~~~~~~~_   | ");
         }else{
-            visual_rep = visual_rep.concat("\n |_              _| ");
+            visualRep = visualRep.concat("\n |_              _| ");
         }
         if(bin[5] == '1'){
             if(bin[6] == '1'){
-                visual_rep = visual_rep.concat("\n  |_  (______)  _| ");
+                visualRep = visualRep.concat("\n  |_  (______)  _| ");
             }else{
-                visual_rep = visual_rep.concat("\n  |_  [||||||]  _| ");
+                visualRep = visualRep.concat("\n  |_  [||||||]  _| ");
             }
-            visual_rep = visual_rep.concat("\n   |_          _| ");
+            visualRep = visualRep.concat("\n   |_          _| ");
         }else{
             if(bin[6] == '1'){
-                visual_rep = visual_rep.concat("\n |    (______)    | ");
+                visualRep = visualRep.concat("\n |    (______)    | ");
             }else{
-                visual_rep = visual_rep.concat("\n |    [||||||]    | ");
+                visualRep = visualRep.concat("\n |    [||||||]    | ");
             }
-            visual_rep = visual_rep.concat("\n |                | ");
+            visualRep = visualRep.concat("\n |                | ");
         }
         if(bin[7] == '1'){
-            visual_rep = visual_rep.concat("\n -----||||||||----- ");
+            visualRep = visualRep.concat("\n -----||||||||----- ");
         }else{
-            visual_rep = visual_rep.concat("\n ------------------ ");
+            visualRep = visualRep.concat("\n ------------------ ");
         }
+        return visualRep;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//    /**
+//     * This sets the privacy of the QrCode
+//     * @param
+//     *     privacy true if hidden, false if shown
+//     */
+//    public void setPrivacy(Boolean privacy) {
+//        dataPrivacy = privacy;
+//    }
 
     /**
-     * This returns the name of a code
+     * This sets the geolocation of the QrCode
+     * @param
+     *     location the latitude-longitude pair of the QrCode
+     */
+    public void setLocation(LatLng location) {
+        geolocation = location;
+    }
+
+//    /**
+//     * This adds a player to the list of players who have scanned the QrCode
+//     * @param
+//     *     username the string of the player username to be added
+//     */
+//    public void addPlayerScan(String username) {
+//        // method not done
+//    }
+
+//    /**
+//     * This removes a player from the list of players who have scanned the QrCode
+//     * @param
+//     *     username the string of the player username to be deleted
+//     */
+//    public void removePlayerScan(String username) {
+//        // method not done
+//    }
+
+    /**
+     * This returns the unique name of a QrCode
      * @return
      *      Returns a string-type
      */
-    public String getName() {return code_name;}
+    public String getName() {
+        return codeName;
+    }
+
     /**
-     * This returns the visual score of a code
+     * This returns the score of a QrCode
      * @return
-     *      Returns a integer-type
+     *      Returns an integer-type
      */
-    public Integer getScore() {return score;}
+    public Integer getScore() {
+        return score;
+    }
+
     /**
-     * This returns the visual reprsentation of a code
+     * This returns the visual representation of a QrCode
      * @return
      *      Returns a string-type
      */
-    public String getVisualRep() {return visual_rep;}
+    public String getVisualRep(String binaryString) {
+        return setVisualRep(binaryString);
+    }
 
+    /**
+     * This returns the geolocation of a QrCode
+     * @return
+     *      Returns a LatLng (Latitude/Longitude pair) type
+     */
+    public LatLng getGeolocation() {
+        return geolocation;
+    }
+
+//    /**
+//     * This returns the list of players that have scanned the QrCode
+//     * @return
+//     *      Returns an array list of type Document Reference
+//     */
+////    public ArrayList<DocumentReference> getPlayerList() {
+////        return playerList;
+////    }
+
+//    /**
+//     * This returns the privacy set on the QrCode
+//     * @return
+//     *      Returns a Boolean (true if hidden, false if shown)
+//     */
+////    public Boolean getPrivacy() {
+////        return dataPrivacy;
+////    }
+
+    /**
+     * This returns the hash string of the scanned QrCode
+     * @return
+     *      Returns a string-type
+     */
+    public String getHashString() {
+        return hashString;
+    }
+
+    /**
+     * This returns the binary string of the scanned QrCode
+     * @return
+     *      Returns a string-type
+     */
+    public String getBinaryString() {
+        return binaryString;
+    }
+
+    /**
+     * Describe the kinds of special objects contained in this Parcelable
+     * instance's marshaled representation. For example, if the object will
+     * include a file descriptor in the output of {@link #writeToParcel(Parcel, int)},
+     * the return value of this method must include the
+     * {@link #CONTENTS_FILE_DESCRIPTOR} bit.
+     *
+     * @return a bitmask indicating the set of special object types marshaled
+     * by this Parcelable object instance.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(codeName);
+//        dest.writeString(visualRep);
+        dest.writeString(hashString);
+        if (score == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(score);
+        }
+//        dest.writeByte((byte) (dataPrivacy == null ? 0 : dataPrivacy ? 1 : 2));
+    }
 }
