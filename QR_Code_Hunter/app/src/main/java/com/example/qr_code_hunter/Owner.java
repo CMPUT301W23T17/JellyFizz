@@ -35,15 +35,17 @@ public class Owner extends Player implements Parcelable {
     private final CollectionReference scanned = db.collection("scannedBy");
 
     private DocumentReference ownerRef;
+    private int highestCode;
     Boolean codeDuplicated = false;
     DocumentReference existedQrRef;
 
     public Owner(){}
 
     public Owner(String phone, String email, String username, Boolean privacy,
-                 ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned) {
+                 ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned, int highestCode) {
         super(phone, email, username, privacy, codeScanned, score, rank, totalCodeScanned);
         this.ownerRef = this.player.document(username);
+        this.highestCode = highestCode;
     }
 
     protected Owner(Parcel in) {
