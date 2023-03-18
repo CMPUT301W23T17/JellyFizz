@@ -14,6 +14,128 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/number_rank"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#DD6E6E"
+            android:textColorLink="#D65F5F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/number_code"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.433" />
+
+        <TextView
+            android:id="@+id/number_code"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#DD6E6E"
+            android:textColorLink="#D65F5F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/codes_scanned_string"
+            app:layout_constraintEnd_toStartOf="@id/number_rank"
+            app:layout_constraintStart_toEndOf="@id/number_points"
+            app:layout_constraintTop_toBottomOf="@+id/user_name"
+            app:layout_constraintVertical_bias="1.0"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"/>
+
+        <TextView
+            android:id="@+id/number_points"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#DD6E6E"
+            android:textColorLink="#D65F5F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/number_code"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.433"
+            />
+
+        <TextView
+            android:id="@+id/point_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="points"
+            android:textColor="#7E7E7E"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/codes_scanned_string"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.47" />
+
+        <TextView
+            android:id="@+id/codes_scanned_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="codes scanned"
+            android:textColor="#7E7E7E"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/rank_string"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/point_string"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.467"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"/>
+
+        <TextView
+            android:id="@+id/rank_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ranked"
+            android:textColor="#7E7E7E"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/codes_scanned_string"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.467" />
+
+        <TextView
+            android:id="@+id/list_of_code_string"
+            android:layout_width="125dp"
+            android:layout_height="29dp"
+            android:text="List of codes"
+            android:textColor="#7E7E7E"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.055"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.829" />
+
+        <TextView
+            android:id="@+id/more_button"
+            android:layout_width="57dp"
+            android:layout_height="26dp"
+            android:text="MORE >"
+            android:textColor="#7E7E7E"
+            android:textStyle="bold"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.816"
+            app:layout_constraintStart_toEndOf="@+id/list_of_code_string"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.825" />
+
+        <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,12 +145,25 @@
             android:textSize="17sp"
             android:textStyle="bold"
             android:textAlignment="viewStart"
-            app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
-            app:layout_constraintEnd_toEndOf="@+id/rectangle_"
+            app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
+            app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
             app:layout_constraintHorizontal_bias="0.144"
-            app:layout_constraintStart_toStartOf="@+id/rectangle_"
-            app:layout_constraintTop_toTopOf="@+id/rectangle_"
+            app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
+            app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
             app:layout_constraintVertical_bias="0.475" />
+
+        <Switch
+            android:id="@+id/switch_privacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="50dp"
+            android:text="HIDE"
+            app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
+            app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
+            app:layout_constraintHorizontal_bias="0.912"
+            app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
+            app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
+            app:layout_constraintVertical_bias="0.153" />
 
         <TextView
             android:textAlignment="viewStart"
@@ -40,15 +175,15 @@
             android:textColor="#24366A"
             android:textSize="17sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
-            app:layout_constraintEnd_toEndOf="@+id/rectangle_"
+            app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
+            app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
             app:layout_constraintHorizontal_bias="0.144"
-            app:layout_constraintStart_toStartOf="@+id/rectangle_"
-            app:layout_constraintTop_toTopOf="@+id/rectangle_"
+            app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
+            app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
             app:layout_constraintVertical_bias="0.756" />
 
         <ImageView
-            android:id="@+id/rectangle_"
+            android:id="@+id/owner_infor_box"
             android:layout_width="352dp"
             android:layout_height="105dp"
             android:background="@drawable/rectangle_2"
@@ -73,137 +208,6 @@
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.344" />
-
-        <Switch
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="50dp"
-            android:text="HIDE"
-            app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
-            app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-            app:layout_constraintHorizontal_bias="0.912"
-            app:layout_constraintStart_toStartOf="@+id/rectangle_"
-            app:layout_constraintTop_toTopOf="@+id/rectangle_"
-            app:layout_constraintVertical_bias="0.153" />
-
-        <TextView
-            android:id="@+id/number_points"
-            android:layout_width="29dp"
-            android:layout_height="27dp"
-            android:text="0"
-            android:textColor="#DD6E6E"
-            android:textColorLink="#D65F5F"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.138"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.43" />
-
-        <TextView
-            android:id="@+id/number_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="#DD6E6E"
-            android:textColorLink="#D65F5F"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textpoint2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.523"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_name"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
-            android:id="@+id/number_rank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="#DD6E6E"
-            android:textColorLink="#D65F5F"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.759"
-            app:layout_constraintStart_toEndOf="@+id/number_code"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.43" />
-
-        <TextView
-            android:id="@+id/textpoint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="points"
-            android:textColor="#7E7E7E"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.107"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/number_points"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/textpoint2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="codes scanned"
-            android:textColor="#7E7E7E"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textpoint3"
-            app:layout_constraintHorizontal_bias="0.509"
-            app:layout_constraintStart_toEndOf="@+id/textpoint"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.462" />
-
-        <TextView
-            android:id="@+id/textpoint4"
-            android:layout_width="57dp"
-            android:layout_height="26dp"
-            android:text="MORE >"
-            android:textColor="#7E7E7E"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.816"
-            app:layout_constraintStart_toEndOf="@+id/textpoint5"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.825" />
-
-        <TextView
-            android:id="@+id/textpoint5"
-            android:layout_width="125dp"
-            android:layout_height="29dp"
-            android:text="List of codes"
-            android:textColor="#7E7E7E"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.055"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.829" />
-
-        <TextView
-            android:id="@+id/textpoint3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ranked"
-            android:textColor="#7E7E7E"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.893"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.463" />
 
 
         <ImageView

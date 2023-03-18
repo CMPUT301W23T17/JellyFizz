@@ -129,8 +129,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                             currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
                                         } else {
                                             currentOwner.addQRCode(newCode, codePrivacy, null, encodedImage);
-                                        }
-
                                     } else {
                                         Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }

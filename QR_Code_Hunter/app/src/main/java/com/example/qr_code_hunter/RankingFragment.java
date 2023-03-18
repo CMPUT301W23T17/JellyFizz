@@ -32,11 +32,7 @@ import java.util.Objects;
  */
 public class RankingFragment extends Fragment {
     ListView rankings;
-    TextView header;
     RankAdapter adapter;
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//    final CollectionReference player = db.collection("Players");
-
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -90,7 +86,6 @@ public class RankingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        header = getView().findViewById(R.id.ranking_header);
         rankings = getView().findViewById(R.id.leaderboard);
 
         Rank rankLists = new Rank();
@@ -100,9 +95,7 @@ public class RankingFragment extends Fragment {
         rankLists.arrangeRank(new Rank.ArrangeRankCallback() {
             @Override
             public void onArrangeRankComplete(ArrayList<Rank> ranking) {
-                if (!rankArr.isEmpty()) {
-                    rankArr.clear();
-                }
+
                 rankArr.addAll(ranking);
                 adapter = new RankAdapter(getActivity(), 0, ranking);
                 rankings.setAdapter(adapter);
@@ -126,7 +119,7 @@ public class RankingFragment extends Fragment {
 
         ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
         TextView yourRankLabel = getView().findViewById(R.id.yourRank);
-        if(yourRank < 4) {
+        if(yourRank < 4 && yourRank != 0) {
             if(yourRank == 1) {
                 yourTrophy.setImageResource(R.drawable.gold_trophy);
             }

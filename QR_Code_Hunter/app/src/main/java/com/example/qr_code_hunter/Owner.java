@@ -35,6 +35,7 @@ public class Owner extends Player implements Parcelable {
     private final CollectionReference scanned = db.collection("scannedBy");
 
     private DocumentReference ownerRef;
+    private int highestCode;
     Boolean codeDuplicated = false;
     Boolean codeUnique = false;
     DocumentReference existedQrRef;

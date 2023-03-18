@@ -36,8 +36,10 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity android:name=".NewCodeActivity" />
         <activity android:name=".NewCodeActivity2" />
+
         <activity
             android:name=".CaptureAct"
             android:screenOrientation="portrait"
