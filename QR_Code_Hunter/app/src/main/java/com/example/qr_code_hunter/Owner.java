@@ -37,7 +37,9 @@ public class Owner extends Player implements Parcelable {
     private DocumentReference ownerRef;
     private int highestCode;
     Boolean codeDuplicated = false;
+    Boolean codeUnique = false;
     DocumentReference existedQrRef;
+    private int highestCode;
 
     public Owner(){}
 
@@ -66,6 +68,105 @@ public class Owner extends Player implements Parcelable {
     };
 
     /**
+     * This function delete QrCode
+     * @param hashString
+     *        string of QrCode to be deleted
+     * @param codeScore
+     *        score of QrCode to be deleted
+     * @param nextScore
+     *        score of QrCode below it (QrCode are sorted in descending order)
+     */
+    public void deleteQRCode(String hashString, int codeScore, int nextScore) {
+        DocumentReference qrRef = qrcode.document(hashString);
+        checkUniqueCodeScanned(hashString, new CheckUniqueCallback() {
+                    @Override
+                    public void onCheckUniqueComplete(Boolean unique) {
+                        if (unique) {
+                            removeFromQrCollection(hashString);
+                        }
+                        removeRelationship(qrRef);
+                        updateRankingRelated(codeScore,-1,nextScore);
+                        updateRank();
+                    }
+                });
+    }
+
+    public interface CheckUniqueCallback {
+        void onCheckUniqueComplete(Boolean unique);
+    }
+
+    /**
+     * This returns true if the owner is the only person who scanned this code
+     * @param hashString
+     *      hashString of to be deleted code
+     * @param callback
+     *      interface deal with asynchronous problem when check duplicated
+     */
+    public void checkUniqueCodeScanned(String hashString, CheckUniqueCallback callback) {
+        // Get query of players scan newly scanned code
+        DocumentReference qrRef= qrcode.document(hashString);
+        scanned.whereEqualTo("qrCodeScanned",qrRef)
+                .get()
+                .addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().size() == 1) {
+                    codeUnique = true;
+                    Log.d("Working", "Only 1 player scanned this");
+                } else {codeUnique = false;}
+            } else {
+                Log.e("Working", "Failed with: ", task.getException());
+            }
+            callback.onCheckUniqueComplete(codeUnique);
+        });
+    }
+
+    /**
+     * This function remove QrCode from QrCodes collection in database
+     * @param hashString
+     *        string of QrCode to be deleted
+     */
+    public void removeFromQrCollection(String hashString) {
+        qrcode.document(hashString)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("working", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("working", "Error deleting document", e);
+                    }
+                });
+    }
+
+
+    /**
+     * This function remove relationship between player and that QrCode in scannedBy collection
+     * @param qrRef
+     *        document reference to the qrcode to be deleted
+     */
+    public void removeRelationship(DocumentReference qrRef) {
+        // Get query of players scan newly scanned code
+        Query query = scanned.whereEqualTo("Player",ownerRef)
+                .whereEqualTo("qrCodeScanned",qrRef)
+                .limit(1) ;
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (DocumentSnapshot document : task.getResult()) {
+                    document.getReference().delete();
+                    Log.d("Working", "Document deleted!");
+                }
+            } else {
+                Log.e("Working", "Failed with: ", task.getException());
+            }
+        });
+    }
+
+
+    /**
      * This function add new QrCode
      *
      * @param code    object of QrCode class, store newly created code info
@@ -78,16 +179,17 @@ public class Owner extends Player implements Parcelable {
             @Override
             public void onCheckExitedComplete(DocumentReference qrRef) {
                 // Do something with the documentReference object here
-                    if (qrRef == null) {
-                        // assign document reference to newly create QrCode in case it isn't in the database
-                        qrRef = createNewCode(code, comment, image);
-                    }
-                    addRelationship(qrRef);
-                    updateSumScore(code);
-                    updateRank();
-                    }
+                if (qrRef == null) {
+                    // assign document reference to newly create QrCode in case it isn't in the database
+                    qrRef = createNewCode(code, comment, image);
+                }
+                addRelationship(qrRef, comment, image);
+                updateRankingRelated(code.getScore(),1,0);
+                updateRank();
+            }
         });
     }
+
 
     /**
      * Describe the kinds of special objects contained in this Parcelable
@@ -136,7 +238,7 @@ public class Owner extends Player implements Parcelable {
                     Log.d("Working", "Document exists!");
                 }
             } else {
-                Log.d("Working", "Failed with: ", task.getException());
+                Log.e("Working", "Failed with: ", task.getException());
             }
             callback.onCheckExitedComplete(existedQrRef);
         });
@@ -162,8 +264,8 @@ public class Owner extends Player implements Parcelable {
         data.put("latitude",latitude);
         data.put("longitude",longitude);
         data.put("Score",qrCode.getScore());
-        data.put("Privacy",qrCode.getPrivacy());
         data.put("codeName",qrCode.getName());
+        data.put("binaryString",qrCode.getBinaryString());
         // Create new document whose ID is the hash string
         DocumentReference newRef = qrcode.document(qrCode.getHashString());
         newRef.set(data)
@@ -176,52 +278,27 @@ public class Owner extends Player implements Parcelable {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Data not added" + e.toString());
+                        Log.e("Working", "Data not added" + e.toString());
                     }
                 });
-        addSubCollection(newRef, comment, image);
         return newRef;
     }
 
     /**
-     * This add comment and photo into QrCode document, stored as subcollection
-     * @param newRef
-     *       document reference of new code
+     * This add new document (represents relationship) into scannedBy collection
+     * @param qrRef
+     *       document reference to newly scanned QrCode
      * @param comment
      *       comment string of that player for new qrcode
      * @param image
      *       image go along with the qrcode just scanned
      */
-    public void addSubCollection(DocumentReference newRef, String comment, String image) {
-        // Create a subcollection called "CommentAndPhoto" and add a new document with "username"
-        Map<String, Object> subData = new HashMap<>();
-        subData.put("Comment", comment);
-        subData.put("Photo", image);
-        newRef.collection("CommentAndPhoto").document(this.getUsername()).set(subData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Working", "Data added successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Data not added" + e.toString());
-                    }
-                });
-    }
-
-
-    /**
-     * This add new document (represents relationship) into scannedBy collection
-     * @param
-     *      qrRef document reference to newly scanned QrCode
-     */
-    public void addRelationship(DocumentReference qrRef) {
+    public void addRelationship(DocumentReference qrRef, String comment, String image) {
         Map<String, Object> data = new HashMap<>();
-        data.put("Player",ownerRef);
-        data.put("qrCodeScanned",qrRef);
+        data.put("Player", ownerRef);
+        data.put("qrCodeScanned", qrRef);
+        if (comment != null)  {data.put("Comment", comment);}
+        if (image != null) {data.put("Photo", image);}
         scanned
                 .document()
                 .set(data)
@@ -234,34 +311,46 @@ public class Owner extends Player implements Parcelable {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Data not added" + e.toString());
+                        Log.e("Working", "Data not added" + e.toString());
                     }
                 });
     }
 
+    public interface UpdateScoreCallback {
+        void onUpdateScoreComplete();
+    }
+
 
     /**
-     * This update total score of the player after adding given qrCode
+     * This update total score, rank and highest code point of the player after adding/removing given qrCode
      * @param
-     *      qrCode belongs to QrCode class, it is the newly scanned code
+     *      codeScore score of the newly scanned code
+     * @param
+     *      addition 1 represents add, -1 represent subtract
      */
-    public void updateSumScore(QrCode qrCode) {
-        int newScore = this.getTotalScore() + qrCode.getScore();
-        int newTotalCodeScanned = this.getTotalCodeScanned() + 1;
+    public void updateRankingRelated(int codeScore, int addition, int nextScore) {
+        int newScore = this.getTotalScore() + (addition*codeScore);
+        int newTotalCodeScanned = this.getTotalCodeScanned() + addition;
         Map<String, Object> data = new HashMap<>();
+        if (addition == 1 && codeScore > highestCode) {
+            highestCode = codeScore;
+            data.put("highestCode",highestCode);
+        } else if (addition == -1 && codeScore == highestCode) {
+            data.put("highestCode",nextScore);
+        }
         data.put("score",newScore);
         data.put("totalCodeScanned",newTotalCodeScanned);
         ownerRef.update(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("Working", "Score & CodeNum updated successfully");
+                        Log.d("Working", "Score, CodeNum, highest code updated successfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("Working", "Score & CodeNum not updated" + e.toString());
+                        Log.e("Working", "Not updated" + e.toString());
                     }
                 });
     }
@@ -270,7 +359,7 @@ public class Owner extends Player implements Parcelable {
         void onCheckDuplicateComplete(Boolean duplicated);
     }
 
-        /**
+    /**
      * This returns duplication check of newly scanned QrCode
      * @param qrRef
      *      document reference of code just scanned
@@ -287,25 +376,20 @@ public class Owner extends Player implements Parcelable {
                 if (!task.getResult().isEmpty()) {
                     codeDuplicated = true;
                     Log.d("Working", "Document exists!");
-                }
+                } else {codeDuplicated = false;}
             } else {
-                Log.d("Working", "Failed with: ", task.getException());
+                Log.e("Working", "Failed with: ", task.getException());
             }
             callback.onCheckDuplicateComplete(codeDuplicated);
         });
     }
 
 
-    public void deleteQRCode(QrCode code) {
-        // We need to access the QrCode list to see how it works first, cause it is real time update
-    }
-
     /**
      * This set privacy for owner's info (email and phone number) on their user profile
      * @param visibility
      *      true indicates shows info, false will hide info
      */
-
 //    public void setPrivacy(Boolean visibility) {
 //        this.profileInfo.privacy = visibility;
 //    }
@@ -319,17 +403,21 @@ public class Owner extends Player implements Parcelable {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 int rank = 1;
+                int position = 1;
                 int nextScore = 0;
                 for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                     int score = document.getLong("score").intValue();
                     document.getReference().update("rank", rank);
-
-                    QueryDocumentSnapshot nextDocument = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(rank);
-                    nextScore = nextDocument.getLong("score").intValue();
-                    if (nextScore == 0) {
-                        rank = 0;
-                    } else if (nextScore < score && nextDocument != null){
-                        rank++;
+                    // only update if there is still more documents in the query
+                    if (position < queryDocumentSnapshots.size()) {
+                        QueryDocumentSnapshot nextDocument = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(position);
+                        nextScore = nextDocument.getLong("score").intValue();
+                        if (nextScore == 0) {
+                            rank = 0;
+                        } else if (nextScore < score && nextDocument != null) {
+                            rank++;
+                        }
+                        position++;
                     }
                 }
             }

@@ -3,10 +3,9 @@ package com.example.qr_code_hunter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,10 +25,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This is the second page of the new code details (editable fields)
@@ -44,6 +44,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
     QrCode newCode;
     String encodedImage;
     Owner currentOwner;
+
+    // New variable to add new QrCode
+    private Boolean codePrivacy;
 
     DocumentReference justScan;
 
@@ -108,16 +111,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                 }
                 if(recordCode.isChecked()) {
-                    newCode.setPrivacy(false); // actual code is saved
+                    codePrivacy = false; // actual code is saved
                 } else {
-                    newCode.setPrivacy(true);
+                    codePrivacy = true;
                 }
-
-                Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
-                intent.putExtra("Save code", newCode);
-                intent.putExtra("Comment", descBox.getText().toString());
-                intent.putExtra("Image", encodedImage);
-                startActivity(intent);
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
@@ -127,18 +124,34 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 @Override
                                 public void onCheckDuplicateComplete(Boolean duplicated) {
                                     if(!duplicated) {
-                                        Toast.makeText(NewCodeActivity2.this, "Not Duplicated",Toast.LENGTH_SHORT).show();
-                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                        Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                                        if((int) charCount.getText().toString().charAt(0) > 0) {
+                                            currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
+                                        } else {
+                                            currentOwner.addQRCode(newCode, codePrivacy, null, encodedImage);
                                     } else {
-                                        Toast.makeText(NewCodeActivity2.this, "Duplicated",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                         } else {
-                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                            if((int) charCount.getText().toString().charAt(0) > 0) {
+                                currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
+                            } else {
+                                currentOwner.addQRCode(newCode, codePrivacy,null, encodedImage);
+                            }
                         }
+                        Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startActivity(intent);
+                            }
+                        }, 2000);
                     }
                 });
+
             }
         });
     }
