@@ -39,7 +39,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
     EditText descBox;
     TextView charCount;
     CheckBox saveGeo;
-    CheckBox recordCode;
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
@@ -53,10 +52,8 @@ public class NewCodeActivity2 extends AppCompatActivity {
         descBox = findViewById(R.id.comment_box);
         charCount = findViewById(R.id.char_count_label);
         saveGeo = findViewById(R.id.save_geolocation_button);
-        recordCode = findViewById(R.id.record_code_button);
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
-//        owner = getIntent().getParcelableExtra("Current Owner");
 
         //set the owner object, still need to discuss what is happening with this list of qrcodes
         loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
