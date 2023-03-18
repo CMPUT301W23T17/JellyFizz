@@ -76,20 +76,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/congrats_label" />
 
-    <TextView
-        android:id="@+id/others_scan_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="80dp"
-        android:text="+3 others have scanned this code"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/next_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/points_label"
-        app:layout_constraintVertical_bias="0.454" />
-
     <Button
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
@@ -98,15 +84,15 @@
         android:paddingHorizontal="50dp"
         android:paddingVertical="18dp"
         android:text="Next"
-        android:textStyle="bold"
         android:textColor="@color/white"
         android:textSize="21sp"
+        android:textStyle="bold"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.888" />
+        app:layout_constraintVertical_bias="0.847" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
