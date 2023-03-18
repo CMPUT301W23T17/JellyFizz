@@ -384,11 +384,11 @@ public class Owner extends Player implements Parcelable {
     }
 
 
-    /**
-     * This set privacy for owner's info (email and phone number) on their user profile
-     * @param visibility
-     *      true indicates shows info, false will hide info
-     */
+//    /**
+//     * This set privacy for owner's info (email and phone number) on their user profile
+//     * @param visibility
+//     *      true indicates shows info, false will hide info
+//     */
 //    public void setPrivacy(Boolean visibility) {
 //        this.profileInfo.privacy = visibility;
 //    }
