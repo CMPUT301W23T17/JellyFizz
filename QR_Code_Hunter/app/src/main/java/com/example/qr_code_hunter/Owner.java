@@ -38,14 +38,15 @@ public class Owner extends Player implements Parcelable {
     Boolean codeDuplicated = false;
     Boolean codeUnique = false;
     DocumentReference existedQrRef;
-    DocumentReference highestQrCode;
+    private int highestCode;
 
     public Owner(){}
 
     public Owner(String phone, String email, String username, Boolean privacy,
-                 ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned) {
+                 ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned, int highestCode) {
         super(phone, email, username, privacy, codeScanned, score, rank, totalCodeScanned);
         this.ownerRef = this.player.document(username);
+        this.highestCode = highestCode;
     }
 
     protected Owner(Parcel in) {
@@ -71,8 +72,10 @@ public class Owner extends Player implements Parcelable {
      *        string of QrCode to be deleted
      * @param codeScore
      *        score of QrCode to be deleted
+     * @param nextScore
+     *        score of QrCode below it (QrCode are sorted in descending order)
      */
-    public void deleteQRCode(String hashString, int codeScore) {
+    public void deleteQRCode(String hashString, int codeScore, int nextScore) {
         DocumentReference qrRef = qrcode.document(hashString);
         checkUniqueCodeScanned(hashString, new CheckUniqueCallback() {
                     @Override
@@ -81,9 +84,8 @@ public class Owner extends Player implements Parcelable {
                             removeFromQrCollection(hashString);
                         }
                         removeRelationship(qrRef);
-                        updateSumScore(codeScore,-1);
+                        updateRankingRelated(codeScore,-1,nextScore);
                         updateRank();
-//        updateHighestCode(code);
                     }
                 });
     }
@@ -181,9 +183,8 @@ public class Owner extends Player implements Parcelable {
                     qrRef = createNewCode(code, comment, image);
                 }
                 addRelationship(qrRef, comment, image);
-                updateSumScore(code.getScore(),1);
+                updateRankingRelated(code.getScore(),1,0);
                 updateRank();
-                updateHighestCode(code);
             }
         });
     }
@@ -320,29 +321,35 @@ public class Owner extends Player implements Parcelable {
 
 
     /**
-     * This update total score of the player after adding/removing given qrCode
+     * This update total score, rank and highest code point of the player after adding/removing given qrCode
      * @param
      *      codeScore score of the newly scanned code
      * @param
      *      addition 1 represents add, -1 represent subtract
      */
-    public void updateSumScore(int codeScore, int addition) {
+    public void updateRankingRelated(int codeScore, int addition, int nextScore) {
         int newScore = this.getTotalScore() + (addition*codeScore);
         int newTotalCodeScanned = this.getTotalCodeScanned() + addition;
         Map<String, Object> data = new HashMap<>();
+        if (addition == 1 && codeScore > highestCode) {
+            highestCode = codeScore;
+            data.put("highestCode",highestCode);
+        } else if (addition == -1 && codeScore == highestCode) {
+            data.put("highestCode",nextScore);
+        }
         data.put("score",newScore);
         data.put("totalCodeScanned",newTotalCodeScanned);
         ownerRef.update(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("Working", "Score & CodeNum updated successfully");
+                        Log.d("Working", "Score, CodeNum, highest code updated successfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("Working", "Score & CodeNum not updated" + e.toString());
+                        Log.e("Working", "Not updated" + e.toString());
                     }
                 });
     }
@@ -414,69 +421,5 @@ public class Owner extends Player implements Parcelable {
                 }
             }
         });
-    }
-
-
-    /**
-     * This get current highest score of player and compare to new code's score
-     * @param newCode
-     *      QrCode object that just scanned
-     */
-    public void updateHighestCode(QrCode newCode) {
-        findHighestCode(new FindHighestCallback() {
-            @Override
-            public void onFindHighestComplete(int highestCode) {
-                if (highestCode < newCode.getScore()) {
-                    updateNewHighestCodePoint(newCode.getScore());
-                }
-            }
-        });
-    }
-
-
-    public interface FindHighestCallback {
-        void onFindHighestComplete(int highestCode);
-    }
-
-    /**
-     * This get the highest score code of current player (owner)
-     * @param
-     *      callback start until get data finishes
-     */
-    public void findHighestCode(FindHighestCallback callback) {
-        ownerRef.get().addOnCompleteListener(task -> {
-            int highestCode = 0;
-            if (task.isSuccessful()) {
-                DocumentSnapshot result = task.getResult();
-                highestCode = result.getLong("highestCode").intValue();
-                Log.d("Working", "Code highest exists!");
-            } else {
-                Log.e("Working", "Failed with: ", task.getException());
-            }
-            callback.onFindHighestComplete(highestCode);
-        });
-    }
-
-    /**
-     * Update new highest score code for current player
-     * @param
-     *      newHighestScore new highest score to be update in database
-     */
-    public void updateNewHighestCodePoint (int newHighestScore) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("highestCode",newHighestScore);
-        ownerRef.update(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Working", "Highest code updated successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Working", "Highest code not updated" + e.toString());
-                    }
-                });
     }
 }
