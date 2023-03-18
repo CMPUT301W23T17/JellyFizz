@@ -144,10 +144,11 @@ public class loginActivity extends AppCompatActivity {
                     int rank = document.getLong("rank").intValue();
                     int score = document.getLong("score").intValue();
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
+                    int highestCode = document.getLong("highestCode").intValue();
 
                     getQR_Codes(inputOwner).thenAccept(returnedCodes -> {
                         currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                                false, returnedCodes, score, rank, totalCodeScanned);;
+                                false, returnedCodes, score, rank, totalCodeScanned, highestCode);
                     });
 
                 } else {
