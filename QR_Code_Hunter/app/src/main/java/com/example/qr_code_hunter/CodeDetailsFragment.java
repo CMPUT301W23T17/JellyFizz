@@ -1,39 +1,44 @@
 package com.example.qr_code_hunter;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 
 public class CodeDetailsFragment extends Fragment {
     String hashString; // what is provided into this fragment
+    ArrayList<String> otherPlayers = new ArrayList<String>();
 
     TextView codeName;
     TextView codeVisual;
@@ -42,6 +47,8 @@ public class CodeDetailsFragment extends Fragment {
     ImageView codeImage;
     EditText codeDesc;
     TextView codeOthers;
+    TextView backButton;
+    TextView editButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,6 +95,9 @@ public class CodeDetailsFragment extends Fragment {
         codeImage = view.findViewById(R.id.details_image);
         codeDesc = view.findViewById(R.id.details_comment);
         codeOthers = view.findViewById(R.id.details_others);
+
+        backButton = view.findViewById(R.id.details_backBtn);
+        editButton = view.findViewById(R.id.details_editCommentBtn);
 
         return view;
     }
@@ -160,11 +170,95 @@ public class CodeDetailsFragment extends Fragment {
                                         }
                                     });
                                 }
+                                else if (!username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
+                                    // other players who have scanned this code
+                                    otherPlayers.add(username);
+                                }
 
                             }
                         }
                     }
                 });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // set focus on editText field, set editText field to editable, but not clickable?
+//                codeDesc.setEnabled(true);
+//                codeDesc.setInputType(InputType.TYPE_CLASS_TEXT);
+//                codeDesc.setClickable(false);
+                codeDesc.setFocusable(true);
+                Toast.makeText(getActivity(), "Editing comment field..", Toast.LENGTH_SHORT).show();
+
+                codeDesc.requestFocus();
+                if(codeDesc.requestFocus()) {
+                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+
+                // if above does not work:
+                //InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                //imm.showSoftInput(codeDesc, InputMethodManager.SHOW_IMPLICIT);
+
+                // in case keyboard still does not show:
+                //imm.showSoftInput(codeDesc, InputMethodManager.SHOW_FORCED);
+
+            }
+        });
+
+        codeDesc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+//                    codeDesc.setEnabled(false);
+//                    codeDesc.setInputType(InputType.TYPE_NULL);
+                    codeDesc.setClickable(false);
+                    codeDesc.setFocusable(false);
+                }
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // replace fragment with player's list of codes fragment screen
+            }
+        });
+
+
+        codeOthers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // opens alert dialog? or fragment?
+                AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
+                builderSingle.setTitle("Other players who have scanned this code");
+
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
+                for(String playerName: otherPlayers) {
+                    arrayAdapter.add(playerName);
+                }
+
+                builderSingle.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String selectedPlayer = arrayAdapter.getItem(which);
+                        // go to the selectedPlayer profile
+                    }
+                });
+                builderSingle.show();
+            }
+        });
+
     }
+
 
 }
