@@ -45,11 +45,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
     String encodedImage;
     Owner currentOwner;
 
-    // New variable to add new QrCode
-    private Boolean codePrivacy;
-
-    DocumentReference justScan;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,11 +105,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 if(saveGeo.isChecked()) {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                 }
-                if(recordCode.isChecked()) {
-                    codePrivacy = false; // actual code is saved
-                } else {
-                    codePrivacy = true;
-                }
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
@@ -126,9 +116,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                     if(!duplicated) {
                                         Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
                                         if((int) charCount.getText().toString().charAt(0) > 0) {
-                                            currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
+                                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                                         } else {
-                                            currentOwner.addQRCode(newCode, codePrivacy, null, encodedImage);
+                                            currentOwner.addQRCode(newCode, null, encodedImage);
+                                        }
                                     } else {
                                         Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }
@@ -137,9 +128,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         } else {
                             Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
                             if((int) charCount.getText().toString().charAt(0) > 0) {
-                                currentOwner.addQRCode(newCode, codePrivacy, descBox.getText().toString(),encodedImage);
+                                currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                             } else {
-                                currentOwner.addQRCode(newCode, codePrivacy,null, encodedImage);
+                                currentOwner.addQRCode(newCode, null, encodedImage);
                             }
                         }
                         Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
@@ -151,7 +142,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         }, 2000);
                     }
                 });
-
             }
         });
     }
