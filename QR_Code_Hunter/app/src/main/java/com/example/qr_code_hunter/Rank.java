@@ -79,6 +79,7 @@ public class Rank {
                                 rankingCode = index;
                                 rankArrs.add(playerR);
                             }
+                            lastCode = userHighestCode;
                             index = index +1 ;
                         }
                     } else {

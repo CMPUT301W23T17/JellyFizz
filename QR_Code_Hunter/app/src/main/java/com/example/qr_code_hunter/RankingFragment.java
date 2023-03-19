@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  */
 public class RankingFragment extends Fragment {
     ListView rankings;
-    TextView button_highest_qr_score, button_total_score;
+    TextView buttonTotalScore, buttonHighestCode;
     RankAdapter adapter;
     String ownerName = loginActivity.getOwnerName();
 
@@ -104,14 +105,14 @@ public class RankingFragment extends Fragment {
 //            }
 //        });
         //  Handle total score button amd highest code button
-        button_highest_qr_score = getView().findViewById(R.id.button_highest_qr_score);
-        button_total_score = getView().findViewById(R.id.button_total_score);
+        buttonTotalScore = getView().findViewById(R.id.buttonTotalScore);
+        buttonHighestCode = getView().findViewById(R.id.buttonHighestCode);
 
-        button_highest_qr_score.setOnClickListener(new View.OnClickListener() {
+        buttonTotalScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_total_score.setBackgroundColor(Color.parseColor("#ffffff"));
-                button_highest_qr_score.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
+                buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
                 /////////////////////////////////////////////////////////////////
                 rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
                     @Override
@@ -124,11 +125,11 @@ public class RankingFragment extends Fragment {
                 });
             }
         });
-        button_total_score.setOnClickListener(new View.OnClickListener() {
+        buttonHighestCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_highest_qr_score.setBackgroundColor(Color.parseColor("#ffffff"));
-                button_total_score.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                buttonTotalScore.setBackgroundColor(Color.parseColor("#ffffff"));
+                buttonHighestCode.setBackgroundColor(Color.parseColor("#e0fbfc"));
                 //////////////////////////////////////////////////////////////////
                 rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
                     @Override
@@ -136,26 +137,30 @@ public class RankingFragment extends Fragment {
                         rankArr.addAll(ranking);
                         adapter = new RankAdapter(getActivity(), 0, ranking, false);
                         rankings.setAdapter(adapter);
-                        displayYourRankTotalScore();
+                        displayYourRankHighest(rankArr);
                     }
                 });
             }
         });
+        buttonTotalScore.setSoundEffectsEnabled(false);
+        buttonTotalScore.performClick();
+        buttonTotalScore.setSoundEffectsEnabled(true);
     }
 
     public void displayYourRankTotalScore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference owner = db.collection("Players").document(ownerName);
-        final int[] yourRank = new int[1];
-        final int[] yourScore = new int[1];
+        Integer rank;
+        final Integer[] score = new Integer[1];
         owner.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             // Get the value of the specific attribute
-                            yourScore[0] = Math.toIntExact(documentSnapshot.getLong("score"));
-                            Log.d(TAG, "Value of myAttribute: " + yourScore[0]);
+                            int yourScore = Math.toIntExact(documentSnapshot.getLong("score"));
+                            score[0] = yourScore;
+                            Log.d(TAG, "Value of myAttribute: " + yourScore);
                         } else {
                             Log.d(TAG, "No such document!");
                         }
@@ -198,6 +203,46 @@ public class RankingFragment extends Fragment {
         TextView yourPts = getView().findViewById(R.id.yourPoints);
         yourName.setText(ownerName);
         String ptsLabel = String.valueOf(yourScore[0]) + " pts";
+        yourPts.setText(ptsLabel);
+    }
+
+
+    public void displayYourRankHighest(ArrayList<Rank> rankArr) {
+        TextView yourName = getView().findViewById(R.id.yourName);
+        TextView yourPts = getView().findViewById(R.id.yourPoints);
+
+        int yourRank = 0;
+        int yourScore = 0;
+        for(Rank entry: rankArr) {
+            if (Objects.equals(entry.username, ownerName)) {
+                yourRank = entry.rankingCode;
+                yourScore = entry.highestCode;
+            }
+        }
+
+        ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
+        TextView yourRankLabel = getView().findViewById(R.id.yourRank);
+        if(yourRank < 4 && yourRank != 0) {
+            if(yourRank == 1) {
+                yourTrophy.setImageResource(R.drawable.gold_trophy);
+            }
+            else if(yourRank == 2) {
+                yourTrophy.setImageResource(R.drawable.silver_trophy);
+            }
+            else if (yourRank == 3){
+                yourTrophy.setImageResource(R.drawable.bronze_trophy);
+            }
+            yourTrophy.setVisibility(View.VISIBLE);
+            yourRankLabel.setVisibility(View.INVISIBLE);
+        }
+        else {
+            yourRankLabel.setVisibility(View.VISIBLE);
+            yourTrophy.setVisibility(View.INVISIBLE);
+            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
+        }
+
+        yourName.setText(ownerName);
+        String ptsLabel = String.valueOf(yourScore) + " pts";
         yourPts.setText(ptsLabel);
     }
 }
