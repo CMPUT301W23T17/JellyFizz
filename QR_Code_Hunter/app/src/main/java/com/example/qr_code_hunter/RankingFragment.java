@@ -90,20 +90,10 @@ public class RankingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rankings = getView().findViewById(R.id.leaderboard);
-        //
+
         Rank rankLists = new Rank();
         ArrayList<Rank> rankArr = new ArrayList<>();
 
-
-//        rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
-//            @Override
-//            public void onArrangeRankComplete(ArrayList<Rank> ranking) {
-//                rankArr.addAll(ranking);
-//                adapter = new RankAdapter(getActivity(), 0, ranking);
-//                rankings.setAdapter(adapter);
-//                displayYourRankTotalScore();
-//            }
-//        });
         //  Handle total score button amd highest code button
         buttonTotalScore = getView().findViewById(R.id.buttonTotalScore);
         buttonHighestCode = getView().findViewById(R.id.buttonHighestCode);
@@ -150,17 +140,16 @@ public class RankingFragment extends Fragment {
     public void displayYourRankTotalScore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference owner = db.collection("Players").document(ownerName);
-        Integer rank;
-        final Integer[] score = new Integer[1];
+        final int[] yourRank = new int[1];
+        final int[] yourScore = new int[1];
         owner.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             // Get the value of the specific attribute
-                            int yourScore = Math.toIntExact(documentSnapshot.getLong("score"));
-                            score[0] = yourScore;
-                            Log.d(TAG, "Value of myAttribute: " + yourScore);
+                            yourScore[0] = Math.toIntExact(documentSnapshot.getLong("score"));
+                            Log.d(TAG, "Value of myAttribute: " + yourScore[0]);
                         } else {
                             Log.d(TAG, "No such document!");
                         }
