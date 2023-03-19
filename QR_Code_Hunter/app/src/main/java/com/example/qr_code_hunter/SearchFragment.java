@@ -85,7 +85,6 @@ public class SearchFragment extends Fragment {
         search = new Search();
         ArrayList<String> list = new ArrayList<>();
         ArrayList<ArrayList<String>> listArrayList = new ArrayList<>();
-//        System.out.println(list);
 
         View searchbutton = getView().findViewById(R.id.search_bar);
         listView = getView().findViewById(R.id.search_list);

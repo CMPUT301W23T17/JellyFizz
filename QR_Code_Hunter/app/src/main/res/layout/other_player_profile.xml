@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PlayerProfileFragment"
-    android:background="@drawable/gradient_player_profile">
+    android:background="@drawable/gradient_other_player_profile">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -15,37 +15,95 @@
 
         <TextView
             android:id="@+id/email"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:elevation="50dp"
-            android:text="Email: ccid@ualberta.ca"
+            android:text="Email:"
             android:textAlignment="viewStart"
             android:textColor="#24366A"
             android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
             app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-            app:layout_constraintHorizontal_bias="0.395"
             app:layout_constraintStart_toStartOf="@+id/rectangle_"
             app:layout_constraintTop_toTopOf="@+id/rectangle_"
-            app:layout_constraintVertical_bias="0.268" />
+            app:layout_constraintVertical_bias="0.329" />
 
         <TextView
             android:id="@+id/mobile_phone"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:elevation="50dp"
-            android:text="Mobile Number: 604 704 4816"
+            android:text="Mobile Number:"
             android:textAlignment="viewStart"
             android:textColor="#24366A"
             android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
             app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-            app:layout_constraintHorizontal_bias="0.55"
             app:layout_constraintStart_toStartOf="@+id/rectangle_"
             app:layout_constraintTop_toTopOf="@+id/rectangle_"
-            app:layout_constraintVertical_bias="0.634" />
+            app:layout_constraintVertical_bias="0.609" />
+
+        <TextView
+            android:id="@+id/number_rank"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="#DD6E6E"
+            android:textColorLink="#D65F5F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.697"
+            app:layout_constraintStart_toEndOf="@+id/number_code"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.43" />
+
+        <TextView
+            android:id="@+id/number_code"
+            android:layout_width="97dp"
+            android:layout_height="29dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="#DD6E6E"
+            android:textColorLink="#D65F5F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textpoint2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_name"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/number_points"
+            android:layout_width="81dp"
+            android:layout_height="30dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="#DD6E6E"
+            android:textColorLink="#D65F5F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.428" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:clickable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/arrow"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageView
             android:id="@+id/rectangle_"
@@ -58,7 +116,7 @@
             app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.616" />
+            app:layout_constraintVertical_bias="0.613" />
 
         <TextView
             android:id="@+id/user_name"
@@ -73,56 +131,6 @@
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.344" />
-
-        <TextView
-            android:id="@+id/number_points"
-            android:layout_width="81dp"
-            android:layout_height="30dp"
-            android:text="90"
-            android:textAlignment="center"
-            android:textColor="#DD6E6E"
-            android:textColorLink="#D65F5F"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.075"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.428" />
-
-        <TextView
-            android:id="@+id/number_code"
-            android:layout_width="97dp"
-            android:layout_height="29dp"
-            android:text="90"
-            android:textAlignment="center"
-            android:textColor="#DD6E6E"
-            android:textColorLink="#D65F5F"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textpoint2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_name"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
-            android:id="@+id/number_rank"
-            android:layout_width="64dp"
-            android:layout_height="32dp"
-            android:text="90"
-            android:textAlignment="center"
-            android:textColor="#DD6E6E"
-            android:textColorLink="#D65F5F"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.697"
-            app:layout_constraintStart_toEndOf="@+id/number_code"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.43" />
 
         <TextView
             android:id="@+id/textpoint"
@@ -246,16 +254,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.083" />
-
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="78dp"
-            android:layout_height="71dp"
-            android:clickable="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/arrow"
-            tools:ignore="SpeakableTextPresentCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
