@@ -2,10 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textAlignment="textEnd">
+    android:background="@color/white"
+    android:textAlignment="center"
+    android:windowSoftInputMode="adjustResize">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="332dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="108dp"
+        android:text="@string/no_results_found"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
 
     <View
         android:id="@+id/user_name"
@@ -29,7 +45,10 @@
         android:divider="@color/zxing_transparent"
         android:dividerHeight="15.0dp"
         android:drawSelectorOnTop="false"
+        android:focusableInTouchMode="false"
+        android:isScrollContainer="false"
         android:text="@string/testing"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

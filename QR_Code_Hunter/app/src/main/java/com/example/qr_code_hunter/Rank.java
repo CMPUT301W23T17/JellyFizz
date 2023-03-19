@@ -34,7 +34,7 @@ public class Rank {
      */
     public void arrangeRank(ArrangeRankCallback callback) {
         ArrayList<Rank> rankArrs = new ArrayList<>();
-        player.orderBy("rank", Query.Direction.DESCENDING)
+        player.orderBy("score", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
