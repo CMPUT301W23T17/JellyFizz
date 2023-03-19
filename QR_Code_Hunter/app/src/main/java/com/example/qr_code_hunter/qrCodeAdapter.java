@@ -33,7 +33,6 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         currentContext = context;
         mQRCodeItemList = new ArrayList<>(qrCodeItemList);
 
-
     }
 
     @Override
@@ -43,8 +42,6 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        Log.d("Getting into listview", "aasdasd");
 
         View view = convertView;
 
@@ -70,19 +67,31 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
 
 
+        final View viewPost = view;
+
         //Wait for binary string to be done
         binaryStringFuture.thenAccept(producedString -> {
-            qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
-            codeNameTextView.setText(currentQrCode.setName(producedString));
-            pointsTextView.setText(currentQrCode.setScore(hashString));
+            //Run on UI Thread for updates
+            viewPost.post(new Runnable() {
+                @Override
+                public void run() {
+                    //Objects of the current qrCode item in the list
+                    TextView qrCodeVisualRepTextView = (TextView) viewPost.findViewById(R.id.qr_code_visualRep);
+                    TextView codeNameTextView = (TextView) viewPost.findViewById(R.id.code_name_text_view);
+                    TextView pointsTextView = (TextView) viewPost.findViewById(R.id.points_text_view);
+                    TextView highestLowestCodeTextView = (TextView) viewPost.findViewById(R.id.highest_lowest_code);
+                    CheckBox checkBox = (CheckBox) viewPost.findViewById(R.id.checkbox);
+
+                    qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
+                    codeNameTextView.setText(currentQrCode.setName(producedString));
+                    pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString)));
+
+                    //Store the hashString of each item in the tag
+                    viewPost.setTag(hashString);
+                }
+            });
         }
         );
-
-
-
-        qrCodeVisualRepTextView.setText("asdasdasdasd");
-        codeNameTextView.setText(currentQrCode.setName("asdasasd"));
-        pointsTextView.setText(currentQrCode.setScore("asdasdasd"));
 
         return view;
     }

@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="@string/app_name"
 >
 
     <LinearLayout
@@ -17,6 +18,8 @@
             android:layout_height="match_parent"
             android:textColor="@color/teal_200"
             android:fontFamily="@font/unispace"
+
+            android:textStyle="bold"
             android:textSize="9sp"
             android:text="  _--------------_  \n { ~~~)      (~~~ } \n{| ( + ) || ( + ) |}\n{|       ||       |}\n |      {__}      | \n |_              _| \n |    (______)    | \n |                | \n ------------------ "
              />

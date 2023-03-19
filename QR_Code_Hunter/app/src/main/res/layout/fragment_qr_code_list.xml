@@ -36,7 +36,7 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/qr_code_list"
+        android:id="@+id/qr_code_lister"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/top_buttons_layout"

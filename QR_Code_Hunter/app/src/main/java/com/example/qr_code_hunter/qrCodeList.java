@@ -14,8 +14,10 @@ import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,11 +88,18 @@ public class qrCodeList extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayCodes("QuinNguyen", view);
 
+        ArrayList<DocumentReference> currentSortedCodes = new ArrayList<>();
+
+        //Change to actual username Later
+        displayCodes("QuinNguyen");
     }
 
-    public void displayCodes(String username, View view) {
+    public interface sortedCodes {
+        void onSuccess(ArrayList<DocumentReference> sortedCodes);
+    }
+
+    public void displayCodes(String username) {
 
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
 
@@ -124,16 +133,19 @@ public class qrCodeList extends Fragment {
             });
         }).thenAcceptAsync(sortedQrCodes -> {
 
-            for (DocumentReference d: sortedQrCodes) {
-                Log.d("Passing", " " + d.getPath());
-            }
+            View currentView = getView();
 
-                ListView qrCodeList = getView().findViewById(R.id.qr_code_list);
+            //Update on main UI thread
+            currentView.post(new Runnable() {
+                @Override
+                public void run() {
+                    ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
 
-                qrCodeAdapter adapter = new qrCodeAdapter(getActivity(), 0, sortedQrCodes);
-                qrCodeList.setAdapter(adapter);
+                    qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedQrCodes);
+                    qrCodeListView.setAdapter(codeAdapter);
+                }
+            });
         });
-
     }
 
     public CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
