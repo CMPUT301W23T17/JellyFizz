@@ -50,6 +50,7 @@
         android:backgroundTint="#FF0000"
         android:textColor="#FFFFFF"
         android:gravity="center"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

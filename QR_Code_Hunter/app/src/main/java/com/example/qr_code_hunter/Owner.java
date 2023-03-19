@@ -49,6 +49,10 @@ public class Owner extends Player implements Parcelable {
         this.highestCode = highestCode;
     }
 
+    public Owner(DocumentReference playerRef) {
+        this.ownerRef = playerRef;
+    }
+
     protected Owner(Parcel in) {
         byte tmpCodeDuplicated = in.readByte();
         codeDuplicated = tmpCodeDuplicated == 0 ? null : tmpCodeDuplicated == 1;

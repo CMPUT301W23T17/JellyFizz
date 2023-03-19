@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +44,8 @@ public class qrCodeList extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    public Owner currentOwner;
 
     public qrCodeList() {
         // Required empty public constructor
@@ -92,14 +97,137 @@ public class qrCodeList extends Fragment {
         ArrayList<DocumentReference> currentSortedCodes = new ArrayList<>();
 
         //Change to actual username Later
-        displayCodes("QuinNguyen");
+        displayCodes("QuinNguyen", new sortedCodes() {
+            @Override
+            public void onSuccess(ArrayList<DocumentReference> sortedCodes) {
+
+                View currentView = getView();
+                //Update on main UI thread
+                currentView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
+
+                        qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedCodes);
+                        qrCodeListView.setAdapter(codeAdapter);
+                        currentSortedCodes.addAll(sortedCodes);
+
+                    }
+                });
+
+            }
+        });
+
+
+        //set garbage can listener
+        ImageView garbageButton = view.findViewById(R.id.garbage_can_icon);
+        garbageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
+
+                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                    View currentview = qrCodeDisplay.getChildAt(i);
+
+                    qrCodeTag currentTag = (qrCodeTag) currentview.getTag();
+
+                    CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
+
+                    currentCheckBox.setVisibility(View.VISIBLE);
+                }
+
+                // Change garbage can icon to red
+                garbageButton.setImageResource(R.drawable.ic_delete_red);
+
+                //set deleteButton to be visible
+                Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                deleteButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        //set garbage can listener
+        ImageView undoGarbageButton = view.findViewById(R.id.return_button);
+        undoGarbageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
+
+                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                    View currentview = qrCodeDisplay.getChildAt(i);
+                    CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
+
+                    if (currentCheckBox.isChecked()) {
+                        currentCheckBox.toggle();
+                    }
+                    currentCheckBox.setVisibility(View.INVISIBLE);
+                }
+
+
+                //set garbagecan to be black again
+                ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
+                garbageButton.setImageResource(R.drawable.ic_delete);
+
+                //set deleteButton to be invisible
+                Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                deleteButton.setVisibility(View.GONE);
+            }
+        });
+
+
+
+        //set deleteButton
+        Button deleteButton = view.findViewById(R.id.delete_qrcode_list);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
+                qrCodeAdapter adapter1 = (qrCodeAdapter)qrCodeDisplay.getAdapter();
+                adapter1.setData(currentSortedCodes);
+
+                List<Integer> itemsToRemove = new ArrayList<>();
+
+                for(int i = 0; i < adapter1.getCount(); i++) {
+                    View item = qrCodeDisplay.getChildAt(i);
+                    CheckBox checkBox = item.findViewById(R.id.qrCodeCheckbox);
+
+                    if (checkBox.isChecked()) {
+                        // Add the index to the list of items to remove
+                        itemsToRemove.add(i);
+                        checkBox.toggle();
+                    }
+                }
+
+                // Remove the items from the list in reverse order
+                Collections.reverse(itemsToRemove);
+                for (int i : itemsToRemove) {
+                    currentSortedCodes.remove(i);
+
+                    View item = qrCodeDisplay.getChildAt(i);
+                    qrCodeTag currentTag = (qrCodeTag) item.getTag();
+
+
+                    //Delete from database
+                    loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+                        @Override
+                        public void onGetInfo(Owner owner) {
+                            currentOwner = owner;
+                            currentOwner.deleteQRCode(currentTag.hashString, currentTag.score, currentTag.nextScore);
+                        }
+                    });
+                }
+
+                //update adapter
+                adapter1.notifyDataSetChanged();
+            }
+        });
     }
 
     public interface sortedCodes {
         void onSuccess(ArrayList<DocumentReference> sortedCodes);
     }
 
-    public void displayCodes(String username) {
+    public void displayCodes(String username, sortedCodes callback) {
 
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
 
@@ -131,20 +259,8 @@ public class qrCodeList extends Fragment {
                 Collections.sort(sortedQrCodes, (doc1, doc2) -> scores.get(playerQrCodes.indexOf(doc2)) - scores.get(playerQrCodes.indexOf(doc1)));
                 return sortedQrCodes;
             });
-        }).thenAcceptAsync(sortedQrCodes -> {
-
-            View currentView = getView();
-
-            //Update on main UI thread
-            currentView.post(new Runnable() {
-                @Override
-                public void run() {
-                    ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
-
-                    qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedQrCodes);
-                    qrCodeListView.setAdapter(codeAdapter);
-                }
-            });
+        }).thenAccept(sortedQrCodes -> {
+            callback.onSuccess(sortedQrCodes);
         });
     }
 

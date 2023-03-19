@@ -13,15 +13,11 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
     private Context currentContext;
@@ -53,20 +49,30 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         //Fetch hashString
         String hashString = mQRCodeItemList.get(position).getId();
 
+
+        //Fetch next item in list and it's score
+        DocumentReference nextCode;
+        int nextScore;
+        if (position < getCount() - 1) {
+            QrCode nextCodeFiller = new QrCode();
+
+            String nextHashString = mQRCodeItemList.get(position+1).getId();
+            nextScore = nextCodeFiller.setScore(nextHashString);
+        } else {
+            nextCode = null;
+
+            //If no next score, Set the score to 0
+            nextScore = 0;
+        }
+
+
         //Fetch binaryString
         CompletableFuture<String> binaryStringFuture = fetchBinaryString(mQRCodeItemList.get(position));
 
         //Create filler QrCode
         QrCode currentQrCode = new QrCode();
 
-        //Objects of the current qrCode item in the list
-        TextView qrCodeVisualRepTextView = (TextView) view.findViewById(R.id.qr_code_visualRep);
-        TextView codeNameTextView = (TextView) view.findViewById(R.id.code_name_text_view);
-        TextView pointsTextView = (TextView) view.findViewById(R.id.points_text_view);
-        TextView highestLowestCodeTextView = (TextView) view.findViewById(R.id.highest_lowest_code);
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-
-
+        //Filler view to update view later
         final View viewPost = view;
 
         //Wait for binary string to be done
@@ -80,16 +86,30 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
                     TextView codeNameTextView = (TextView) viewPost.findViewById(R.id.code_name_text_view);
                     TextView pointsTextView = (TextView) viewPost.findViewById(R.id.points_text_view);
                     TextView highestLowestCodeTextView = (TextView) viewPost.findViewById(R.id.highest_lowest_code);
-                    CheckBox checkBox = (CheckBox) viewPost.findViewById(R.id.checkbox);
+                    CheckBox checkBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
 
                     qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
                     codeNameTextView.setText(currentQrCode.setName(producedString));
-                    pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString)));
+                    pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString))+ " pts");
 
-                    //Store the hashString of each item in the tag
-                    viewPost.setTag(hashString);
+
+                    //Create tag for Code and set the tag
+                    qrCodeTag currentTag = new qrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
+                    viewPost.setTag(currentTag);
+
+                   viewPost.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View view) {
+
+                           CheckBox currentCheckBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
+                           if(currentCheckBox.getVisibility() == View.INVISIBLE) return;
+
+                           currentCheckBox.toggle();
+                       }
+                   });
                 }
             });
+
         }
         );
 
@@ -106,8 +126,6 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                        Log.d("BinaryString", "Binary String is");
-
                         if (documentSnapshot.exists()) {
                             binaryStringFuture.complete(documentSnapshot.getString("binaryString"));
                         }
@@ -121,4 +139,9 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
         return  binaryStringFuture;
     }
+
+    public void setData(ArrayList<DocumentReference> newData) {
+        mQRCodeItemList = newData;
+    }
+
 }

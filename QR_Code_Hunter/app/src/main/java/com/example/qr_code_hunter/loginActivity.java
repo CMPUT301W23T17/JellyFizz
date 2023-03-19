@@ -90,7 +90,7 @@ public class loginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot querySnapshot) {
                 if (querySnapshot.isEmpty()) {
-                    Log.d("GetTest", "No documents found for player: " + playerReference);
+                    Log.d("GetQrCodes", "No documents found for player: " + playerReference);
                     return;
                 }
 
@@ -150,7 +150,10 @@ public class loginActivity extends AppCompatActivity {
                     getQR_Codes(inputOwner).thenAccept(returnedCodes -> {
                         currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
                                 false, returnedCodes, score, rank, totalCodeScanned, highestCode);
+
+                        callback.onGetInfo(currentOwnerObject);
                     });
+
 
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
@@ -158,7 +161,6 @@ public class loginActivity extends AppCompatActivity {
             } else {
                 Log.d("Database error", "Could not fetch data from database");
             }
-            callback.onGetInfo(currentOwnerObject);
         });
     }
 
