@@ -41,6 +41,11 @@ public class QrCode implements Parcelable {
         this.binaryString = sha.shaGeneratorBinary(scannedString);
     }
 
+    //Empty Constructor to acess methods
+    QrCode() {
+
+    }
+
     protected QrCode(Parcel in) {
         codeName = in.readString();
 //        visualRep = in.readString();
@@ -71,7 +76,7 @@ public class QrCode implements Parcelable {
      * @param binary
      *      This is the binary representation string of the SHA-256 hash of the code
      */
-    public void setName(String binary) {
+    public String setName(String binary) {
         char[] bin = binary.toCharArray();
         String[][] namesArray = new String[][]{
                 new String[]{"Red", "Jet"},
@@ -93,6 +98,8 @@ public class QrCode implements Parcelable {
                 codeName = codeName.concat(namesArray[i][0]);
             }
         }
+
+        return this.codeName;
     }
 
     /**
@@ -100,7 +107,7 @@ public class QrCode implements Parcelable {
      * @param
      *     hashString the SHA-hash-string of the QrCode
      */
-    public void setScore(String hashString) {
+    public int setScore(String hashString) {
         this.score = 0;
         char currentChar = hashString.charAt(0);
         int count = 0;
@@ -129,6 +136,8 @@ public class QrCode implements Parcelable {
                 count = 0;
             }
         }
+
+        return  this.score;
     }
 
     /**

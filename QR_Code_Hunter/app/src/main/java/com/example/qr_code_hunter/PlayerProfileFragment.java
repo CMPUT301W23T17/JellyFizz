@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,6 +94,20 @@ public class PlayerProfileFragment extends Fragment {
         // Access to the player collection
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference OwnerRef = db.collection("Players").document(ownerName);
+
+
+        //Set listener for more button
+        TextView moreButton = view.findViewById(R.id.more_button);
+        moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, new qrCodeList());
+                fragmentTransaction.commit();
+            }
+        });
+
         // Display Email
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

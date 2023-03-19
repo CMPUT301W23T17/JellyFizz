@@ -97,7 +97,8 @@ public class loginActivity extends AppCompatActivity {
                 // Iterate over the query results and add the QR code references to the ArrayList
                 for (QueryDocumentSnapshot document : querySnapshot) {
                     DocumentReference docRef = document.getReference();
-                    qrCodeRefs.add(docRef);
+
+                    qrCodeRefs.add(((DocumentReference)document.get("qrCodeScanned")));
                 }
 
                 returnCode.complete(qrCodeRefs);
