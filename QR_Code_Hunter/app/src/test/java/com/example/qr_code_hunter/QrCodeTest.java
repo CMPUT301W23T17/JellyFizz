@@ -37,4 +37,20 @@ public class QrCodeTest {
         QrCode testQR_Code = new QrCode("BFG5DGW54");
         assertEquals("19", testQR_Code.getScore().toString());
     }
+    
+    @Test
+    public void testSetPrivacy() {
+        QrCode qrCode = new QrCode("hello");
+        qrCode.setPrivacy(true);
+        assertTrue(qrCode.getDataPrivacy());
+    }
+
+    @Test
+    public void testSetLocation() {
+        QrCode qrCode = new QrCode("hello");
+        LatLng location = new LatLng(40.7128, -74.0060);
+        qrCode.setLocation(location);
+        assertEquals(location, qrCode.getGeolocation());
+    }
+    
 }

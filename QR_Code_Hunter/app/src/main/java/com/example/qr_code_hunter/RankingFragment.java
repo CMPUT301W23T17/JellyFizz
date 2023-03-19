@@ -1,26 +1,30 @@
 package com.example.qr_code_hunter;
 
+import static android.content.ContentValues.TAG;
+
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FieldPath;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,7 +36,9 @@ import java.util.Objects;
  */
 public class RankingFragment extends Fragment {
     ListView rankings;
+    TextView buttonTotalScore, buttonHighestCode;
     RankAdapter adapter;
+    String ownerName = loginActivity.getOwnerName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,29 +97,73 @@ public class RankingFragment extends Fragment {
         Rank rankLists = new Rank();
         ArrayList<Rank> rankArr = new ArrayList<>();
 
-        // add rank to adapter
-        rankLists.arrangeRank(new Rank.ArrangeRankCallback() {
-            @Override
-            public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+        //  Handle total score button amd highest code button
+        buttonTotalScore = getView().findViewById(R.id.buttonTotalScore);
+        buttonHighestCode = getView().findViewById(R.id.buttonHighestCode);
 
-                rankArr.addAll(ranking);
-                adapter = new RankAdapter(getActivity(), 0, ranking);
-                rankings.setAdapter(adapter);
-                displayYourRank(loginActivity.getOwnerName(),rankArr);
+        buttonTotalScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
+                buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                /////////////////////////////////////////////////////////////////
+                rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
+                    @Override
+                    public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+                        rankArr.addAll(ranking);
+                        adapter = new RankAdapter(getActivity(), 0, ranking, true);
+                        rankings.setAdapter(adapter);
+                        displayYourRankTotalScore(rankArr);
+                    }
+                });
             }
         });
-    }
+        buttonHighestCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonTotalScore.setBackgroundColor(Color.parseColor("#ffffff"));
+                buttonHighestCode.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                //////////////////////////////////////////////////////////////////
+                rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
+                    @Override
+                    public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+                        rankArr.addAll(ranking);
+                        adapter = new RankAdapter(getActivity(), 0, ranking, false);
+                        rankings.setAdapter(adapter);
+                        displayYourRankHighest(rankArr);
+                    }
+                });
+            }
+        });
+        buttonTotalScore.setSoundEffectsEnabled(false);
+        buttonTotalScore.performClick();
+        buttonTotalScore.setSoundEffectsEnabled(true);
 
-    public void displayYourRank(String yourUsername, ArrayList<Rank> rankArr) {
+        rankings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                replaceFragment(new OtherPlayerFragment(rankArr.get(i).username));
+            }
+        });
+
+    }
+    private void replaceFragment(Fragment fragment ){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+    public void displayYourRankTotalScore( ArrayList<Rank> rankArr) {
         TextView yourName = getView().findViewById(R.id.yourName);
         TextView yourPts = getView().findViewById(R.id.yourPoints);
 
         int yourRank = 0;
         int yourScore = 0;
         for(Rank entry: rankArr) {
-            if (Objects.equals(entry.username, yourUsername)) {
-                yourRank = entry.position;
-                yourScore = entry.score;
+            if (Objects.equals(entry.username, ownerName)) {
+                yourRank = entry.rankingTotalScore;
+                yourScore = entry.totalScore;
             }
         }
 
@@ -138,7 +188,47 @@ public class RankingFragment extends Fragment {
             yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
         }
 
-        yourName.setText(yourUsername);
+        yourName.setText(ownerName);
+        String ptsLabel = String.valueOf(yourScore) + " pts";
+        yourPts.setText(ptsLabel);
+    }
+
+
+    public void displayYourRankHighest(ArrayList<Rank> rankArr) {
+        TextView yourName = getView().findViewById(R.id.yourName);
+        TextView yourPts = getView().findViewById(R.id.yourPoints);
+
+        int yourRank = 0;
+        int yourScore = 0;
+        for(Rank entry: rankArr) {
+            if (Objects.equals(entry.username, ownerName)) {
+                yourRank = entry.rankingCode;
+                yourScore = entry.highestCode;
+            }
+        }
+
+        ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
+        TextView yourRankLabel = getView().findViewById(R.id.yourRank);
+        if(yourRank < 4 && yourRank != 0) {
+            if(yourRank == 1) {
+                yourTrophy.setImageResource(R.drawable.gold_trophy);
+            }
+            else if(yourRank == 2) {
+                yourTrophy.setImageResource(R.drawable.silver_trophy);
+            }
+            else if (yourRank == 3){
+                yourTrophy.setImageResource(R.drawable.bronze_trophy);
+            }
+            yourTrophy.setVisibility(View.VISIBLE);
+            yourRankLabel.setVisibility(View.INVISIBLE);
+        }
+        else {
+            yourRankLabel.setVisibility(View.VISIBLE);
+            yourTrophy.setVisibility(View.INVISIBLE);
+            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
+        }
+
+        yourName.setText(ownerName);
         String ptsLabel = String.valueOf(yourScore) + " pts";
         yourPts.setText(ptsLabel);
     }

@@ -69,7 +69,7 @@
         app:layout_constraintStart_toStartOf="@+id/search_bar"
         app:layout_constraintTop_toTopOf="@+id/search_bar"
         app:layout_constraintVertical_bias="0.6"
-        app:srcCompat="@drawable/img_2" />
+        app:srcCompat="@drawable/back_button" />
 
     <View
         android:id="@+id/search_bar"
