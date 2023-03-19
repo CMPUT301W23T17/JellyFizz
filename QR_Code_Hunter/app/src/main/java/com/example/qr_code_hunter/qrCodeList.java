@@ -127,11 +127,7 @@ public class qrCodeList extends Fragment {
 
                 for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
                     View currentview = qrCodeDisplay.getChildAt(i);
-
-                    qrCodeTag currentTag = (qrCodeTag) currentview.getTag();
-
                     CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
-
                     currentCheckBox.setVisibility(View.VISIBLE);
                 }
 
