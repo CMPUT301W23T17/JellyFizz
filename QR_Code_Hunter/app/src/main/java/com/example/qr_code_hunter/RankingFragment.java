@@ -1,5 +1,7 @@
 package com.example.qr_code_hunter;
 
+import static android.content.ContentValues.TAG;
+
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -8,12 +10,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -27,6 +36,7 @@ public class RankingFragment extends Fragment {
     ListView rankings;
     TextView button_highest_qr_score, button_total_score;
     RankAdapter adapter;
+    String ownerName = loginActivity.getOwnerName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,7 +101,7 @@ public class RankingFragment extends Fragment {
                 rankArr.addAll(ranking);
                 adapter = new RankAdapter(getActivity(), 0, ranking);
                 rankings.setAdapter(adapter);
-                displayYourRank_Total_Score(loginActivity.getOwnerName(),rankArr);
+                displayYourRank_Total_Score();
             }
         });
         //  Handle total score button amd highest code button
@@ -114,29 +124,47 @@ public class RankingFragment extends Fragment {
         });
     }
 
-    public void displayYourRank_Total_Score(String yourUsername, ArrayList<Rank> rankArr) {
-        TextView yourName = getView().findViewById(R.id.yourName);
-        TextView yourPts = getView().findViewById(R.id.yourPoints);
-
-        int yourRank = 0;
-        int yourScore = 0;
-        for(Rank entry: rankArr) {
-            if (Objects.equals(entry.username, yourUsername)) {
-                yourRank = entry.position;
-                yourScore = entry.score;
-            }
-        }
-
+    public void displayYourRank_Total_Score() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final DocumentReference owner = db.collection("Players").document(ownerName);
+        final int[] yourRank = new int[1];
+        final int[] yourScore = new int[1];
+        owner.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            yourScore[0] = Math.toIntExact(documentSnapshot.getLong("score"));
+                            Log.d(TAG, "Value of myAttribute: " + yourScore[0]);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                });
+        owner.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            yourRank[0] = Math.toIntExact(documentSnapshot.getLong("rank"));
+                            Log.d(TAG, "Value of myAttribute: " + yourRank[0]);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                });
         ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
         TextView yourRankLabel = getView().findViewById(R.id.yourRank);
-        if(yourRank < 4 && yourRank != 0) {
-            if(yourRank == 1) {
+        if(yourRank[0] < 4 && yourRank[0] != 0) {
+            if(yourRank[0] == 1) {
                 yourTrophy.setImageResource(R.drawable.gold_trophy);
             }
-            else if(yourRank == 2) {
+            else if(yourRank[0] == 2) {
                 yourTrophy.setImageResource(R.drawable.silver_trophy);
             }
-            else if (yourRank == 3){
+            else if (yourRank[0] == 3){
                 yourTrophy.setImageResource(R.drawable.bronze_trophy);
             }
             yourTrophy.setVisibility(View.VISIBLE);
@@ -145,11 +173,12 @@ public class RankingFragment extends Fragment {
         else {
             yourRankLabel.setVisibility(View.VISIBLE);
             yourTrophy.setVisibility(View.INVISIBLE);
-            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
+            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank[0]) + "<sup><small>th</small></sup>"));
         }
-
-        yourName.setText(yourUsername);
-        String ptsLabel = String.valueOf(yourScore) + " pts";
+        TextView yourName = getView().findViewById(R.id.yourName);
+        TextView yourPts = getView().findViewById(R.id.yourPoints);
+        yourName.setText(ownerName);
+        String ptsLabel = String.valueOf(yourScore[0]) + " pts";
         yourPts.setText(ptsLabel);
     }
 }
