@@ -19,13 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,19 +89,20 @@ public class RankingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rankings = getView().findViewById(R.id.leaderboard);
+        //
         Rank rankLists = new Rank();
         ArrayList<Rank> rankArr = new ArrayList<>();
-        // add rank to adapter
-        rankLists.arrangeRank(new Rank.ArrangeRankCallback() {
-            @Override
-            public void onArrangeRankComplete(ArrayList<Rank> ranking) {
 
-                rankArr.addAll(ranking);
-                adapter = new RankAdapter(getActivity(), 0, ranking);
-                rankings.setAdapter(adapter);
-                displayYourRank_Total_Score();
-            }
-        });
+
+//        rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
+//            @Override
+//            public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+//                rankArr.addAll(ranking);
+//                adapter = new RankAdapter(getActivity(), 0, ranking);
+//                rankings.setAdapter(adapter);
+//                displayYourRankTotalScore();
+//            }
+//        });
         //  Handle total score button amd highest code button
         button_highest_qr_score = getView().findViewById(R.id.button_highest_qr_score);
         button_total_score = getView().findViewById(R.id.button_total_score);
@@ -113,6 +112,16 @@ public class RankingFragment extends Fragment {
             public void onClick(View view) {
                 button_total_score.setBackgroundColor(Color.parseColor("#ffffff"));
                 button_highest_qr_score.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                /////////////////////////////////////////////////////////////////
+                rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
+                    @Override
+                    public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+                        rankArr.addAll(ranking);
+                        adapter = new RankAdapter(getActivity(), 0, ranking, true);
+                        rankings.setAdapter(adapter);
+                        displayYourRankTotalScore();
+                    }
+                });
             }
         });
         button_total_score.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +129,21 @@ public class RankingFragment extends Fragment {
             public void onClick(View view) {
                 button_highest_qr_score.setBackgroundColor(Color.parseColor("#ffffff"));
                 button_total_score.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                //////////////////////////////////////////////////////////////////
+                rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
+                    @Override
+                    public void onArrangeRankComplete(ArrayList<Rank> ranking) {
+                        rankArr.addAll(ranking);
+                        adapter = new RankAdapter(getActivity(), 0, ranking, false);
+                        rankings.setAdapter(adapter);
+                        displayYourRankTotalScore();
+                    }
+                });
             }
         });
     }
 
-    public void displayYourRank_Total_Score() {
+    public void displayYourRankTotalScore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference owner = db.collection("Players").document(ownerName);
         final int[] yourRank = new int[1];
