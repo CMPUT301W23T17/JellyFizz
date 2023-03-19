@@ -5,13 +5,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
@@ -78,8 +84,14 @@ public class SearchFragment extends Fragment {
 
         search = new Search();
         ArrayList<String> list = new ArrayList<>();
+        ArrayList<ArrayList<String>> listArrayList = new ArrayList<>();
+//        System.out.println(list);
 
         View searchbutton = getView().findViewById(R.id.search_bar);
+        listView = getView().findViewById(R.id.search_list);
+        TextView textView = getView().findViewById(R.id.textView4);
+        textView.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
 
         searchbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,28 +99,47 @@ public class SearchFragment extends Fragment {
                 EditText text = getView().findViewById(R.id.enter_username);
                 search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {
                     @Override
-                    public void onSearchPlayerComplete(ArrayList<String> usernames) {
+                    public void onSearchPlayerComplete(ArrayList<ArrayList<String>> usernames){
+                        listArrayList.addAll(usernames);
                         if(list.isEmpty()){
-                            list.addAll(usernames);
+                            for(int i = 0; i < usernames.size(); i++){
+                                list.add(usernames.get(i).get(0) + ":   " + usernames.get(i).get(1) + "pts");
+                            }
                         }else{
                             list.clear();
-                            list.addAll(usernames);
+                            for(int i = 0; i < usernames.size(); i++){
+                                list.add(usernames.get(i).get(0) + ":   " + usernames.get(i).get(1) + "pts");
+                            }
                         }
-                        listView = getView().findViewById(R.id.search_list);
                         adapter = new ArrayAdapter<>(getActivity(), R.layout.searching_context, list);
                         listView.setAdapter(adapter);
-                        System.out.println(list);
+
+                        if (adapter.getCount() == 0) {
+                            textView.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.GONE);
+                        } else {
+                            textView.setVisibility(View.GONE);
+                            listView.setVisibility(View.VISIBLE);
+                        }
+
                     }
                 });
 
             }
         });
-
-
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                replaceFragment(new OtherPlayerFragment(listArrayList.get(i).get(0)));
+            }
+        });
     }
 
-
-
-
+    private void replaceFragment(Fragment fragment ){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }
