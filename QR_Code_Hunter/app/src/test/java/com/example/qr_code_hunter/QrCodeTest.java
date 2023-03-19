@@ -29,7 +29,7 @@ public class QrCodeTest {
                 "\n |_              _| " +
                 "\n |    (______)    | " +
                 "\n |                | " +
-                "\n ------------------ ", mockQR.getVisualRep());
+                "\n ------------------ ", mockQR.getVisualRep("hello"));
     }
 
     @Test

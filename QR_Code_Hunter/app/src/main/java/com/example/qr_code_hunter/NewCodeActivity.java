@@ -27,7 +27,6 @@ public class NewCodeActivity extends AppCompatActivity {
     TextView visualRep;
     TextView codeLoc;
     TextView codePts;
-    TextView otherPlayers;
     Button nextPageBtn;
     QrCode newCode;
     Geocoder geocoder;
@@ -41,7 +40,6 @@ public class NewCodeActivity extends AppCompatActivity {
         visualRep = findViewById(R.id.visual_rep);
         codeLoc = findViewById(R.id.code_location);
         codePts = findViewById(R.id.points_label);
-        otherPlayers = findViewById(R.id.others_scan_list);
         nextPageBtn = findViewById(R.id.next_button);
 
         String scannedString = getIntent().getExtras().getString("scanned string");
@@ -64,23 +62,10 @@ public class NewCodeActivity extends AppCompatActivity {
         }
 
         codeName.setText(newCode.getName());
-        visualRep.setText(newCode.getVisualRep());
+        visualRep.setText(newCode.getVisualRep(newCode.getBinaryString()));
 
         String scoreLabel = "You earned " + String.valueOf(newCode.getScore()) + " points!";
         codePts.setText(scoreLabel);
-
-        if (newCode.getPlayerList().size() > 2) {
-            String othersLabel = "+" + String.valueOf(newCode.getPlayerList().size() - 1) + " others have scanned this code";
-            otherPlayers.setText(othersLabel);
-
-        } else if (newCode.getPlayerList().size() == 2){ // you and someone else
-            String othersLabel = "+1 other have scanned this code";
-            otherPlayers.setText(othersLabel);
-        }
-        else { // you are the only one
-            String othersLabel = "You are the first one to scan this code!";
-            otherPlayers.setText(othersLabel);
-        }
 
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override

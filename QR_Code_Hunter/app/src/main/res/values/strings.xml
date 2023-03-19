@@ -19,6 +19,9 @@
     <string name="scan_now">Scan Now</string>
     <string name="welcome_use">WELCOME,  USERNAME !</string>
     <string name="api_key">AIzaSyAWw-jZVejLgBsAkmiF9Pc4wGVvKp8yp-Q</string>
+
+    <string name="no_results_found">NO RESULTS FOUND</string>
+    
     <string name="invalidEmail">Invalid email adress, please re-enter</string>
     <string name="invalidNumber">Invalid number, please re-enter</string>
     <string name="userNameTaken">This username has been taken, please choose another</string>

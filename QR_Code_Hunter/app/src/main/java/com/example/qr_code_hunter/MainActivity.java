@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         if (accountCreated) {
             // Set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
+
             replaceFragment(new HomepageFragment());
 
         } else {

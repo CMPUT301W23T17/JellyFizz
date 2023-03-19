@@ -5,6 +5,10 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 import org.junit.After;
 import org.junit.Before;
@@ -14,6 +18,9 @@ import org.junit.runner.RunWith;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Test class for MainActivity. All the UI tests are written here. Robotium test framework is used
@@ -59,6 +66,9 @@ public class loginIntentTest {
 
         // Assert that user is redirected to homepage
         assertTrue(solo.waitForActivity(MainActivity.class));
+
+        FirebaseFirestore tester = FirebaseFirestore.getInstance();
+        CollectionReference playerRefs = tester.collection("Players");
     }
 
     @Test

@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This is the second page of the new code details (editable fields)
@@ -37,13 +39,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
     EditText descBox;
     TextView charCount;
     CheckBox saveGeo;
-    CheckBox recordCode;
     Button saveBtn;
     QrCode newCode;
     String encodedImage;
-    Owner currentOwner = new Owner();
-
-    DocumentReference justScan;
+    Owner currentOwner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,12 +52,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
         descBox = findViewById(R.id.comment_box);
         charCount = findViewById(R.id.char_count_label);
         saveGeo = findViewById(R.id.save_geolocation_button);
-        recordCode = findViewById(R.id.record_code_button);
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
-        //currentOwner = getIntent().getParcelableExtra("Current Owner");
 
-        // Set the owner object, still need to discuss what is happening with this list of qrcodes
+        //set the owner object, still need to discuss what is happening with this list of qrcodes
         loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
             @Override
             public void onGetInfo(Owner owner) {
@@ -105,12 +102,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 if(saveGeo.isChecked()) {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                 }
-                if(recordCode.isChecked()) {
-                    newCode.setPrivacy(false); // actual code is saved
-                } else {
-                    newCode.setPrivacy(true);
-                }
-
 
                 currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
@@ -120,20 +111,19 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 @Override
                                 public void onCheckDuplicateComplete(Boolean duplicated) {
                                     if(!duplicated) {
-                                        Toast.makeText(NewCodeActivity2.this, "Saving to database...",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
                                         if((int) charCount.getText().toString().charAt(0) > 0) {
-                                            currentOwner.addQRCode(newCode, descBox.getText().toString(), encodedImage);
+                                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                                         } else {
                                             currentOwner.addQRCode(newCode, null, encodedImage);
                                         }
-
                                     } else {
                                         Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                         } else {
-                            //currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
                             if((int) charCount.getText().toString().charAt(0) > 0) {
                                 currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                             } else {
@@ -149,7 +139,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         }, 2000);
                     }
                 });
-
             }
         });
     }
