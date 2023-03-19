@@ -20,6 +20,7 @@ public class Player {
     protected int totalScore;
     protected int rank;
 
+
     /*
      * `maxScore` is initialized to the lowest possible integer value, and `maxScoreQrCode` is initialized to null.
      * `minScore` is initialized to the highest possible integer value, and `minScoreQrCode` is initialized to null.
@@ -29,14 +30,18 @@ public class Player {
     protected int minScore = Integer.MAX_VALUE;
     protected DocumentReference minScoreQrCode = null;
 
+    public Player(){}
 
-    public Player(String phone, String email, String username, Boolean privacy, ArrayList<DocumentReference> codeScanned, int score, int rank) {
-        this.profileInfo = new PlayerProfile(phone, email, privacy);
-        this.uniqueUsername = username;
-        this.myQrCodes = codeScanned; // Document references of player's QR codes in db
-        this.totalScore = score;
-        this.rank = rank;
-    }
+
+    public Player(String phone, String email, String username, Boolean privacy,
+                  ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned) {
+            this.profileInfo = new PlayerProfile(phone, email, privacy);
+            this.uniqueUsername = username;
+            this.myQrCodes = codeScanned; // Document references of player's QR codes in db
+            this.totalScore = score;
+            this.rank = rank;
+            this.totalCodeScanned = totalCodeScanned;
+        }
 
     /**
      * Calculates the minimum and maximum score achieved by the player across all their scanned QR codes,
@@ -51,9 +56,11 @@ public class Player {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Get all the QR code references for the current player
-        ArrayList<DocumentReference> qrCodeRefs = getQR_Codes(loginActivity.getOwner());
+        ArrayList<DocumentReference> qrCodeRefs = myQrCodes;
 
         // Set the total score to 0 initially
+        maxScore = Integer.MIN_VALUE;
+        minScore = Integer.MAX_VALUE;
         this.totalScore = 0;
 
         // Iterate over each QR code and update the min, max, and total scores
@@ -84,44 +91,6 @@ public class Player {
         }
     }
 
-    /**
-     * Retrieves all the QR code references for a specific player from the database and returns them
-     * <p>
-     * as an ArrayList. This method queries the "Players" collection to find all documents that reference
-     * <p>
-     * the player's document and retrieves the QR code references from those documents.
-     *
-     * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
-     * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
-     */
-    public ArrayList<DocumentReference> getQR_Codes(String currentPlayer) {
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference playersRef = db.collection("Players");
-
-        //Get owner of account
-        String playerReference = "/" + loginActivity.getOwner();
-
-        ArrayList<DocumentReference> qrCodeRefs = new ArrayList<>();
-
-        // Query the scannedBy collection to get all documents that reference the player's document
-        Query query = playersRef.whereEqualTo("Player", playerReference);
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-        // Iterate over the query results and add the QR code references to the ArrayList
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    DocumentReference qrCodeRef = document.getDocumentReference("qrCode");
-                    qrCodeRefs.add(qrCodeRef);
-                }
-            } else {
-            // Display error
-                Log.d("Database error", "Error getting all qrcodes for a player", task.getException());
-            }
-        });
-
-        return qrCodeRefs;
-    }
-
 
     /**
      * This finds the QrCode with the lowest score
@@ -132,9 +101,6 @@ public class Player {
     public String lowestScoreQrCode() {
         final int[] lowest = {-1};
         final String[] lowestQr = {null};
-
-        //Initialize the list with all the qr codes of the owner
-        myQrCodes = getQR_Codes(loginActivity.getOwner());
 
         for (DocumentReference hashString : myQrCodes) {
             hashString.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -203,7 +169,7 @@ public class Player {
      * @return Returns an integer
      */
     public int getTotalCodeScanned() {
-        return myQrCodes.size();
+        return this.totalCodeScanned;
     }
 
     /**

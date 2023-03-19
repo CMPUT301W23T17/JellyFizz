@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,6 +34,9 @@ public class PlayerProfileFragment extends Fragment {
     TextView mobile_number;
     TextView rank;
     TextView score;
+    TextView numberCode;
+    Switch privacySwitch;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -81,7 +86,7 @@ public class PlayerProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get the owner name
-        String ownerName = loginActivity.getOwner();
+        String ownerName = loginActivity.getOwnerName();
         userName = (TextView) getView().findViewById(R.id.user_name);
         userName.setText(ownerName);
         // Access to the player collection
@@ -178,5 +183,38 @@ public class PlayerProfileFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            Integer myAttribute = Math.toIntExact(documentSnapshot.getLong("totalCodeScanned"));
+                            // Do something with the value
+                            numberCode = (TextView) getView().findViewById(R.id.number_code);
+                            numberCode.setText(myAttribute.toString());
+                            Log.d(TAG, "Value of myAttribute: " + myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
+        // Update privacy profile information of owner in database
+        privacySwitch = getView().findViewById(R.id.switch_privacy);
+        privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Handle the switch state change
+                boolean isOn = isChecked;
+                // Do something with the boolean value, such as updating a database or UI element
+                OwnerRef.update("hideInfo", isOn);
+            }
+        });
     }
 }

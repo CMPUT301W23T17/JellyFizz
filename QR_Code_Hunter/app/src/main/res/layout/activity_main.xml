@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background= "#EEFEFF"
         app:itemIconSize="30dp"
-        app:itemIconTint="@color/quantum_grey700"
+        app:itemIconTint="#2B9C8F"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"

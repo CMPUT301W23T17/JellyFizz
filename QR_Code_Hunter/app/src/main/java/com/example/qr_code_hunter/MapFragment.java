@@ -485,17 +485,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 if (document.get("latitude") != null && document.get("longitude") != null) {
                                     double lat = document.getDouble("latitude");
                                     double lng = document.getDouble("longitude");
-                                    GeoLocation docLocation = new GeoLocation(lat, lng);
-                                    double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
-                                    if (distanceInM <= radiusInM) {
-                                        LatLng validMarker = new LatLng(lat, lng);
-                                        Long score = document.getLong("Score");
-                                        String finalScore = score+"";
-                                        String name = document.getString("codeName");
-                                        String title = name + "--score: " + finalScore;
-                                        MarkerOptions markerOptions = new MarkerOptions().position(validMarker).title(title);
-                                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                                        nearbyCodes.add(gMap.addMarker(markerOptions));
+                                    if (lat != 0 && lng != 0) {
+                                        GeoLocation docLocation = new GeoLocation(lat, lng);
+                                        double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
+                                        if (distanceInM <= radiusInM) {
+                                            LatLng validMarker = new LatLng(lat, lng);
+                                            Long score = document.getLong("Score");
+                                            String finalScore = score + "";
+                                            String name = document.getString("codeName");
+                                            String title = name + "--score: " + finalScore;
+                                            MarkerOptions markerOptions = new MarkerOptions().position(validMarker).title(title);
+                                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                            nearbyCodes.add(gMap.addMarker(markerOptions));
+                                        }
                                     }
                                 }
                             }
