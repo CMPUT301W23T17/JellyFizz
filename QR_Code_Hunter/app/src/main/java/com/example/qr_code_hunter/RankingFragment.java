@@ -1,5 +1,6 @@
 package com.example.qr_code_hunter;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,20 +8,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FieldPath;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,6 +25,7 @@ import java.util.Objects;
  */
 public class RankingFragment extends Fragment {
     ListView rankings;
+    TextView button_highest_qr_score, button_total_score;
     RankAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -87,10 +81,8 @@ public class RankingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rankings = getView().findViewById(R.id.leaderboard);
-
         Rank rankLists = new Rank();
         ArrayList<Rank> rankArr = new ArrayList<>();
-
         // add rank to adapter
         rankLists.arrangeRank(new Rank.ArrangeRankCallback() {
             @Override
@@ -99,12 +91,30 @@ public class RankingFragment extends Fragment {
                 rankArr.addAll(ranking);
                 adapter = new RankAdapter(getActivity(), 0, ranking);
                 rankings.setAdapter(adapter);
-                displayYourRank(loginActivity.getOwnerName(),rankArr);
+                displayYourRank_Total_Score(loginActivity.getOwnerName(),rankArr);
+            }
+        });
+        //  Handle total score button amd highest code button
+        button_highest_qr_score = getView().findViewById(R.id.button_highest_qr_score);
+        button_total_score = getView().findViewById(R.id.button_total_score);
+
+        button_highest_qr_score.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_total_score.setBackgroundColor(Color.parseColor("#ffffff"));
+                button_highest_qr_score.setBackgroundColor(Color.parseColor("#e0fbfc"));
+            }
+        });
+        button_total_score.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_highest_qr_score.setBackgroundColor(Color.parseColor("#ffffff"));
+                button_total_score.setBackgroundColor(Color.parseColor("#e0fbfc"));
             }
         });
     }
 
-    public void displayYourRank(String yourUsername, ArrayList<Rank> rankArr) {
+    public void displayYourRank_Total_Score(String yourUsername, ArrayList<Rank> rankArr) {
         TextView yourName = getView().findViewById(R.id.yourName);
         TextView yourPts = getView().findViewById(R.id.yourPoints);
 

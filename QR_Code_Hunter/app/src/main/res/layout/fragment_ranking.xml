@@ -31,6 +31,7 @@
             android:id="@+id/button_highest_qr_score"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textSize="18dp"
             android:clickable="true"
             android:layout_weight="1"
             android:gravity="center"
@@ -39,12 +40,13 @@
         <TextView
             android:id="@+id/button_total_score"
             android:layout_weight="1"
+            android:textSize="18dp"
             android:layout_width="match_parent"
             android:clickable="true"
             android:layout_height="match_parent"
             android:gravity="center"
             android:textStyle="bold"
-            android:text="HIGHEST QR CODE" />
+            android:text="HIGHEST CODE" />
     </LinearLayout>
         <ListView
             android:id="@+id/leaderboard"
