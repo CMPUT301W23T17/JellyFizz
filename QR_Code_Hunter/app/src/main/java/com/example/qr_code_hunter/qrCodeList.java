@@ -96,8 +96,7 @@ public class qrCodeList extends Fragment {
 
         ArrayList<DocumentReference> currentSortedCodes = new ArrayList<>();
 
-        //Change to actual username Later
-        displayCodes("QuinNguyen", new sortedCodes() {
+        displayCodes(loginActivity.getOwnerName(), new sortedCodes() {
             @Override
             public void onSuccess(ArrayList<DocumentReference> sortedCodes) {
 
@@ -182,6 +181,9 @@ public class qrCodeList extends Fragment {
             @Override
             public void onClick(View view) {
                 ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
+
+                if (qrCodeDisplay.getCount() < 1) return;
+
                 qrCodeAdapter adapter1 = (qrCodeAdapter)qrCodeDisplay.getAdapter();
                 adapter1.setData(currentSortedCodes);
 
