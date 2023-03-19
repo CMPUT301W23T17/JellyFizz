@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -10,19 +11,41 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#B2E2FF">
-
         <TextView
             android:id="@+id/ranking_header"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Rankings"
-            android:textSize="28sp"
-            android:textColor="@color/white"
             android:background="#32A2BD"
-            android:textStyle="bold"
             android:gravity="center"
-            />
-
+            android:text="Rankings"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            tools:ignore="TextContrastCheck" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF">
+        <TextView
+            android:id="@+id/button_highest_qr_score"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="TOTAL SCORE" />
+        <TextView
+            android:id="@+id/button_total_score"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="HIGHEST QR CODE" />
+    </LinearLayout>
         <ListView
             android:id="@+id/leaderboard"
             android:layout_width="match_parent"
