@@ -110,7 +110,7 @@ public class RankingFragment extends Fragment {
                         rankArr.addAll(ranking);
                         adapter = new RankAdapter(getActivity(), 0, ranking, true);
                         rankings.setAdapter(adapter);
-                        displayYourRankTotalScore();
+                        displayYourRankTotalScore(rankArr);
                     }
                 });
             }
@@ -137,47 +137,29 @@ public class RankingFragment extends Fragment {
         buttonTotalScore.setSoundEffectsEnabled(true);
     }
 
-    public void displayYourRankTotalScore() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final DocumentReference owner = db.collection("Players").document(ownerName);
-        final int[] yourRank = new int[1];
-        final int[] yourScore = new int[1];
-        owner.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            // Get the value of the specific attribute
-                            yourScore[0] = Math.toIntExact(documentSnapshot.getLong("score"));
-                            Log.d(TAG, "Value of myAttribute: " + yourScore[0]);
-                        } else {
-                            Log.d(TAG, "No such document!");
-                        }
-                    }
-                });
-        owner.get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            // Get the value of the specific attribute
-                            yourRank[0] = Math.toIntExact(documentSnapshot.getLong("rank"));
-                            Log.d(TAG, "Value of myAttribute: " + yourRank[0]);
-                        } else {
-                            Log.d(TAG, "No such document!");
-                        }
-                    }
-                });
+    public void displayYourRankTotalScore( ArrayList<Rank> rankArr) {
+        TextView yourName = getView().findViewById(R.id.yourName);
+        TextView yourPts = getView().findViewById(R.id.yourPoints);
+
+        int yourRank = 0;
+        int yourScore = 0;
+        for(Rank entry: rankArr) {
+            if (Objects.equals(entry.username, ownerName)) {
+                yourRank = entry.rankingTotalScore;
+                yourScore = entry.totalScore;
+            }
+        }
+
         ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
         TextView yourRankLabel = getView().findViewById(R.id.yourRank);
-        if(yourRank[0] < 4 && yourRank[0] != 0) {
-            if(yourRank[0] == 1) {
+        if(yourRank < 4 && yourRank != 0) {
+            if(yourRank == 1) {
                 yourTrophy.setImageResource(R.drawable.gold_trophy);
             }
-            else if(yourRank[0] == 2) {
+            else if(yourRank == 2) {
                 yourTrophy.setImageResource(R.drawable.silver_trophy);
             }
-            else if (yourRank[0] == 3){
+            else if (yourRank == 3){
                 yourTrophy.setImageResource(R.drawable.bronze_trophy);
             }
             yourTrophy.setVisibility(View.VISIBLE);
@@ -186,12 +168,11 @@ public class RankingFragment extends Fragment {
         else {
             yourRankLabel.setVisibility(View.VISIBLE);
             yourTrophy.setVisibility(View.INVISIBLE);
-            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank[0]) + "<sup><small>th</small></sup>"));
+            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
         }
-        TextView yourName = getView().findViewById(R.id.yourName);
-        TextView yourPts = getView().findViewById(R.id.yourPoints);
+
         yourName.setText(ownerName);
-        String ptsLabel = String.valueOf(yourScore[0]) + " pts";
+        String ptsLabel = String.valueOf(yourScore) + " pts";
         yourPts.setText(ptsLabel);
     }
 
