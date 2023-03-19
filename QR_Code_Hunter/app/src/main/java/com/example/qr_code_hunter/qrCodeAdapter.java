@@ -62,7 +62,7 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
             nextCode = null;
 
             //If no next score, Set the score to 0
-            nextScore = -1;
+            nextScore = 0;
         }
 
 
