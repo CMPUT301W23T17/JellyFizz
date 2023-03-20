@@ -151,6 +151,7 @@ public class loginActivity extends AppCompatActivity {
                         currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
                                 false, returnedCodes, score, rank, totalCodeScanned, highestCode);
 
+                        callback.onGetInfo(currentOwnerObject);
                         Log.d("Callback", "being called");
            
                     });
@@ -162,7 +163,9 @@ public class loginActivity extends AppCompatActivity {
             } else {
                 Log.d("Database error", "Could not fetch data from database");
             }
-            callback.onGetInfo(currentOwnerObject);
+
+            //
+
         });
     }
 
