@@ -147,22 +147,18 @@ public class loginActivity extends AppCompatActivity {
                     int totalCodeScanned = document.getLong("totalCodeScanned").intValue();
                     int highestCode = document.getLong("highestCode").intValue();
 
-                    getQR_Codes(inputOwner).thenAccept(returnedCodes -> {
                         currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
-                                false, returnedCodes, score, rank, totalCodeScanned, highestCode);
+                                false, new ArrayList<>(), score, rank, totalCodeScanned, highestCode);
 
                         Log.d("Callback", "being called");
                         callback.onGetInfo(currentOwnerObject);
-                    });
-
-
                 } else {
                     Log.d("Database Program Logic Error", "This player does not exist in database");
                 }
             } else {
                 Log.d("Database error", "Could not fetch data from database");
 
-                //Put this here for now, will have to discuss with QUIN later why
+                //Put this here for now, will have to discuss with Quin later why
                 callback.onGetInfo(currentOwnerObject);
             }
 
