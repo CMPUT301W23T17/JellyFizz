@@ -55,13 +55,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_button);
         newCode = getIntent().getParcelableExtra("New QrCode");
 
-        //set the owner object, still need to discuss what is happening with this list of qrcodes
-        loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
-            @Override
-            public void onGetInfo(Owner owner) {
-                currentOwner = owner;
-            }
-        });
+
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +64,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 takePhoto.launch(openCam);
             }
         });
+
 
         descBox.addTextChangedListener(new TextWatcher() {
             @Override
@@ -103,36 +98,46 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                 }
 
-                currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
+
+                loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
                     @Override
-                    public void onCheckExitedComplete(DocumentReference existQrRef) {
-                        if (existQrRef != null) {
-                            currentOwner.checkDuplicateCodeScanned(existQrRef, new Owner.CheckDuplicateCallback() {
-                                @Override
-                                public void onCheckDuplicateComplete(Boolean duplicated) {
-                                    if(!duplicated) {
-                                        Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
-                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
-                                    } else {
-                                        Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
-                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
-                        }
-                        Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
-                        (new Handler()).postDelayed(new Runnable() {
+                    public void onGetInfo(Owner owner) {
+                        currentOwner = owner;
+                        currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                             @Override
-                            public void run() {
-                                startActivity(intent);
+                            public void onCheckExitedComplete(DocumentReference existQrRef) {
+                                if (existQrRef != null) {
+                                    currentOwner.checkDuplicateCodeScanned(existQrRef, new Owner.CheckDuplicateCallback() {
+                                        @Override
+                                        public void onCheckDuplicateComplete(Boolean duplicated) {
+                                            if(!duplicated) {
+                                                Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                                                currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                            } else {
+                                                Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                                    currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                }
+                                Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
+                                (new Handler()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        startActivity(intent);
+                                    }
+                                }, 2000);
                             }
-                        }, 2000);
+                        });
                     }
                 });
-            }
-        });
+
+                    }
+
+                });
+
     }
 
     /**
