@@ -1,6 +1,7 @@
 package com.example.qr_code_hunter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -46,6 +47,11 @@ public class NewCodeActivity2 extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_code_2);
         picture = findViewById(R.id.picture_details);
@@ -53,8 +59,18 @@ public class NewCodeActivity2 extends AppCompatActivity {
         charCount = findViewById(R.id.char_count_label);
         saveGeo = findViewById(R.id.save_geolocation_button);
         saveBtn = findViewById(R.id.save_button);
+        saveBtn.setEnabled(false);
         newCode = getIntent().getParcelableExtra("New QrCode");
 
+
+        //set the owner object, still need to discuss what is happening with this list of qrcodes
+        loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+            @Override
+            public void onGetInfo(Owner owner) {
+                currentOwner = owner;
+                saveBtn.setEnabled(true);
+            }
+        });
 
 
         picture.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +80,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                 takePhoto.launch(openCam);
             }
         });
-
 
         descBox.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,54 +106,49 @@ public class NewCodeActivity2 extends AppCompatActivity {
             }
         });
 
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveBtn.setEnabled(false);
+
                 if(saveGeo.isChecked()) {
                     newCode.setLocation(getIntent().getParcelableExtra("Coordinates"));
                 }
 
-
-                loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+                currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
                     @Override
-                    public void onGetInfo(Owner owner) {
-                        currentOwner = owner;
-                        currentOwner.checkQrCodeExist(newCode.getHashString(), new Owner.CheckExistCallback() {
-                            @Override
-                            public void onCheckExitedComplete(DocumentReference existQrRef) {
-                                if (existQrRef != null) {
-                                    currentOwner.checkDuplicateCodeScanned(existQrRef, new Owner.CheckDuplicateCallback() {
-                                        @Override
-                                        public void onCheckDuplicateComplete(Boolean duplicated) {
-                                            if(!duplicated) {
-                                                Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
-                                                currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
-                                            } else {
-                                                Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
-                                    currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
-                                }
-                                Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
-                                (new Handler()).postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startActivity(intent);
+                    public void onCheckExitedComplete(DocumentReference existQrRef) {
+                        if (existQrRef != null) {
+                            currentOwner.checkDuplicateCodeScanned(existQrRef, new Owner.CheckDuplicateCallback() {
+                                @Override
+                                public void onCheckDuplicateComplete(Boolean duplicated) {
+                                    if(!duplicated) {
+                                        Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                                    } else {
+                                        Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }
-                                }, 2000);
-                            }
-                        });
+
+                                    saveBtn.setEnabled(true);
+                                    Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                        } else {
+                            Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
+                            saveBtn.setEnabled(true);
+                            Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
                 });
-
-                    }
-
-                });
+            }
+        });
 
     }
+
 
     /**
      * This opens the camera app and set the taken photograph to an ImageView
@@ -163,4 +173,6 @@ public class NewCodeActivity2 extends AppCompatActivity {
                     }
                 }
             });
+
+
 }

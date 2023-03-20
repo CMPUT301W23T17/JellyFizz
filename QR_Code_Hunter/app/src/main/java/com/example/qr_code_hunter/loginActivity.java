@@ -151,9 +151,8 @@ public class loginActivity extends AppCompatActivity {
                         currentOwnerObject = new Owner(phoneNumber, email, inputOwner,
                                 false, returnedCodes, score, rank, totalCodeScanned, highestCode);
 
-                        callback.onGetInfo(currentOwnerObject);
                         Log.d("Callback", "being called");
-           
+                        callback.onGetInfo(currentOwnerObject);
                     });
 
 
