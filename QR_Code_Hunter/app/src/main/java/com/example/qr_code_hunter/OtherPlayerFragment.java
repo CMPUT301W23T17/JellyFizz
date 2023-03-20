@@ -14,7 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,6 +28,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 
 public class OtherPlayerFragment extends Fragment{
@@ -144,6 +150,46 @@ public class OtherPlayerFragment extends Fragment{
                 getActivity().onBackPressed();
             }
         });
+
+        //
+
+
+        //Set listener for more button
+        TextView moreButton = view.findViewById(R.id.otherMoreButton);
+        moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, new other_code_list(userName));
+                fragmentTransaction.commit();
+            }
+        });
+
+
+
+        //Get Codes
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(userName);
+
+        currentCodes.thenAccept(qrCodes -> {
+            TextView firstCodeView = getView().findViewById(R.id.otherFirstQrCodeImage);
+            TextView secondCodeView = getView().findViewById(R.id.otherSecondQrCodeImage);
+
+            String firstHashString = qrCodes.get(0).getId();
+            String secondHashString = qrCodes.get(1).getId();
+
+            qrCodeTag firstTag = new qrCodeTag(firstHashString, 0, 0);
+            qrCodeTag secondTag = new qrCodeTag(secondHashString, 0, 0);
+
+            QrCode filler = new QrCode();
+
+            firstCodeView.setTag(firstTag);
+            secondCodeView.setTag(secondTag);
+
+            firstCodeView.setText(filler.getVisualRep(firstHashString));
+            secondCodeView.setText(filler.getVisualRep(secondHashString));
+        });
+
 
     }
 

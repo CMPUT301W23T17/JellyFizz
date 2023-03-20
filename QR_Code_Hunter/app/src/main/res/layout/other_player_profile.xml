@@ -161,7 +161,7 @@
             app:layout_constraintVertical_bias="0.463" />
 
         <TextView
-            android:id="@+id/textpoint4"
+            android:id="@+id/otherMoreButton"
             android:layout_width="57dp"
             android:layout_height="26dp"
             android:text="MORE >"
@@ -169,10 +169,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.816"
+            app:layout_constraintHorizontal_bias="0.805"
             app:layout_constraintStart_toEndOf="@+id/textpoint5"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.825" />
+            app:layout_constraintVertical_bias="0.764" />
 
         <TextView
             android:id="@+id/textpoint5"
@@ -183,10 +183,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.055"
+            app:layout_constraintHorizontal_bias="0.101"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.829" />
+            app:layout_constraintVertical_bias="0.767" />
 
         <TextView
             android:id="@+id/textpoint3"
@@ -203,43 +203,42 @@
             app:layout_constraintVertical_bias="0.463" />
 
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="16dp"
+        <TextView
+            android:id="@+id/otherFirstQrCodeImage"
+            android:layout_width="165dp"
+            android:layout_height="149dp"
+            android:clickable="true"
+            android:fontFamily="@font/unispace"
+            android:gravity="center"
             android:src="@drawable/qrcode_image"
+            android:textColor="@color/teal_200"
+            android:text=""
+            android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView4"
-            app:layout_constraintHorizontal_bias="0.188"
+            app:layout_constraintEnd_toStartOf="@+id/otherSecondQrCodeImage"
+            app:layout_constraintHorizontal_bias="0.192"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.956" />
+            app:layout_constraintVertical_bias="0.972" />
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <TextView
+            android:id="@+id/otherSecondQrCodeImage"
+            android:layout_width="163dp"
+            android:layout_height="150dp"
+            android:clickable="true"
+            android:fontFamily="@font/unispace"
+            android:gravity="center"
             android:src="@drawable/qrcode_image"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.956" />
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/qrcode_image"
+            android:text=""
+            android:textColor="@color/teal_200"
+            android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.882"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/otherFirstQrCodeImage"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.956" />
+            app:layout_constraintVertical_bias="0.977" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView00"

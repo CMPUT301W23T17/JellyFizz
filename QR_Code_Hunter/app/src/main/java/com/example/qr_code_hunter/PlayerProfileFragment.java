@@ -236,14 +236,13 @@ public class PlayerProfileFragment extends Fragment {
             }
         });
 
-        //TODO - Update two Text Views
 
         //Get Codes
-        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes("QuinNguyen");
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(loginActivity.getOwnerName());
 
         currentCodes.thenAccept(qrCodes -> {
             TextView firstCodeView = getView().findViewById(R.id.firstQrCodeImage);
-            TextView secondCodeView = getView().findViewById(R.id.firstQrCodeImage);
+            TextView secondCodeView = getView().findViewById(R.id.secondQrCodeImage);
 
             String firstHashString = qrCodes.get(0).getId();
             String secondHashString = qrCodes.get(1).getId();
