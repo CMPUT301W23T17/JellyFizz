@@ -25,6 +25,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PlayerProfileFragment#newInstance} factory method to
@@ -232,5 +235,30 @@ public class PlayerProfileFragment extends Fragment {
                 OwnerRef.update("hideInfo", isOn);
             }
         });
+
+        //TODO - Update two Text Views
+
+        //Get Codes
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes("QuinNguyen");
+
+        currentCodes.thenAccept(qrCodes -> {
+            TextView firstCodeView = getView().findViewById(R.id.firstQrCodeImage);
+            TextView secondCodeView = getView().findViewById(R.id.firstQrCodeImage);
+
+            String firstHashString = qrCodes.get(0).getId();
+            String secondHashString = qrCodes.get(1).getId();
+
+            qrCodeTag firstTag = new qrCodeTag(firstHashString, 0, 0);
+            qrCodeTag secondTag = new qrCodeTag(secondHashString, 0, 0);
+
+            QrCode filler = new QrCode();
+
+            firstCodeView.setTag(firstTag);
+            secondCodeView.setTag(secondTag);
+
+            firstCodeView.setText(filler.getVisualRep(firstHashString));
+            secondCodeView.setText(filler.getVisualRep(secondHashString));
+        });
+
     }
 }

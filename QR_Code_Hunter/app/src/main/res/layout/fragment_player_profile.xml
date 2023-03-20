@@ -114,10 +114,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.101"
+            app:layout_constraintHorizontal_bias="0.213"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.773" />
+            app:layout_constraintVertical_bias="0.767" />
 
         <TextView
             android:id="@+id/more_button"
@@ -129,7 +129,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.88"
+            app:layout_constraintHorizontal_bias="0.672"
             app:layout_constraintStart_toEndOf="@+id/list_of_code_string"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.764" />
@@ -211,36 +211,41 @@
 
         <TextView
             android:id="@+id/firstQrCodeImage"
-            android:layout_width="142dp"
-            android:layout_height="144dp"
-            android:layout_marginStart="40dp"
+            android:layout_width="165dp"
+            android:layout_height="149dp"
             android:clickable="true"
             android:fontFamily="@font/unispace"
-            android:src="@drawable/qrcode_image"
-            android:text="  _--------------_  \n { ~~~)      (~~~ } \n{| ( + ) || ( + ) |}\n{|       ||       |}\n |      {__}      | \n |_              _| \n |    (______)    | \n |                | \n ------------------ "
-            android:textColor="@color/teal_200"
-            android:textSize="9sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.972" />
-
-        <TextView
-            android:id="@+id/secondQrCodeImage"
-            android:layout_width="141dp"
-            android:layout_height="141dp"
-            android:clickable="true"
-            android:fontFamily="@font/unispace"
+            android:gravity="center"
             android:src="@drawable/qrcode_image"
             android:text="  _--------------_  \n { ~~~)      (~~~ } \n{| ( + ) || ( + ) |}\n{|       ||       |}\n |      {__}      | \n |_              _| \n |    (______)    | \n |                | \n ------------------ "
             android:textColor="@color/teal_200"
             android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.755"
+            app:layout_constraintEnd_toStartOf="@+id/secondQrCodeImage"
+            app:layout_constraintHorizontal_bias="0.085"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.972" />
+
+        <TextView
+            android:id="@+id/secondQrCodeImage"
+            android:layout_width="163dp"
+            android:layout_height="150dp"
+            android:clickable="true"
+            android:fontFamily="@font/unispace"
+            android:gravity="center"
+            android:src="@drawable/qrcode_image"
+            android:text="  _--------------_  \n { ~~~)      (~~~ } \n{| ( + ) || ( + ) |}\n{|       ||       |}\n |      {__}      | \n |_              _| \n |    (______)    | \n |                | \n ------------------ "
+            android:textColor="@color/teal_200"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/firstQrCodeImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.977" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView00"
