@@ -112,11 +112,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 public void onCheckDuplicateComplete(Boolean duplicated) {
                                     if(!duplicated) {
                                         Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
-                                        if((int) charCount.getText().toString().charAt(0) > 0) {
-                                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
-                                        } else {
-                                            currentOwner.addQRCode(newCode, null, encodedImage);
-                                        }
+                                        currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                                     } else {
                                         Toast.makeText(NewCodeActivity2.this, "You've scanned this code before!",Toast.LENGTH_LONG).show();
                                     }
@@ -124,11 +120,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                             });
                         } else {
                             Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
-                            if((int) charCount.getText().toString().charAt(0) > 0) {
-                                currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
-                            } else {
-                                currentOwner.addQRCode(newCode, null, encodedImage);
-                            }
+                            currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                         }
                         Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
                         (new Handler()).postDelayed(new Runnable() {
