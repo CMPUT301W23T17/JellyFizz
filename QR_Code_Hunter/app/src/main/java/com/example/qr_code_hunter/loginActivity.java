@@ -152,7 +152,7 @@ public class loginActivity extends AppCompatActivity {
                                 false, returnedCodes, score, rank, totalCodeScanned, highestCode);
 
                         Log.d("Callback", "being called");
-                        callback.onGetInfo(currentOwnerObject);
+           
                     });
 
 
@@ -162,6 +162,7 @@ public class loginActivity extends AppCompatActivity {
             } else {
                 Log.d("Database error", "Could not fetch data from database");
             }
+            callback.onGetInfo(currentOwnerObject);
         });
     }
 
