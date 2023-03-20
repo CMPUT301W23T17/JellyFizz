@@ -15,7 +15,7 @@
         android:id="@+id/score"
         android:layout_width="88dp"
         android:layout_height="88dp"
-        android:background="@drawable/circle_green_border"
+        android:background="@drawable/circle_blue_border"
 
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
