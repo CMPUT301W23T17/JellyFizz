@@ -8,14 +8,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center_horizontal">
         <TextView
             android:id="@+id/details_backBtn"
             android:drawableLeft="@drawable/ic_arrowback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="20dp"
+            android:layout_marginRight="150dp"
+            android:paddingHorizontal="15dp"
             />
 
         <TextView
@@ -23,8 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_pencil"
-            android:layout_weight="1"
-            android:paddingRight="20dp"
+            android:layout_marginLeft="150dp"
+            android:paddingHorizontal="15dp"
             android:gravity="right"
             />
     </LinearLayout>
