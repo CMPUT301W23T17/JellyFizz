@@ -152,22 +152,18 @@ public class CodeDetailsFragment extends Fragment {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             String userComment = doc.getString("Comment");
-                                            //String userComment = documentSnapshot.getString("Comment");
-                                            //String encodedImageString = documentSnapshot.getString("Photo");
+                                            String encodedImageString = doc.getString("Photo");
 
-                                            Toast.makeText(getContext(), userComment, Toast.LENGTH_SHORT).show();
                                             codeDesc.setText(userComment);
 
-//                                            // Decode the encoded string
-//                                            byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
-//                                            //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
-//
-//                                            // Convert the array byte into bitmap
-//                                            InputStream stream = new ByteArrayInputStream(Base64.getDecoder().decode(byteArray));
-//                                            Bitmap bitmap = BitmapFactory.decodeStream(stream);
-//
-//                                            //Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-//                                            codeImage.setImageBitmap(bitmap);
+                                            // Decode the encoded string
+                                            byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
+                                            //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
+
+                                            // Convert the array byte into bitmap
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+                                            codeImage.setImageBitmap(bitmap);
 
                                         }
                                     });
