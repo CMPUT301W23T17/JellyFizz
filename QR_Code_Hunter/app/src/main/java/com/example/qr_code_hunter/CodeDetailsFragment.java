@@ -154,6 +154,7 @@ public class CodeDetailsFragment extends Fragment {
 
                                             // Decode the encoded string
                                             byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
+                                            //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
 
                                             // Convert the array byte into bitmap
                                             Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
@@ -174,13 +175,14 @@ public class CodeDetailsFragment extends Fragment {
                 });
 
 
-
-
-
-
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // replace fragment with player's list of codes fragment screen
+                getParentFragmentManager().popBackStack();
+            }
+        });
 
     }
-
 
 }
