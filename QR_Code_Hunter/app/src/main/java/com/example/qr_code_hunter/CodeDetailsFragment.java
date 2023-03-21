@@ -256,7 +256,7 @@ public class CodeDetailsFragment extends Fragment {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "Comment saved", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Comment saved, click again to go back", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
