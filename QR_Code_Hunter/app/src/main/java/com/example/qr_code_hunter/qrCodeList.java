@@ -118,7 +118,6 @@ public class qrCodeList extends Fragment {
                         qrCodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(getActivity(), "Item clicked", Toast.LENGTH_SHORT).show();
                                 Fragment fragment = new CodeDetailsFragment();
                                 FragmentManager fragmentManager = getParentFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
