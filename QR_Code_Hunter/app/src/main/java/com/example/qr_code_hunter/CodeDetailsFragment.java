@@ -4,12 +4,29 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 public class CodeDetailsFragment extends Fragment {
+    String hashString; // what is provided into this fragment
+    ArrayList<String> otherPlayers = new ArrayList<String>();
+
+    TextView codeName;
+    TextView codeVisual;
+    TextView codeLocation;
+    TextView codeScore;
+    ImageView codeImage;
+    EditText codeDesc;
+    TextView codeOthers;
+    TextView backButton;
+    TextView editButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,6 +65,16 @@ public class CodeDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_code_details, container, false);
 
+        codeName = view.findViewById(R.id.details_codename);
+        codeVisual = view.findViewById(R.id.details_visual);
+        codeLocation = view.findViewById(R.id.details_location);
+        codeScore = view.findViewById(R.id.details_points);
+        codeImage = view.findViewById(R.id.details_image);
+        codeDesc = view.findViewById(R.id.details_comment);
+        codeOthers = view.findViewById(R.id.details_others);
+
+        backButton = view.findViewById(R.id.details_backBtn);
+        editButton = view.findViewById(R.id.details_editCommentBtn);
 
         return view;
     }
@@ -56,5 +83,13 @@ public class CodeDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+        hashString = bundle.getString("Hash");
+
+
+
+
     }
+
+
 }
