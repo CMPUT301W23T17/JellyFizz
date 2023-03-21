@@ -152,6 +152,14 @@ public class CodeDetailsFragment extends Fragment {
 
                                             codeDesc.setText(userComment);
 
+                                            // Decode the encoded string
+                                            byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
+
+                                            // Convert the array byte into bitmap
+                                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+                                            codeImage.setImageBitmap(bitmap);
+
                                         }
                                     });
                                 }
@@ -159,6 +167,7 @@ public class CodeDetailsFragment extends Fragment {
                                     // other players who have scanned this code
                                     otherPlayers.add(username);
                                 }
+
                             }
                         }
                     }
