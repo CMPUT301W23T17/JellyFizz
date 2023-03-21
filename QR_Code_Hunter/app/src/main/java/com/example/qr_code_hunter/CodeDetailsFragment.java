@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -211,6 +213,25 @@ public class CodeDetailsFragment extends Fragment {
 
                 // in case keyboard still does not show:
                 //imm.showSoftInput(codeDesc, InputMethodManager.SHOW_FORCED);
+
+                codeDesc.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if(s.length() == 150) {
+                            Toast.makeText(getContext(), "Maximum character threshold exceeded!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
 
             }
         });
