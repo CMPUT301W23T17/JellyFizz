@@ -144,6 +144,7 @@ public class CodeDetailsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
+                            otherPlayers.clear(); // avoid duplicates other players upon backstack pop
                             for(QueryDocumentSnapshot doc: task.getResult()) {
                                 DocumentReference playerRef = doc.getDocumentReference("Player");
                                 DocumentReference codeRef = doc.getDocumentReference("qrCodeScanned");
