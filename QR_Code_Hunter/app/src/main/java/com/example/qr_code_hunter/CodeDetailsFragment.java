@@ -1,5 +1,7 @@
 package com.example.qr_code_hunter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,17 +9,25 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class CodeDetailsFragment extends Fragment {
     String hashString; // what is provided into this fragment
@@ -91,6 +101,8 @@ public class CodeDetailsFragment extends Fragment {
         Bundle bundle = getArguments();
         hashString = bundle.getString("Hash");
 
+        //Toast.makeText(getContext(), hashString, Toast.LENGTH_LONG).show();
+
         // Access to the QrCodes collection to get necessary data
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);
@@ -117,6 +129,41 @@ public class CodeDetailsFragment extends Fragment {
                         }
                     }
                 });
+
+        db.collection("scannedBy")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for(QueryDocumentSnapshot doc: task.getResult()) {
+                                DocumentReference playerRef = doc.getDocumentReference("Player");
+                                DocumentReference codeRef = doc.getDocumentReference("qrCodeScanned");
+
+                                String username = playerRef.getId();
+                                String codeString = codeRef.getId();
+
+                                if(username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
+                                    codeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            String userComment = doc.getString("Comment");
+                                            String encodedImageString = doc.getString("Photo");
+
+                                            codeDesc.setText(userComment);
+
+                                        }
+                                    });
+                                }
+                                else if (!username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
+                                    // other players who have scanned this code
+                                    otherPlayers.add(username);
+                                }
+                            }
+                        }
+                    }
+                });
+
 
 
 
