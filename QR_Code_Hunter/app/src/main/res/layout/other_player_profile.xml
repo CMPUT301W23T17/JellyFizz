@@ -42,10 +42,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/rectangle_"
             app:layout_constraintEnd_toEndOf="@+id/rectangle_"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintStart_toStartOf="@+id/rectangle_"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/email"
             app:layout_constraintTop_toTopOf="@+id/rectangle_"
-            app:layout_constraintVertical_bias="0.634" />
+            app:layout_constraintVertical_bias="0.548" />
 
         <ImageView
             android:id="@+id/rectangle_"
