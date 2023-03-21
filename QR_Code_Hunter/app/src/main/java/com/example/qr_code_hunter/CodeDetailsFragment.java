@@ -9,7 +9,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,11 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 
 public class CodeDetailsFragment extends Fragment {
     String hashString; // what is provided into this fragment
@@ -111,10 +107,7 @@ public class CodeDetailsFragment extends Fragment {
         Bundle bundle = getArguments();
         hashString = bundle.getString("Hash");
 
-        //Toast.makeText(getContext(), hashString, Toast.LENGTH_LONG).show();
-
         // Access to the QrCodes collection to get necessary data
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);
 
         // Get code details
@@ -188,7 +181,7 @@ public class CodeDetailsFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // replace fragment with player's list of codes fragment screen
+                // Replace fragment with player's list of codes fragment screen
                 getParentFragmentManager().popBackStack();
             }
         });
@@ -196,8 +189,7 @@ public class CodeDetailsFragment extends Fragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // set focus on editText field, set editText field to editable, but not clickable?
-
+                // Set focus on editText field, set editText field to editable, but not clickable?
                 codeDesc.setFocusable(true);
                 codeDesc.setFocusableInTouchMode(true);
                 codeDesc.setClickable(true);
@@ -211,13 +203,9 @@ public class CodeDetailsFragment extends Fragment {
 
                 Toast.makeText(getActivity(), "Comment editing enabled", Toast.LENGTH_SHORT).show();
 
-                // in case keyboard still does not show:
-                //imm.showSoftInput(codeDesc, InputMethodManager.SHOW_FORCED);
-
                 codeDesc.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                     }
 
                     @Override
@@ -229,10 +217,8 @@ public class CodeDetailsFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-
                     }
                 });
-
             }
         });
 
@@ -242,8 +228,6 @@ public class CodeDetailsFragment extends Fragment {
                 if(!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                    //Toast.makeText(getActivity(), "Comment editing disabled", Toast.LENGTH_SHORT).show();
 
                     codeDesc.setClickable(false);
                     codeDesc.setFocusable(false);
@@ -267,19 +251,9 @@ public class CodeDetailsFragment extends Fragment {
                                     Toast.makeText(getContext(), "Error updating comment!", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
-
                 }
             }
         });
 
-
-
-
-
-
-
     }
-
-
 }
