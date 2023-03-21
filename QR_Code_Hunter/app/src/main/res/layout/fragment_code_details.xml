@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="20dp"
+    android:paddingTop="10dp"
     android:clickable="true"
     android:focusableInTouchMode="true">
 
@@ -14,7 +14,8 @@
             android:drawableLeft="@drawable/ic_arrowback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
+            android:layout_weight="1"
+            android:paddingLeft="20dp"
             />
 
         <TextView
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_pencil"
             android:layout_weight="1"
-            android:paddingRight="15dp"
+            android:paddingRight="20dp"
             android:gravity="right"
             />
     </LinearLayout>
@@ -43,6 +44,7 @@
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             />
 
@@ -110,8 +112,6 @@
             android:focusable="false"
             android:clickable="false"
             />
-        <!--        android:inputType="none"-->
-        <!--        android:enabled="false"-->
 
         <TextView
             android:id="@+id/details_others"
