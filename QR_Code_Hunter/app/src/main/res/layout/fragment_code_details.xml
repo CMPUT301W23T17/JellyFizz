@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="15dp"
+    android:paddingTop="20dp"
     android:clickable="true"
     android:focusableInTouchMode="true">
 
@@ -110,6 +110,7 @@
             android:ems="10"
             android:gravity="start|top"
             android:paddingHorizontal="15dp"
+            android:paddingVertical="5dp"
             android:textColor="@color/black"
             android:focusable="false"
             android:clickable="false"
@@ -120,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View other players who have scanned this code"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:textColor="@color/black"
             android:textStyle="italic"
             android:visibility="visible"
