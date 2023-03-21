@@ -147,17 +147,17 @@ public class CodeDetailsFragment extends Fragment {
                                     Toast.makeText(getContext(), username, Toast.LENGTH_SHORT).show();
                                 }
 
+                                if(username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
+                                    codeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            String userComment = doc.getString("Comment");
+                                            //String userComment = documentSnapshot.getString("Comment");
+                                            //String encodedImageString = documentSnapshot.getString("Photo");
 
-//
-//                                if(username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
-//                                    codeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                                        @Override
-//                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                            String userComment = documentSnapshot.getString("Comment");
-//                                            String encodedImageString = documentSnapshot.getString("Image");
-//
-//                                            codeDesc.setText(userComment);
-//
+                                            Toast.makeText(getContext(), userComment, Toast.LENGTH_SHORT).show();
+                                            codeDesc.setText(userComment);
+
 //                                            // Decode the encoded string
 //                                            byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
 //                                            //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
@@ -168,14 +168,14 @@ public class CodeDetailsFragment extends Fragment {
 //
 //                                            //Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 //                                            codeImage.setImageBitmap(bitmap);
-//
-//                                        }
-//                                    });
-//                                }
-//                                else if (!username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
-//                                    // other players who have scanned this code
-//                                    otherPlayers.add(username);
-//                                }
+
+                                        }
+                                    });
+                                }
+                                else if (!username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
+                                    // other players who have scanned this code
+                                    otherPlayers.add(username);
+                                }
 
                             }
                         }
