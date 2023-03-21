@@ -47,7 +47,7 @@ public class QrCode implements Parcelable {
     }
 
     protected QrCode(Parcel in) {
-        binaryString = in.readString()
+        binaryString = in.readString();
         codeName = in.readString();
 //        visualRep = in.readString();
         hashString = in.readString();
@@ -333,7 +333,7 @@ public class QrCode implements Parcelable {
      */
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(binaryString)
+        dest.writeString(binaryString);
         dest.writeString(codeName);
 //        dest.writeString(visualRep);
         dest.writeString(hashString);
