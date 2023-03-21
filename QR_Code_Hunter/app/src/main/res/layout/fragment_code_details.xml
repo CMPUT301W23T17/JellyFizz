@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:clickable="true"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/details_backBtn"
+            android:drawableLeft="@drawable/ic_arrowback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            />
+
+        <TextView
+            android:id="@+id/details_editCommentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_pencil"
+            android:layout_weight="1"
+            android:paddingRight="15dp"
+            android:gravity="right"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="18dp">
+
+        <TextView
+            android:id="@+id/details_codename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Code Name"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            />
+
+        <TextView
+            android:id="@+id/details_visual"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="  _||||||||||||||_  \n { ----      ---- } \n{| ( + ) || ( + ) |}\n)|       ||       |(\n |      {__}      | \n |   _~~~~~~~~_   | \n  |_  [||||||]  _| \n   |_          _| \n -----||||||||----- "
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/rounded_border"
+            />
+
+        <TextView
+            android:id="@+id/details_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginVertical="5dp"
+            />
+
+        <TextView
+            android:id="@+id/details_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Points"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginVertical="5dp"
+            />
+
+        <ImageView
+            android:id="@+id/details_image"
+            android:layout_width="275dp"
+            android:layout_height="150dp"
+            android:background="@drawable/rounded_border"
+            android:paddingVertical="5dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Comment/Description"
+            android:paddingHorizontal="30dp"
+            android:layout_gravity="left"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            />
+
+        <EditText
+            android:id="@+id/details_comment"
+            android:layout_width="275dp"
+            android:layout_height="150dp"
+            android:layout_marginVertical="5dp"
+            android:background="@drawable/rounded_border"
+            android:ems="10"
+            android:gravity="start|top"
+            android:paddingHorizontal="15dp"
+            android:textColor="@color/black"
+            android:focusable="false"
+            android:clickable="false"
+            />
+        <!--        android:inputType="none"-->
+        <!--        android:enabled="false"-->
+
+        <TextView
+            android:id="@+id/details_others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View other players who have scanned this code"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            android:visibility="visible"
+            />
+
+    </LinearLayout>
+</RelativeLayout>
