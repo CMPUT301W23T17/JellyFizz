@@ -244,19 +244,21 @@ public class PlayerProfileFragment extends Fragment {
             TextView firstCodeView = getView().findViewById(R.id.firstQrCodeImage);
             TextView secondCodeView = getView().findViewById(R.id.secondQrCodeImage);
 
-            String firstHashString = qrCodes.get(0).getId();
-            String secondHashString = qrCodes.get(1).getId();
-
-            qrCodeTag firstTag = new qrCodeTag(firstHashString, 0, 0);
-            qrCodeTag secondTag = new qrCodeTag(secondHashString, 0, 0);
-
             QrCode filler = new QrCode();
 
-            firstCodeView.setTag(firstTag);
-            secondCodeView.setTag(secondTag);
+            if (qrCodes.size() > 0) {
+                String firstHashString = qrCodes.get(0).getId();
+                qrCodeTag firstTag = new qrCodeTag(firstHashString, 0, 0);
+                firstCodeView.setTag(firstTag);
+                firstCodeView.setText(filler.getVisualRep(firstHashString));
+            }
 
-            firstCodeView.setText(filler.getVisualRep(firstHashString));
-            secondCodeView.setText(filler.getVisualRep(secondHashString));
+            if (qrCodes.size() > 1) {
+                String secondHashString = qrCodes.get(1).getId();
+                qrCodeTag secondTag = new qrCodeTag(secondHashString, 0, 0);
+                secondCodeView.setTag(secondTag);
+                secondCodeView.setText(filler.getVisualRep(secondHashString));
+            }
         });
 
     }
