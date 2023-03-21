@@ -119,9 +119,15 @@ public class qrCodeList extends Fragment {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 Toast.makeText(getActivity(), "Item clicked", Toast.LENGTH_SHORT).show();
+                                Fragment fragment = new CodeDetailsFragment();
                                 FragmentManager fragmentManager = getParentFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.frame_layout, new CodeDetailsFragment());
+                                fragmentTransaction.replace(R.id.frame_layout, fragment);
+                                DocumentReference selected = (DocumentReference) parent.getItemAtPosition(position);
+                                String selectedHash = selected.getId();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("Hash", selectedHash);
+                                fragment.setArguments(bundle);
 
 
 
