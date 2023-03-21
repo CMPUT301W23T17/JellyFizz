@@ -123,6 +123,7 @@ public class qrCodeList extends Fragment {
                                 FragmentManager fragmentManager = getParentFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                 fragmentTransaction.replace(R.id.frame_layout, fragment);
+
                                 DocumentReference selected = (DocumentReference) parent.getItemAtPosition(position);
                                 String selectedHash = selected.getId();
                                 Bundle bundle = new Bundle();
@@ -130,7 +131,7 @@ public class qrCodeList extends Fragment {
                                 fragment.setArguments(bundle);
 
 
-
+                                fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                             }
                         });

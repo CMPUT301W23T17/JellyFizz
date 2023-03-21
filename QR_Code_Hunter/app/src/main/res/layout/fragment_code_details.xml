@@ -108,10 +108,11 @@
             android:paddingHorizontal="15dp"
             android:textColor="@color/black"
             android:focusable="false"
-            android:clickable="false"
+            android:maxLength="150"
             />
         <!--        android:inputType="none"-->
         <!--        android:enabled="false"-->
+<!--        android:clickable="true"-->
 
         <TextView
             android:id="@+id/details_others"

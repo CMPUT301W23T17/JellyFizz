@@ -1,11 +1,14 @@
 package com.example.qr_code_hunter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 
 public class CodeDetailsFragment extends Fragment {
     String hashString; // what is provided into this fragment
@@ -42,6 +47,9 @@ public class CodeDetailsFragment extends Fragment {
     TextView codeOthers;
     TextView backButton;
     TextView editButton;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    QueryDocumentSnapshot matchFound;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -104,7 +112,7 @@ public class CodeDetailsFragment extends Fragment {
         //Toast.makeText(getContext(), hashString, Toast.LENGTH_LONG).show();
 
         // Access to the QrCodes collection to get necessary data
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);
 
         // Get code details
@@ -143,14 +151,11 @@ public class CodeDetailsFragment extends Fragment {
                                 String username = playerRef.getId();
                                 String codeString = codeRef.getId();
 
-                                if(codeString.equals(hashString)) {
-                                    Toast.makeText(getContext(), username, Toast.LENGTH_SHORT).show();
-                                }
-
                                 if(username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
                                     codeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            matchFound = doc;
                                             String userComment = doc.getString("Comment");
                                             String encodedImageString = doc.getString("Photo");
 
@@ -177,6 +182,75 @@ public class CodeDetailsFragment extends Fragment {
                         }
                     }
                 });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // replace fragment with player's list of codes fragment screen
+                getParentFragmentManager().popBackStack();
+            }
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // set focus on editText field, set editText field to editable, but not clickable?
+
+                codeDesc.setFocusable(true);
+                codeDesc.setFocusableInTouchMode(true);
+                codeDesc.setClickable(true);
+
+                codeDesc.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(codeDesc, InputMethodManager.SHOW_IMPLICIT);
+
+                // Set cursor to the end of the sentence
+                codeDesc.setSelection(codeDesc.getText().length());
+
+                Toast.makeText(getActivity(), "Comment editing enabled", Toast.LENGTH_SHORT).show();
+
+                // in case keyboard still does not show:
+                //imm.showSoftInput(codeDesc, InputMethodManager.SHOW_FORCED);
+
+            }
+        });
+
+        codeDesc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    //Toast.makeText(getActivity(), "Comment editing disabled", Toast.LENGTH_SHORT).show();
+
+                    codeDesc.setClickable(false);
+                    codeDesc.setFocusable(false);
+                    codeDesc.setFocusableInTouchMode(false);
+
+                    String updateDoc = matchFound.getId();
+                    DocumentReference toUpdate = db.collection("scannedBy").document(updateDoc);
+
+                    String newComment = codeDesc.getText().toString();
+
+                    toUpdate.update("Comment", newComment)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(getContext(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Error updating comment!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+                }
+            }
+        });
 
 
 
