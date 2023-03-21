@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
+    android:paddingTop="15dp"
     android:clickable="true"
     android:focusableInTouchMode="true">
 
@@ -94,7 +94,7 @@
             android:layout_marginTop="15dp"
             android:text="Comment/Description"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="left"
+            android:layout_gravity="center_horizontal"
             android:textSize="16sp"
             android:textColor="@color/black"
             />
