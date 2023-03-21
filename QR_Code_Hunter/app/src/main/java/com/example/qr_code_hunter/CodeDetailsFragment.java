@@ -12,6 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 
 public class CodeDetailsFragment extends Fragment {
@@ -85,6 +90,36 @@ public class CodeDetailsFragment extends Fragment {
 
         Bundle bundle = getArguments();
         hashString = bundle.getString("Hash");
+
+        // Access to the QrCodes collection to get necessary data
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference qrRef = db.collection("QrCodes").document(hashString);
+
+        // Get code details
+        qrRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.exists()){
+                            // Get necessary details
+                            String name = documentSnapshot.getString("codeName");
+                            int score = Math.toIntExact(documentSnapshot.getLong("Score"));
+                            double lat = documentSnapshot.getLong("latitude");
+                            double lng = documentSnapshot.getLong("longitude");
+
+                            codeName.setText(name);
+
+                            String locText = String.valueOf(lat) + ", " + String.valueOf(lng);
+                            codeLocation.setText(locText);
+
+                            String scoreText = String.valueOf(score) + " pts";
+                            codeScore.setText(scoreText);
+                        }
+                    }
+                });
+
+
+
 
 
 
