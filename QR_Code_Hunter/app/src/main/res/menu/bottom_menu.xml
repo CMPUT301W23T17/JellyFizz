@@ -20,5 +20,5 @@
     <item
         android:id="@+id/player_profile_screen"
         android:icon="@drawable/ic_profie"
-        android:title="Profie" />
+        android:title="Profile" />
 </menu>
