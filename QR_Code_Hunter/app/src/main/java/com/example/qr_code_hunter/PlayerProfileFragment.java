@@ -246,20 +246,48 @@ public class PlayerProfileFragment extends Fragment {
 
             QrCode filler = new QrCode();
 
+
             if (qrCodes.size() > 0) {
-                String firstHashString = qrCodes.get(0).getId();
-                qrCodeTag firstTag = new qrCodeTag(firstHashString, 0, 0);
-                firstCodeView.setTag(firstTag);
-                firstCodeView.setText(filler.getVisualRep(firstHashString));
+                DocumentReference firstScanned = qrCodes.get(0);
+
+                // assuming qrCodeScanned is a DocumentReference field in a Firestore document
+                firstScanned.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+
+                            String binaryString = (String) documentSnapshot.get("binaryString");
+                            QrCode filler = new QrCode();
+
+                            // do something with the ID
+                            qrCodeTag firstTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+
+                            firstCodeView.setTag(firstTag);
+                            firstCodeView.setText(filler.getVisualRep(binaryString));
+                        }
+                    }
+                });
+
             }
 
             if (qrCodes.size() > 1) {
-                String secondHashString = qrCodes.get(1).getId();
-                qrCodeTag secondTag = new qrCodeTag(secondHashString, 0, 0);
-                secondCodeView.setTag(secondTag);
-                secondCodeView.setText(filler.getVisualRep(secondHashString));
-            }
-        });
+                DocumentReference secondScanned = qrCodes.get(1);
+                secondScanned.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String binaryString = (String) documentSnapshot.get("binaryString");
+                            QrCode filler = new QrCode();
 
+                            qrCodeTag secondTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+
+                            secondCodeView.setTag(secondTag);
+                            secondCodeView.setText(filler.getVisualRep(binaryString));
+                        }
+                    }
+                });
+            }
+
+        });
     }
 }

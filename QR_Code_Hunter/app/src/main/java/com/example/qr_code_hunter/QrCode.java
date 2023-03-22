@@ -60,6 +60,28 @@ public class QrCode implements Parcelable {
 //        dataPrivacy = tmpDataPrivacy == 0 ? null : tmpDataPrivacy == 1;
     }
 
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(binaryString);
+        dest.writeString(codeName);
+//        dest.writeString(visualRep);
+        dest.writeString(hashString);
+        if (score == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(score);
+        }
+//        dest.writeByte((byte) (dataPrivacy == null ? 0 : dataPrivacy ? 1 : 2));
+    }
+
     public static final Creator<QrCode> CREATOR = new Creator<QrCode>() {
         @Override
         public QrCode createFromParcel(Parcel in) {
@@ -324,25 +346,5 @@ public class QrCode implements Parcelable {
         return 0;
     }
 
-    /**
-     * Flatten this object in to a Parcel.
-     *
-     * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written.
-     *              May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
-     */
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(binaryString);
-        dest.writeString(codeName);
-//        dest.writeString(visualRep);
-        dest.writeString(hashString);
-        if (score == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(score);
-        }
-//        dest.writeByte((byte) (dataPrivacy == null ? 0 : dataPrivacy ? 1 : 2));
-    }
+
 }
