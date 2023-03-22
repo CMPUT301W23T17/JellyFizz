@@ -144,6 +144,7 @@ public class CodeDetailsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
+                            otherPlayers.clear(); // avoid duplicates other players upon backstack pop
                             for(QueryDocumentSnapshot doc: task.getResult()) {
                                 DocumentReference playerRef = doc.getDocumentReference("Player");
                                 DocumentReference codeRef = doc.getDocumentReference("qrCodeScanned");
@@ -199,6 +200,10 @@ public class CodeDetailsFragment extends Fragment {
                 codeDesc.setFocusableInTouchMode(true);
                 codeDesc.setClickable(true);
 
+                // so the comment would be updated to the database first
+                editButton.setClickable(false);
+                backButton.setClickable(false);
+
                 codeDesc.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(codeDesc, InputMethodManager.SHOW_IMPLICIT);
@@ -238,6 +243,10 @@ public class CodeDetailsFragment extends Fragment {
                     codeDesc.setFocusable(false);
                     codeDesc.setFocusableInTouchMode(false);
 
+                    // re-enable the other buttons
+                    editButton.setClickable(true);
+                    backButton.setClickable(true);
+
                     String updateDoc = matchFound.getId();
                     DocumentReference toUpdate = db.collection("scannedBy").document(updateDoc);
 
@@ -247,7 +256,7 @@ public class CodeDetailsFragment extends Fragment {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Comment saved, click again to go back", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -265,7 +274,7 @@ public class CodeDetailsFragment extends Fragment {
             public void onClick(View v) {
                 // opens alert dialog
                 AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
-                builderSingle.setTitle("Other players who have scanned this code");
+                builderSingle.setTitle("Other hunters who have hunted this code");
 
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
                 for(String playerName: otherPlayers) {
