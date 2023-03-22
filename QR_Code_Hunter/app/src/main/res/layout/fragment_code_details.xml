@@ -2,20 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
+    android:paddingTop="20dp"
     android:clickable="true"
     android:focusableInTouchMode="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center_horizontal">
         <TextView
             android:id="@+id/details_backBtn"
             android:drawableLeft="@drawable/ic_arrowback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="20dp"
+            android:layout_marginRight="150dp"
+            android:paddingHorizontal="15dp"
             />
 
         <TextView
@@ -23,8 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_pencil"
-            android:layout_weight="1"
-            android:paddingRight="20dp"
+            android:layout_marginLeft="150dp"
+            android:paddingHorizontal="15dp"
             android:gravity="right"
             />
     </LinearLayout>
@@ -94,7 +96,7 @@
             android:layout_marginTop="15dp"
             android:text="Comment/Description"
             android:paddingHorizontal="30dp"
-            android:layout_gravity="left"
+            android:layout_gravity="center_horizontal"
             android:textSize="16sp"
             android:textColor="@color/black"
             />
@@ -108,6 +110,7 @@
             android:ems="10"
             android:gravity="start|top"
             android:paddingHorizontal="15dp"
+            android:paddingVertical="5dp"
             android:textColor="@color/black"
             android:focusable="false"
             android:clickable="false"
@@ -118,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View other players who have scanned this code"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:textColor="@color/black"
             android:textStyle="italic"
             android:visibility="visible"

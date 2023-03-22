@@ -124,13 +124,18 @@ public class CodeDetailsFragment extends Fragment {
                             // Get necessary details
                             String name = documentSnapshot.getString("codeName");
                             int score = Math.toIntExact(documentSnapshot.getLong("Score"));
-                            double lat = documentSnapshot.getLong("latitude");
-                            double lng = documentSnapshot.getLong("longitude");
+
+                            if(documentSnapshot.contains("latitude")) {
+                                double lat = documentSnapshot.getLong("latitude");
+                                double lng = documentSnapshot.getLong("longitude");
+                                String locText = String.valueOf(lat) + ", " + String.valueOf(lng);
+                                codeLocation.setText(locText);
+                            } else {
+                                String geoloc = "Geolocation not saved";
+                                codeLocation.setText(geoloc);
+                            }
 
                             codeName.setText(name);
-
-                            String locText = String.valueOf(lat) + ", " + String.valueOf(lng);
-                            codeLocation.setText(locText);
 
                             String scoreText = String.valueOf(score) + " pts";
                             codeScore.setText(scoreText);
@@ -144,6 +149,7 @@ public class CodeDetailsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
+                            otherPlayers.clear(); // avoid duplicates other players upon backstack pop
                             for(QueryDocumentSnapshot doc: task.getResult()) {
                                 DocumentReference playerRef = doc.getDocumentReference("Player");
                                 DocumentReference codeRef = doc.getDocumentReference("qrCodeScanned");
@@ -157,18 +163,23 @@ public class CodeDetailsFragment extends Fragment {
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             matchFound = doc;
                                             String userComment = doc.getString("Comment");
-                                            String encodedImageString = doc.getString("Photo");
+
+                                            if(documentSnapshot.contains("Photo")) {
+                                                String encodedImageString = doc.getString("Photo");
+
+                                                // Decode the encoded string
+                                                byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
+                                                //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
+
+                                                // Convert the array byte into bitmap
+                                                Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+                                                codeImage.setImageBitmap(bitmap);
+                                            } else {
+                                                codeImage.setImageResource(R.drawable.no_image);
+                                            }
 
                                             codeDesc.setText(userComment);
-
-                                            // Decode the encoded string
-                                            byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
-                                            //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
-
-                                            // Convert the array byte into bitmap
-                                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-
-                                            codeImage.setImageBitmap(bitmap);
 
                                         }
                                     });
@@ -198,6 +209,10 @@ public class CodeDetailsFragment extends Fragment {
                 codeDesc.setFocusable(true);
                 codeDesc.setFocusableInTouchMode(true);
                 codeDesc.setClickable(true);
+
+                // so the comment would be updated to the database first
+                editButton.setClickable(false);
+                backButton.setClickable(false);
 
                 codeDesc.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -238,6 +253,10 @@ public class CodeDetailsFragment extends Fragment {
                     codeDesc.setFocusable(false);
                     codeDesc.setFocusableInTouchMode(false);
 
+                    // re-enable the other buttons
+                    editButton.setClickable(true);
+                    backButton.setClickable(true);
+
                     String updateDoc = matchFound.getId();
                     DocumentReference toUpdate = db.collection("scannedBy").document(updateDoc);
 
@@ -247,7 +266,7 @@ public class CodeDetailsFragment extends Fragment {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "Comment updated successfully!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Comment updated", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -260,43 +279,56 @@ public class CodeDetailsFragment extends Fragment {
             }
         });
 
-        codeOthers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // opens alert dialog
-                AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
-                builderSingle.setTitle("Other players who have scanned this code");
+        if (otherPlayers.size() < 1) {
+            codeOthers.setClickable(false);
+            codeOthers.setFocusable(false);
+            codeOthers.setFocusableInTouchMode(false);
+            String textLabel = "No other players have scanned this code";
+            codeOthers.setText(textLabel);
+        } else {
+            codeOthers.setClickable(true);
+            codeOthers.setFocusable(true);
+            codeOthers.setFocusableInTouchMode(true);
+            String textLabel = "View other players who have scanned this code";
+            codeOthers.setText(textLabel);
 
-                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
-                for(String playerName: otherPlayers) {
-                    arrayAdapter.add(playerName);
+            codeOthers.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // opens alert dialog
+                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
+                    builderSingle.setTitle("Other hunters who have hunted this code");
+
+                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
+                    for(String playerName: otherPlayers) {
+                        arrayAdapter.add(playerName);
+                    }
+
+                    builderSingle.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String selectedPlayer = arrayAdapter.getItem(which);
+                            // go to the selectedPlayer profile
+                            Fragment fragment = new OtherPlayerFragment(selectedPlayer);
+                            FragmentManager fragmentManager = getParentFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.frame_layout, fragment);
+
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+
+                        }
+                    });
+                    builderSingle.show();
                 }
-
-                builderSingle.setNegativeButton("Back", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String selectedPlayer = arrayAdapter.getItem(which);
-                        // go to the selectedPlayer profile
-                        Fragment fragment = new OtherPlayerFragment(selectedPlayer);
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.frame_layout, fragment);
-
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-
-                    }
-                });
-                builderSingle.show();
-            }
-        });
-
+            });
+        }
     }
 }
