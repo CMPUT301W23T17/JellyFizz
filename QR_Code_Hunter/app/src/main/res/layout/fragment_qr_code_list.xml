@@ -26,12 +26,12 @@
 
         <ImageView
             android:id="@+id/return_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="25dp"
             android:layout_alignParentStart="true"
             android:layout_marginStart="12dp"
             android:clickable="true"
-            android:src="@drawable/ic_undo" />
+            android:src="@drawable/arrow" />
 
     </RelativeLayout>
 

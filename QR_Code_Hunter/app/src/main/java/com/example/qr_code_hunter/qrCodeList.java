@@ -50,6 +50,7 @@ public class qrCodeList extends Fragment {
     private String mParam2;
 
     public Owner currentOwner;
+    public boolean goToGarbage = true;
 
     public qrCodeList() {
         // Required empty public constructor
@@ -151,30 +152,57 @@ public class qrCodeList extends Fragment {
             public void onClick(View view) {
                 ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
 
-                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
-                    View currentview = qrCodeDisplay.getChildAt(i);
-                    CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
-                    currentCheckBox.setVisibility(View.VISIBLE);
+                if (goToGarbage) {
+                    for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                        View currentview = qrCodeDisplay.getChildAt(i);
+                        CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
+                        currentCheckBox.setVisibility(View.VISIBLE);
 
-                    currentview.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View view) {
-                           CheckBox currentCheckBox = (CheckBox) currentview.findViewById(R.id.qrCodeCheckbox);
+                        currentview.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                CheckBox currentCheckBox = (CheckBox) currentview.findViewById(R.id.qrCodeCheckbox);
 //                           if(currentCheckBox.getVisibility() == View.INVISIBLE) return;
 
-                           currentCheckBox.toggle();
-                       }
-                   });
+                                currentCheckBox.toggle();
+                            }
+                        });
+                    }
+
+                    // Change garbage can icon to red
+                    garbageButton.setImageResource(R.drawable.ic_delete_red);
+
+                    //set deleteButton to be visible
+                    Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                    deleteButton.setVisibility(View.VISIBLE);
+                    goToGarbage = false;
+                } else {
+
+                    for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                        View currentview = qrCodeDisplay.getChildAt(i);
+                        CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
+
+                        if (currentCheckBox.isChecked()) {
+                            currentCheckBox.toggle();
+                        }
+
+                        currentCheckBox.setVisibility(View.INVISIBLE);
+                    }
+
+
+                    //set garbagecan to be black again
+                    ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
+                    garbageButton.setImageResource(R.drawable.ic_delete);
+
+                    //set deleteButton to be invisible
+                    Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                    deleteButton.setVisibility(View.GONE);
+                    goToGarbage = true;
                 }
-
-                // Change garbage can icon to red
-                garbageButton.setImageResource(R.drawable.ic_delete_red);
-
-                //set deleteButton to be visible
-                Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
-                deleteButton.setVisibility(View.VISIBLE);
             }
+
         });
+
 
 
         //set garbage can listener
@@ -182,26 +210,10 @@ public class qrCodeList extends Fragment {
         undoGarbageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
-
-                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
-                    View currentview = qrCodeDisplay.getChildAt(i);
-                    CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
-
-                    if (currentCheckBox.isChecked()) {
-                        currentCheckBox.toggle();
-                    }
-                    currentCheckBox.setVisibility(View.INVISIBLE);
-                }
-
-
-                //set garbagecan to be black again
-                ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
-                garbageButton.setImageResource(R.drawable.ic_delete);
-
-                //set deleteButton to be invisible
-                Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
-                deleteButton.setVisibility(View.GONE);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout,new PlayerProfileFragment());
+                fragmentTransaction.commit();
             }
         });
 

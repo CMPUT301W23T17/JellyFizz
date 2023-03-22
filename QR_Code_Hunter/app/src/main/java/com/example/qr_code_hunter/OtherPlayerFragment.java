@@ -220,8 +220,6 @@ public class OtherPlayerFragment extends Fragment{
             }
 
         });
-
-
     }
 
 
