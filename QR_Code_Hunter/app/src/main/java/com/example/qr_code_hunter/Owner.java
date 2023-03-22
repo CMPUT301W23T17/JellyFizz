@@ -90,7 +90,7 @@ public class Owner extends Player implements Parcelable {
                         removeRelationship(qrRef);
                         updateRankingRelated(codeScore,-1,nextScore);
                         updateRank();
-                        this.totalCodeScanned -= 1;
+                        totalCodeScanned -= 1;
                     }
                 });
     }
@@ -190,7 +190,7 @@ public class Owner extends Player implements Parcelable {
                 addRelationship(qrRef, comment, image);
                 updateRankingRelated(code.getScore(),1,0);
                 updateRank();
-                this.totalCodeScanned += 1;
+                totalCodeScanned += 1;
             }
         });
     }
