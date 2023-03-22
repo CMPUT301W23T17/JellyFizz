@@ -97,22 +97,13 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
                     qrCodeTag currentTag = new qrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
                     viewPost.setTag(currentTag);
 
-                   viewPost.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View view) {
-
-                           CheckBox currentCheckBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
-                           if(currentCheckBox.getVisibility() == View.INVISIBLE) return;
-
-                           currentCheckBox.toggle();
-                       }
-                   });
                 }
             });
 
         }
         );
 
+        view.setClickable(false);
         return view;
     }
 

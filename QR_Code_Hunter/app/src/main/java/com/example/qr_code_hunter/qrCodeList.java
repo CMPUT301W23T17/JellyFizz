@@ -109,6 +109,7 @@ public class qrCodeList extends Fragment {
                 currentView.post(new Runnable() {
                     @Override
                     public void run() {
+                        View currentView = getView();
                         ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
 
                         qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedCodes);
@@ -118,6 +119,9 @@ public class qrCodeList extends Fragment {
                         qrCodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+                                Log.d("Item Click", "Item is being clicked");
                                 Fragment fragment = new CodeDetailsFragment();
                                 FragmentManager fragmentManager = getParentFragmentManager();
                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -151,6 +155,16 @@ public class qrCodeList extends Fragment {
                     View currentview = qrCodeDisplay.getChildAt(i);
                     CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
                     currentCheckBox.setVisibility(View.VISIBLE);
+
+                    currentview.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View view) {
+                           CheckBox currentCheckBox = (CheckBox) currentview.findViewById(R.id.qrCodeCheckbox);
+//                           if(currentCheckBox.getVisibility() == View.INVISIBLE) return;
+
+                           currentCheckBox.toggle();
+                       }
+                   });
                 }
 
                 // Change garbage can icon to red

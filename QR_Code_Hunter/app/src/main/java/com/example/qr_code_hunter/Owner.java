@@ -168,7 +168,6 @@ public class Owner extends Player implements Parcelable {
         });
     }
 
-
     /**
      * This function add new QrCode
      *
