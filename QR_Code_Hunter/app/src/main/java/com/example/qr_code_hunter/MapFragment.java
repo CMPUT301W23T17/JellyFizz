@@ -1,11 +1,7 @@
 package com.example.qr_code_hunter;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,6 +13,9 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -60,8 +59,6 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -74,6 +71,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 import com.example.qr_code_hunter.NearbyCode;
 
 /**
@@ -81,22 +80,34 @@ import com.example.qr_code_hunter.NearbyCode;
  * create an instance of this fragment.
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 1;
     FrameLayout map;
     GoogleMap gMap;
     double longitude, latitude;
     Marker marker;
     GroundOverlay overlay;
     private Bitmap bitmap;
-    private static final int REQUEST_CODE = 100;
-    private static final int REQUEST_CHECK_SETTING = 200;
-    private static final int AUTOCOMPLETE_REQUEST_CODE = 110;
     private LocationRequest locationRequest;
-    private static String TAG = "Info";
+    private static final String TAG = "Info";
 
     List<Marker> nearbyCodes = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final CollectionReference qrCodes = db.collection("QrCodes");
+
+    // https://stackoverflow.com/questions/61455381/how-to-replace-startactivityforresult-with-activity-result-apis
+    // Author: https://stackoverflow.com/users/9255057/hardik-hirpara
+    // Create an ActivityResultLauncher to request location permission
+    ActivityResultLauncher<String[]> requestLocationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+                @Override
+                public void onActivityResult(Map<String, Boolean> result) {
+                    if (result.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)
+                            && result.get(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        // Permission granted, call getLocation()
+                        getLocation();
+                    }
+                }
+            });
+
 
     public MapFragment() {}
 
@@ -110,7 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Request location permission if needed
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            requestLocationPermissionLauncher.launch(new String[]{Manifest.permission.ACCESS_FINE_LOCATION});
         }
 
         // Inflate the layout for this fragment
@@ -128,11 +139,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         getLocation();
         // Initiate the SDK
         String apiKey = getString(R.string.api_key);
-
         if (!Places.isInitialized()) {
             Places.initialize(getActivity().getApplicationContext(),apiKey);
         }
-
         PlacesClient placesClient = Places.createClient(getActivity());
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -154,6 +163,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 // Focus google map on the chosen search location
                 LatLng latLng = place.getLatLng();
+                assert latLng != null;
 
                 if (marker != null){
                     marker.remove();
@@ -173,7 +183,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 });
 
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(place.getName());
-//                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,15);
                 gMap.animateCamera(cameraUpdate);
                 marker = gMap.addMarker(markerOptions);
@@ -228,12 +237,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             // https://www.youtube.com/watch?v=JzxjNNCYt_o&list=PLQ_Ai1O7sMV3eyA6q0spONZ2VgEj7FcF3&index=1
             // Author: Android Knowledge - https://www.youtube.com/@android_knowledge
             // Check to see if user allow to access location and nearby location info
-            if (ActivityCompat.checkSelfPermission(
-                    getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(
-                    getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-//                return;
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestLocationPermissionLauncher.launch(new String[]{Manifest.permission.ACCESS_FINE_LOCATION});
             } else {
                 if (isGPSEnabled()) {
                     // https://www.youtube.com/watch?v=mbQd6frpC3g
@@ -253,7 +259,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         Toast.makeText(getActivity().getApplicationContext(), latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
                                         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
                                         assert supportMapFragment != null;
-
                                         supportMapFragment.getMapAsync(MapFragment.this);
                                     }
                                 }
@@ -367,60 +372,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    // https://www.youtube.com/watch?v=JzxjNNCYt_o&list=PLQ_Ai1O7sMV3eyA6q0spONZ2VgEj7FcF3&index=1
-    // Author: Android Knowledge - https://www.youtube.com/@android_knowledge
-    // This is used to get current location when permission to get location granted
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation();
-            }
-        }
-    }
-
-    // https://www.youtube.com/watch?v=E0JiNsxD6L8
-    // Author: Technical Coding - https://www.youtube.com/@TechnicalCoding
-    // This is used to notice on status of gps
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CHECK_SETTING) {
-            switch(resultCode) {
-                case RESULT_OK:
-                    Toast.makeText(getActivity(),"GPS is turned on",Toast.LENGTH_SHORT).show();
-                    break;
-
-                case RESULT_CANCELED:
-                    Toast.makeText(getActivity(),"GPS is required to be turned on",Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-        // https://developers.google.com/maps/documentation/places/android-sdk/autocomplete-->
-        // Author: Android Developer Community-->
-        // Use CardView to create border for search fragment
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-                Toast.makeText(getActivity(), "No location found",Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-    }
-
     // This method is called to show nearby QrCode
     // https://firebase.google.com/docs/firestore/solutions/geoqueries#query_geohashes
     // Author: Firebase.google.com
     // I use the GeoFireUtils.getDistanceBetween(a,b) to find distance between two location on map
-
     public void onCameraIdle(double latitude, double longitude) {
         final GeoLocation center = new GeoLocation(latitude, longitude);
         final double radiusInM = 500;
@@ -473,13 +428,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
+
+    // This function is used to show bottom dialog when user click markers
     public void solveOnClick(Marker marker) {
         MarkerTag newTag = new MarkerTag();
         newTag = (MarkerTag) marker.getTag();
         // Create a new instance of the BottomSheetDialog
         if (newTag != null) {
             BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance(newTag.getNearbyCodes());
-            // Show the BottomSheetDialog
             bottomSheetDialog.show(getChildFragmentManager(), bottomSheetDialog.getTag());
         }
     }

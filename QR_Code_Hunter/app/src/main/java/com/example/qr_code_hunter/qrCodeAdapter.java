@@ -92,27 +92,27 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
                     codeNameTextView.setText(currentQrCode.setName(producedString));
                     pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString))+ " pts");
 
+                    if (position == 0 ) {
+                        highestLowestCodeTextView.setVisibility(View.VISIBLE);
+                        highestLowestCodeTextView.setText("Highest Score Code!");
+                    } else if (position == mQRCodeItemList.size() - 1) {
+                        highestLowestCodeTextView.setVisibility(View.VISIBLE);
+                        highestLowestCodeTextView.setText("Lowest Score Code!");
+                    } else  {
+                        highestLowestCodeTextView.setVisibility(View.INVISIBLE);
+                    }
 
                     //Create tag for Code and set the tag
                     qrCodeTag currentTag = new qrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
                     viewPost.setTag(currentTag);
 
-                   viewPost.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View view) {
-
-                           CheckBox currentCheckBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
-                           if(currentCheckBox.getVisibility() == View.INVISIBLE) return;
-
-                           currentCheckBox.toggle();
-                       }
-                   });
                 }
             });
 
         }
         );
 
+        view.setClickable(false);
         return view;
     }
 

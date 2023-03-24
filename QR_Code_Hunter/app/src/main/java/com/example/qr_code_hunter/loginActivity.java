@@ -115,16 +115,6 @@ public class loginActivity extends AppCompatActivity {
     }
 
 
-    /**
-     Sets the owner object based on the input owner string
-     by retrieving owner data from the "Players" collection in Firestore.
-     @param inputOwner the unique identifier of the owner to retrieve data for
-     */
-    public static void setOwnerObject(String inputOwner) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference playersRef = db.collection("Players");
-    }
-
     public interface getAllInfo {
         void onGetInfo(Owner owner);
     }
