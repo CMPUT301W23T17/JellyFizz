@@ -49,7 +49,9 @@ public class RankAdapter extends ArrayAdapter<Rank> {
                     }
                     trophy.setVisibility(View.VISIBLE);
                     pos.setVisibility(View.INVISIBLE);
-                } else {
+
+                }
+                else {
                     pos.setVisibility(View.VISIBLE);
                     trophy.setVisibility(View.INVISIBLE);
                     pos.setText(Html.fromHtml(String.valueOf(r.rankingTotalScore) + "<sup><small>th</small></sup>"));
@@ -65,7 +67,7 @@ public class RankAdapter extends ArrayAdapter<Rank> {
                 Rank r = rankArr.get(position);
                 ImageView trophy = convertView.findViewById(R.id.rankIcon);
                 TextView pos = convertView.findViewById(R.id.rankNum);
-                if (r.rankingCode < 4 && r.rankingCode != 0) {
+                if (r.rankingCode < 4 && r.rankingCode != 0 && r.highestCode != 0) {
                     if (r.rankingCode == 1) {
                         trophy.setImageResource(R.drawable.gold_trophy);
                     } else if (r.rankingCode == 2) {
@@ -75,7 +77,13 @@ public class RankAdapter extends ArrayAdapter<Rank> {
                     }
                     trophy.setVisibility(View.VISIBLE);
                     pos.setVisibility(View.INVISIBLE);
-                } else {
+                }
+                else if (r.highestCode == 0){
+                    pos.setVisibility(View.VISIBLE);
+                    trophy.setVisibility(View.INVISIBLE);
+                    pos.setText(Html.fromHtml(String.valueOf(0) + "<sup><small>th</small></sup>"));
+                }
+                else {
                     pos.setVisibility(View.VISIBLE);
                     trophy.setVisibility(View.INVISIBLE);
                     pos.setText(Html.fromHtml(String.valueOf(r.rankingCode) + "<sup><small>th</small></sup>"));
