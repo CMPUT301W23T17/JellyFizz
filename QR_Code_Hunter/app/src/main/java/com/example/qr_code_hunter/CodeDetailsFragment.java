@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -188,8 +189,58 @@ public class CodeDetailsFragment extends Fragment {
                                     // other players who have scanned this code
                                     otherPlayers.add(username);
                                 }
-
                             }
+                        }
+                        if (otherPlayers.size() < 1) {
+                            codeOthers.setClickable(false);
+                            codeOthers.setFocusable(false);
+                            codeOthers.setFocusableInTouchMode(false);
+                            String textLabel = "You are the first hunter to scan this code!";
+                            codeOthers.setText(textLabel);
+                        } else {
+                            codeOthers.setClickable(true);
+                            codeOthers.setFocusable(true);
+                            codeOthers.setFocusableInTouchMode(true);
+                            String textLabel = "View other hunters who have scanned this code";
+                            codeOthers.setText(textLabel);
+
+                            codeOthers.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // opens alert dialog
+                                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
+                                    builderSingle.setTitle("Other hunters who have hunted this code");
+
+                                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
+                                    for(String playerName: otherPlayers) {
+                                        arrayAdapter.add(playerName);
+                                    }
+
+                                    builderSingle.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                                    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String selectedPlayer = arrayAdapter.getItem(which);
+                                            // go to the selectedPlayer profile
+                                            Fragment fragment = new OtherPlayerFragment(selectedPlayer);
+                                            FragmentManager fragmentManager = getParentFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace(R.id.frame_layout, fragment);
+
+                                            fragmentTransaction.addToBackStack(null);
+                                            fragmentTransaction.commit();
+
+                                        }
+                                    });
+                                    builderSingle.show();
+                                }
+                            });
                         }
                     }
                 });
@@ -279,56 +330,5 @@ public class CodeDetailsFragment extends Fragment {
             }
         });
 
-        if (otherPlayers.size() < 1) {
-            codeOthers.setClickable(false);
-            codeOthers.setFocusable(false);
-            codeOthers.setFocusableInTouchMode(false);
-            String textLabel = "No other players have scanned this code";
-            codeOthers.setText(textLabel);
-        } else {
-            codeOthers.setClickable(true);
-            codeOthers.setFocusable(true);
-            codeOthers.setFocusableInTouchMode(true);
-            String textLabel = "View other players who have scanned this code";
-            codeOthers.setText(textLabel);
-
-            codeOthers.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // opens alert dialog
-                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
-                    builderSingle.setTitle("Other hunters who have hunted this code");
-
-                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
-                    for(String playerName: otherPlayers) {
-                        arrayAdapter.add(playerName);
-                    }
-
-                    builderSingle.setNegativeButton("Back", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String selectedPlayer = arrayAdapter.getItem(which);
-                            // go to the selectedPlayer profile
-                            Fragment fragment = new OtherPlayerFragment(selectedPlayer);
-                            FragmentManager fragmentManager = getParentFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frame_layout, fragment);
-
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-
-                        }
-                    });
-                    builderSingle.show();
-                }
-            });
-        }
     }
 }
