@@ -27,5 +27,6 @@
     <string name="userNameTaken">This username has been taken, please choose another</string>
     <string name="userNameLength">This username is not between 0 - 13 characters</string>
     <string name="userNameInvalidCharacters">This username can only contain letters and numbers</string>
+    <string name="next">Next</string>
 
 </resources>
