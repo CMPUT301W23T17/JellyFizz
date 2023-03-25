@@ -132,7 +132,11 @@ public class CommentDialogFragment extends BottomSheetDialogFragment {
         public void onBindViewHolder(CommentDialogFragment.ViewHolder holder, int position) {
             CommentSection commentSection = mComments.get(position);
             holder.username.setText(commentSection.getUsername());
-            holder.comment.setText(commentSection.getComment());
+            if (commentSection.getComment() == null) {
+                holder.comment.setVisibility(View.GONE);
+            } else {
+                holder.comment.setText(commentSection.getComment());
+            }
         }
 
         @Override
