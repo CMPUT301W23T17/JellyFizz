@@ -40,6 +40,7 @@ public class OtherPlayerFragment extends Fragment{
     TextView mobile_number;
     TextView rank;
     TextView score;
+    TextView codeScanned;
     String userName;
     ImageView imageView;
 
@@ -107,33 +108,42 @@ public class OtherPlayerFragment extends Fragment{
                     email = (TextView) getView().findViewById(R.id.email);
                     mobile_number = (TextView) getView().findViewById(R.id.mobile_phone);
                     ImageView imageView = getView().findViewById(R.id.rectangle_);
-                    if(hideInfo == true){
+                    if (hideInfo == true) {
                         imageView.setVisibility(View.GONE);
                         email.setText("This profile is private.");
                         mobile_number.setVisibility((View.GONE));
-                        Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
-                        score = (TextView) getView().findViewById(R.id.number_points);
-                        score.setText(myAttribute3.toString());
 
-                        Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
-                        rank = (TextView) getView().findViewById(R.id.number_rank);
-                        rank.setText(myAttribute4.toString());
-                    }else{
+                    } else {
                         String myAttribute = documentSnapshot.getString("email");
                         email.setText("Email: "+myAttribute);
 
                         String myAttribute2 = documentSnapshot.getString("phoneNumber");
                         mobile_number.setText("Mobile Phone: "+ myAttribute2);
 
-                        Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
-                        score = (TextView) getView().findViewById(R.id.number_points);
-                        score.setText(myAttribute3.toString());
-
-                        Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
-                        rank = (TextView) getView().findViewById(R.id.number_rank);
-                        rank.setText(myAttribute4.toString());
+//                        Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
+//                        score = (TextView) getView().findViewById(R.id.number_points);
+//                        score.setText(myAttribute3.toString());
+//
+//                        Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
+//                        rank = (TextView) getView().findViewById(R.id.number_rank);
+//                        rank.setText(myAttribute4.toString());
+//
+//                        Integer myAttribute5 = Math.toIntExact(documentSnapshot.getLong("totalCodeScanned"));
+//                        codeScanned = (TextView) getView().findViewById(R.id.number_code);
+//                        codeScanned.setText(myAttribute5.toString());
                     }
-                }else{
+                    Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
+                    score = (TextView) getView().findViewById(R.id.number_points);
+                    score.setText(myAttribute3.toString());
+
+                    Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
+                    rank = (TextView) getView().findViewById(R.id.number_rank);
+                    rank.setText(myAttribute4.toString());
+
+                    Integer myAttribute5 = Math.toIntExact(documentSnapshot.getLong("totalCodeScanned"));
+                    codeScanned = (TextView) getView().findViewById(R.id.number_code);
+                    codeScanned.setText(myAttribute5.toString());
+                } else {
                     Log.d(TAG, "No such document!");
                 }
             }
@@ -152,9 +162,6 @@ public class OtherPlayerFragment extends Fragment{
             }
         });
 
-        //
-
-
         //Set listener for more button
         TextView moreButton = view.findViewById(R.id.otherMoreButton);
         moreButton.setOnClickListener(new View.OnClickListener() {
@@ -166,8 +173,6 @@ public class OtherPlayerFragment extends Fragment{
                 fragmentTransaction.commit();
             }
         });
-
-
 
         //Get Codes
         CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(userName);
@@ -222,12 +227,10 @@ public class OtherPlayerFragment extends Fragment{
         });
     }
 
-
     private void replaceFragment(Fragment fragment ){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
     }
-
 }
