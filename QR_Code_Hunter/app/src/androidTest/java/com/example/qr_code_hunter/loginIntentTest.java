@@ -93,9 +93,8 @@ public class loginIntentTest {
     }
 
 
-    //Delete testuser after the class has run
-    @AfterClass
-    public static void cleanup() throws InterruptedException {
+    @After
+    public void cleanup() throws InterruptedException {
         CompletableFuture completeDelete1 = new CompletableFuture();
         CompletableFuture completeDelete2 = new CompletableFuture();
 
@@ -153,14 +152,30 @@ public class loginIntentTest {
 
     @Test
     public void testExistingUsername() throws Exception {
-        // Enter existing username
-        solo.enterText(0, "...");
+        EditText editText = solo.getEditText(0);
 
-        // Click register button
-        solo.clickOnButton("Register");
+        // Enter existing username
+        String username = "...";
+        String email = "testuser@example.com";
+        String phone = "1234567890";
+        solo.enterText(0, username);
+        solo.enterText(1, email);
+        solo.enterText(2, phone);
 
         // Assert that error message is displayed
         assertTrue(solo.searchText(solo.getString(R.string.userNameTaken)));
+
+        solo.clearEditText(editText);
+
+        solo.enterText(0, "ddddddddddddddddddddddddddddddd");
+        solo.clickOnButton("Register");
+        assertTrue(solo.searchText(solo.getString(R.string.userNameLength)));
+
+        solo.clearEditText(editText);
+
+        solo.enterText(0, "dasd../gh");
+        solo.clickOnButton("Register");
+        assertTrue(solo.searchText(solo.getString(R.string.userNameInvalidCharacters)));
     }
 
     @Test

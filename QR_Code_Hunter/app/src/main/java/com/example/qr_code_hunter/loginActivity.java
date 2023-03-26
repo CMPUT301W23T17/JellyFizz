@@ -347,12 +347,13 @@ public class loginActivity extends AppCompatActivity {
         String username = userNameView.getText().toString().trim();
         TextView userNameError = findViewById(R.id.userNameTaken);
 
-        if (username.length() < 1) {
+        if (username.length() < 1 || username.length() > 13) {
             userNameError.setText(getString(R.string.userNameLength));
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;
         }
+
 
         // Make sure string only contains letters and numbers
         if (!username.matches("^[a-zA-Z0-9]*$")) {
