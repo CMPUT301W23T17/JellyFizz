@@ -24,6 +24,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 public class UItest {
   
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
+  
     @Test
     public void testInstructionButton() {
         // First, find the instruction button and welcome owner text view
@@ -42,6 +45,29 @@ public class UItest {
 
         // Check that the welcome owner text view displays the correct message
         onView(withId(R.id.welcome_user)).check(matches(withText("WELCOME " + ownerName)));
+    }
+
+    @Test
+    public void testNavigation() {
+        // Click on Map screen
+        onView(withId(R.id.map_screen)).perform(click());
+        onView(isAssignableFrom(MapFragment.class)).check(matches(isDisplayed()));
+
+        // Click on Search screen
+        onView(withId(R.id.search_screen)).perform(click());
+        onView(isAssignableFrom(SearchFragment.class)).check(matches(isDisplayed()));
+
+        // Click on Home screen
+        onView(withId(R.id.home_screen)).perform(click());
+        onView(isAssignableFrom(HomepageFragment.class)).check(matches(isDisplayed()));
+
+        // Click on Ranking screen
+        onView(withId(R.id.ranking_screen)).perform(click());
+        onView(isAssignableFrom(RankingFragment.class)).check(matches(isDisplayed()));
+
+        // Click on Player Profile screen
+        onView(withId(R.id.player_profile_screen)).perform(click());
+        onView(isAssignableFrom(PlayerProfileFragment.class)).check(matches(isDisplayed()));
     }
   
 }
