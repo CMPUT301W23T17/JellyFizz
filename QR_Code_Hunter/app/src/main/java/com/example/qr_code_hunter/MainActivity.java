@@ -33,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
         if (accountCreated) {
             // Set the ownerName to userName
             loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
-
             replaceFragment(new HomepageFragment());
 
         } else {
             Intent intent = new Intent(this, loginActivity.class);
             startActivity(intent);
         }
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:

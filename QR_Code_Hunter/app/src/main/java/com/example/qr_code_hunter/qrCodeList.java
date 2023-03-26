@@ -35,56 +35,17 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link qrCodeList#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class qrCodeList extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public Owner currentOwner;
     public boolean goToGarbage = true;
 
-    public qrCodeList() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment qrCodeList.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static qrCodeList newInstance(String param1, String param2) {
-        qrCodeList fragment = new qrCodeList();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public qrCodeList() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // pass the hashString
-        // make the username acceptance general
-
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -104,7 +65,6 @@ public class qrCodeList extends Fragment {
         displayCodes(loginActivity.getOwnerName(), new sortedCodes() {
             @Override
             public void onSuccess(ArrayList<DocumentReference> sortedCodes) {
-
                 View currentView = getView();
                 //Update on main UI thread
                 currentView.post(new Runnable() {
@@ -120,8 +80,6 @@ public class qrCodeList extends Fragment {
                         qrCodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                                 Log.d("Item Click", "Item is being clicked");
                                 Fragment fragment = new CodeDetailsFragment();
                                 FragmentManager fragmentManager = getParentFragmentManager();
@@ -134,7 +92,6 @@ public class qrCodeList extends Fragment {
                                 bundle.putString("Hash", selectedHash);
                                 fragment.setArguments(bundle);
 
-
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
                             }
@@ -144,8 +101,7 @@ public class qrCodeList extends Fragment {
             }
         });
 
-
-        //set garbage can listener
+        // Set garbage can listener
         ImageView garbageButton = view.findViewById(R.id.garbage_can_icon);
         garbageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +146,7 @@ public class qrCodeList extends Fragment {
                     }
 
 
-                    //set garbagecan to be black again
+                    //set garbage can to be black again
                     ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
                     garbageButton.setImageResource(R.drawable.ic_delete);
 
@@ -203,8 +159,6 @@ public class qrCodeList extends Fragment {
 
         });
 
-
-
         //set garbage can listener
         ImageView undoGarbageButton = view.findViewById(R.id.return_button);
         undoGarbageButton.setOnClickListener(new View.OnClickListener() {
@@ -216,8 +170,6 @@ public class qrCodeList extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-
-
 
         //set deleteButton
         Button deleteButton = view.findViewById(R.id.delete_qrcode_list);
@@ -248,11 +200,8 @@ public class qrCodeList extends Fragment {
                 Collections.reverse(itemsToRemove);
                 for (int i : itemsToRemove) {
                     currentSortedCodes.remove(i);
-
                     View item = qrCodeDisplay.getChildAt(i);
                     qrCodeTag currentTag = (qrCodeTag) item.getTag();
-
-
                     //Delete from database
                     loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
                         @Override
@@ -262,7 +211,6 @@ public class qrCodeList extends Fragment {
                         }
                     });
                 }
-
                 //update adapter
                 adapter1.notifyDataSetChanged();
             }
@@ -279,12 +227,10 @@ public class qrCodeList extends Fragment {
 
         ArrayList<DocumentReference> playerQrCodes = new ArrayList<DocumentReference>();
         CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = loginActivity.getQR_Codes(username);
-
         qrCodesFuture.thenCompose(qrCodesDocRef -> {
             // Create a list of CompletableFuture<Integer> objects that will eventually be completed with the scores of the QR codes
             List<CompletableFuture<Integer>> scoreFutures = new ArrayList<>();
             for (DocumentReference qrCode : qrCodesDocRef) {
-
                 scoreFutures.add(getScoreCode(qrCode));
                 playerQrCodes.add(qrCode);
             }
@@ -311,9 +257,7 @@ public class qrCodeList extends Fragment {
     }
 
     public CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
-
         CompletableFuture<Integer> currentScoreFuture = new CompletableFuture<Integer>();
-
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
