@@ -107,14 +107,11 @@ public class RankingFragment extends Fragment {
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
                 /////////////////////////////////////////////////////////////////
-                rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
-                    @Override
-                    public void onArrangeRankComplete(ArrayList<Rank> ranking) {
-                        rankArr.addAll(ranking);
-                        adapter = new RankAdapter(getActivity(), 0, ranking, true);
-                        rankings.setAdapter(adapter);
-                        displayYourRankTotalScore(rankArr);
-                    }
+                rankLists.arrangeRankTotal(ranking -> {
+                    rankArr.addAll(ranking);
+                    adapter = new RankAdapter(getActivity(), 0, ranking, true);
+                    rankings.setAdapter(adapter);
+                    displayYourRankTotalScore(rankArr);
                 });
             }
         });
