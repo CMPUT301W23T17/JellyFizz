@@ -310,7 +310,7 @@ public class qrCodeList extends Fragment {
         });
     }
 
-    public CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
+    public static CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
 
         CompletableFuture<Integer> currentScoreFuture = new CompletableFuture<Integer>();
 

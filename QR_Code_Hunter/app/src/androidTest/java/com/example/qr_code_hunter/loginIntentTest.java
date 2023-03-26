@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Test class for MainActivity. All the UI tests are written here. Robotium test framework is used
+ * Test class for logInActivity. All the UI tests are written here. Robotium test framework is used
  */
 @RunWith(AndroidJUnit4.class)
 public class loginIntentTest {
@@ -79,12 +79,6 @@ public class loginIntentTest {
 
 
 
-    @Test
-    public void testLoginActivityDisplayed() throws Exception {
-        // Verify that the loginActivity is displayed
-        solo.assertCurrentActivity("Expected loginActivity activity", loginActivity.class);
-    }
-
 
     //Runs after every Method
     @After
@@ -92,6 +86,12 @@ public class loginIntentTest {
         solo.finishOpenedActivities();
     }
 
+
+    @Test
+    public void testLoginActivityDisplayed() throws Exception {
+        // Verify that the loginActivity is displayed
+        solo.assertCurrentActivity("Expected loginActivity activity", loginActivity.class);
+    }
 
     @After
     public void cleanup() throws InterruptedException {
