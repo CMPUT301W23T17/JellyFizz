@@ -154,7 +154,11 @@ public class QrCode implements Parcelable {
                     int valueOfChar = alphabetPoints.get(currentChar);
                     iterationScore = (int) Math.pow(valueOfChar, count);
                 }
+
+                if((currentChar == '0') && (count == 0)) this.score += 1;
+
                 if (count > 0) this.score += iterationScore;
+
                 currentChar = hashString.charAt(i);
                 count = 0;
             }

@@ -262,6 +262,8 @@ public class loginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                register.setEnabled(false);
                 //get Email adress
                 EditText emailEditText = findViewById(R.id.editTextEmail);
                 String email = emailEditText.getText().toString().trim();
@@ -283,6 +285,7 @@ public class loginActivity extends AppCompatActivity {
 
                 //if checks failed return
                 if (!verifyInput()) {
+                    register.setEnabled(true);
                     return;
                 };
 

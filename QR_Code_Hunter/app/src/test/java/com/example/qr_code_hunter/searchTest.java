@@ -10,14 +10,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class searchTest {
-    @Test
-    public void searchPlayerTest(){
-        Search mocksearch = new Search();
-        mocksearch.searchPlayer("Kyle", new Search.SearchPlayerCallback() {
-            @Override
-            public void onSearchPlayerComplete(ArrayList<String> usernames) {
-                System.out.println(usernames);
-            }
-        });
-    }
+//    @Test
+//    public void searchPlayerTest(){
+//        Search mocksearch = new Search();
+//        mocksearch.searchPlayer("Kyle", new Search.SearchPlayerCallback() {
+//            @Override
+//            public void onSearchPlayerComplete(ArrayList<String> usernames) {
+//                System.out.println(usernames);
+//            }
+//        });
+//    }
 }

@@ -27,7 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class Owner extends Player implements Parcelable {
+public class Owner implements Parcelable {
+
+    protected ArrayList<DocumentReference> myQrCodes = new ArrayList<>();
+    protected String uniqueUsername;
+    protected PlayerProfile profileInfo;
+    protected int totalCodeScanned;
+    protected int totalScore;
+    protected int rank;
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference player = db.collection("Players");
@@ -44,7 +51,12 @@ public class Owner extends Player implements Parcelable {
 
     public Owner(String phone, String email, String username, Boolean privacy,
                  ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned, int highestCode) {
-        super(phone, email, username, privacy, codeScanned, score, rank, totalCodeScanned);
+        this.profileInfo = new PlayerProfile(phone, email, privacy);
+        this.uniqueUsername = username;
+        this.myQrCodes = codeScanned; // Document references of player's QR codes in db
+        this.totalScore = score;
+        this.rank = rank;
+        this.totalCodeScanned = totalCodeScanned;
         this.ownerRef = this.player.document(username);
         this.highestCode = highestCode;
     }
@@ -332,8 +344,8 @@ public class Owner extends Player implements Parcelable {
      *      addition 1 represents add, -1 represent subtract
      */
     public void updateRankingRelated(int codeScore, int addition, int nextScore) {
-        int newScore = this.getTotalScore() + (addition*codeScore);
-        int newTotalCodeScanned = this.getTotalCodeScanned() + addition;
+        int newScore = totalScore + (addition*codeScore);
+        int newTotalCodeScanned = totalCodeScanned + addition;
         Map<String, Object> data = new HashMap<>();
         if (addition == 1 && codeScore > highestCode) {
             highestCode = codeScore;
