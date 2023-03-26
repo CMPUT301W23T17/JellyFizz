@@ -94,6 +94,7 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
                         qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
                         codeNameTextView.setText(currentQrCode.setName(producedString));
+                        Log.d("Hash", hashString);
                         pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString)) + " pts");
 
                         if (position == 0) {

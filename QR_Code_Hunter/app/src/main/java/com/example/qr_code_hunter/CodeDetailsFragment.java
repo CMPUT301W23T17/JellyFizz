@@ -90,6 +90,10 @@ public class CodeDetailsFragment extends Fragment {
                             codeLocation.setText(locText);
                             codeName.setText(documentSnapshot.getString("codeName"));
                             codeScore.setText(scoreText);
+
+                            QrCode tempCode = new QrCode();
+                            String codeBin = documentSnapshot.getString("binaryString");
+                            codeVisual.setText(tempCode.getVisualRep(codeBin));
                         }
                     }
                 });

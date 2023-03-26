@@ -34,14 +34,16 @@ public class QrCode implements Parcelable {
     );
 
     QrCode(String scannedString) throws NoSuchAlgorithmException {
-        setName(sha.shaGeneratorBinary(scannedString));
+//        setName(sha.shaGeneratorBinary(scannedString));
 //        setVisualRep(sha.shaGeneratorBinary(scannedString));
-        setScore(sha.shaGeneratorHexadecimal(scannedString));
+//        setScore(sha.shaGeneratorHexadecimal(scannedString));
         this.hashString = sha.shaGeneratorHexadecimal(scannedString);
         this.binaryString = sha.shaGeneratorBinary(scannedString);
+        setScore(hashString);
+        setName(binaryString);
     }
 
-    //Empty Constructor to acess methods
+    // Empty Constructor to access methods
     QrCode() {
 
     }
