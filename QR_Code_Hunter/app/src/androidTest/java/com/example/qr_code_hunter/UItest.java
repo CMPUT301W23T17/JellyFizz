@@ -36,7 +36,10 @@ public class UItest {
   
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
-  
+
+/**
+ * Tests the instruction button and welcome owner text view.
+ */
     @Test
     public void testInstructionButton() {
         // First, find the instruction button and welcome owner text view
@@ -57,6 +60,9 @@ public class UItest {
         onView(withId(R.id.welcome_user)).check(matches(withText("WELCOME " + ownerName)));
     }
 
+/**
+ * Tests navigation between screens.
+ */
     @Test
     public void testNavigation() {
         // Click on Map screen
