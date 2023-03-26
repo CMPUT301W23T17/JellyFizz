@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -27,7 +28,7 @@ public class NewCodeActivity extends AppCompatActivity {
     TextView visualRep;
     TextView codeLoc;
     TextView codePts;
-    Button nextPageBtn;
+    ImageButton nextPageBtn;
     QrCode newCode;
     Geocoder geocoder;
     List<Address> myAddress;

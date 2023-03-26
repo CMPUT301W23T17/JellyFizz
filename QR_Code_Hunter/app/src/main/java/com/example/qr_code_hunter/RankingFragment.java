@@ -209,7 +209,7 @@ public class RankingFragment extends Fragment {
 
         ImageView yourTrophy = getView().findViewById(R.id.yourRankIcon);
         TextView yourRankLabel = getView().findViewById(R.id.yourRank);
-        if(yourRank < 4 && yourRank != 0) {
+        if(yourRank < 4 && yourRank != 0 && yourScore != 0) {
             if(yourRank == 1) {
                 yourTrophy.setImageResource(R.drawable.gold_trophy);
             }
@@ -221,6 +221,11 @@ public class RankingFragment extends Fragment {
             }
             yourTrophy.setVisibility(View.VISIBLE);
             yourRankLabel.setVisibility(View.INVISIBLE);
+        }
+        else if (yourScore == 0){
+            yourRankLabel.setVisibility(View.VISIBLE);
+            yourTrophy.setVisibility(View.INVISIBLE);
+            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourScore) + "<sup><small>th</small></sup>"));
         }
         else {
             yourRankLabel.setVisibility(View.VISIBLE);

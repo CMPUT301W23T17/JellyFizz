@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="#FFFFFF">
 
     <TextView
         android:id="@+id/visual_rep"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="318dp"
+        android:layout_height="237dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/rounded_border"
+        android:fontFamily="@font/unispace"
         android:gravity="center_horizontal"
         android:text="  _||||||||||||||_  \n { ----      ---- } \n{| ( + ) || ( + ) |}\n)|       ||       |(\n |      {__}      | \n |   _~~~~~~~~_   | \n  |_  [||||||]  _| \n   |_          _| \n -----||||||||----- "
         android:textColor="@color/black"
-        android:textSize="17sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -26,13 +27,13 @@
         android:id="@+id/code_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="52dp"
         android:text="CODE UNIQUE NAME"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="Congrats!"
-        android:textSize="42sp"
+        android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -76,14 +77,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/congrats_label" />
 
-    <Button
+    <ImageButton
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/rectangle_1"
         android:paddingHorizontal="50dp"
         android:paddingVertical="18dp"
-        android:text="Next"
+        android:text="@string/next"
         android:textColor="@color/white"
         android:textSize="21sp"
         android:textStyle="bold"
@@ -92,7 +93,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.847" />
+        app:layout_constraintTop_toBottomOf="@id/points_label"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <TextView
+        android:id="@+id/Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/next_button"
+        app:layout_constraintEnd_toEndOf="@+id/next_button"
+        app:layout_constraintStart_toStartOf="@+id/next_button"
+        app:layout_constraintTop_toTopOf="@+id/next_button"
+        android:gravity="center"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

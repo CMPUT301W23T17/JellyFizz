@@ -6,6 +6,87 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <ImageView
+        android:id="@+id/picture_details"
+        android:layout_width="318dp"
+        android:layout_height="153dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_border"
+        android:paddingVertical="5dp"
+        android:src="@drawable/insert_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_image_label" />
+
+    <EditText
+        android:id="@+id/comment_box"
+        android:layout_width="318dp"
+        android:layout_height="188dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/rounded_border"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:maxLength="150"
+        android:paddingHorizontal="15dp"
+        android:paddingTop="35dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picture_details" />
+
+    <TextView
+        android:id="@+id/comment_box_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="50dp"
+        android:text="Comment/Description:"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/comment_box"
+        app:layout_constraintEnd_toEndOf="@+id/comment_box"
+        app:layout_constraintHorizontal_bias="0.075"
+        app:layout_constraintStart_toStartOf="@+id/comment_box"
+        app:layout_constraintTop_toTopOf="@+id/comment_box"
+        app:layout_constraintVertical_bias="0.042" />
+
+    <ImageButton
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_1"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="18dp"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/save_geolocation_button"
+        app:layout_constraintVertical_bias="0.24" />
+
+    <TextView
+        android:id="@+id/Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/save_button"
+        app:layout_constraintEnd_toEndOf="@+id/save_button"
+        app:layout_constraintStart_toStartOf="@+id/save_button"
+        app:layout_constraintTop_toTopOf="@+id/save_button"
+        android:gravity="center"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"/>
+
+
     <TextView
         android:id="@+id/add_image_label"
         android:layout_width="wrap_content"
@@ -16,54 +97,9 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.155"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/picture_details"
-        android:src="@drawable/insert_photo"
-        android:background="@drawable/rounded_border"
-        android:layout_width="318dp"
-        android:layout_height="153dp"
-        android:layout_marginTop="24dp"
-        android:paddingVertical="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_image_label" />
-
-    <TextView
-        android:id="@+id/comment_box_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:text="Comment/Description:"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/picture_details" />
-
-    <EditText
-        android:id="@+id/comment_box"
-        android:layout_width="342dp"
-        android:layout_height="188dp"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/rounded_border"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        android:textColor="@color/black"
-        android:paddingTop="35dp"
-        android:maxLength="150"
-        android:paddingHorizontal="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/picture_details" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/char_count_label"
@@ -73,7 +109,7 @@
         android:text="0/150"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.898"
+        app:layout_constraintHorizontal_bias="0.873"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_box" />
 
@@ -81,32 +117,12 @@
         android:id="@+id/save_geolocation_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="28dp"
         android:text="Save geolocation"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.095"
+        app:layout_constraintHorizontal_bias="0.169"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_box" />
-
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:background="@drawable/rectangle_1"
-        android:paddingHorizontal="50dp"
-        android:paddingVertical="18dp"
-
-
-        android:textSize="21sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/save_geolocation_button"
-        app:layout_constraintVertical_bias="0.24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

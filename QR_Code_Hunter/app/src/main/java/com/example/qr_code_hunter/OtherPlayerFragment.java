@@ -13,26 +13,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
-
 
 public class OtherPlayerFragment extends Fragment{
     TextView userNameText;
@@ -40,9 +33,9 @@ public class OtherPlayerFragment extends Fragment{
     TextView mobile_number;
     TextView rank;
     TextView score;
+    TextView codeScanned;
     String userName;
     ImageView imageView;
-
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,7 +49,6 @@ public class OtherPlayerFragment extends Fragment{
     public OtherPlayerFragment(String userName){
         this.userName = userName;
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -107,33 +99,31 @@ public class OtherPlayerFragment extends Fragment{
                     email = (TextView) getView().findViewById(R.id.email);
                     mobile_number = (TextView) getView().findViewById(R.id.mobile_phone);
                     ImageView imageView = getView().findViewById(R.id.rectangle_);
-                    if(hideInfo == true){
+                    if (hideInfo == true) {
                         imageView.setVisibility(View.GONE);
                         email.setText("This profile is private.");
                         mobile_number.setVisibility((View.GONE));
-                        Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
-                        score = (TextView) getView().findViewById(R.id.number_points);
-                        score.setText(myAttribute3.toString());
 
-                        Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
-                        rank = (TextView) getView().findViewById(R.id.number_rank);
-                        rank.setText(myAttribute4.toString());
-                    }else{
+                    } else {
                         String myAttribute = documentSnapshot.getString("email");
                         email.setText("Email: "+myAttribute);
 
                         String myAttribute2 = documentSnapshot.getString("phoneNumber");
                         mobile_number.setText("Mobile Phone: "+ myAttribute2);
-
-                        Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
-                        score = (TextView) getView().findViewById(R.id.number_points);
-                        score.setText(myAttribute3.toString());
-
-                        Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
-                        rank = (TextView) getView().findViewById(R.id.number_rank);
-                        rank.setText(myAttribute4.toString());
                     }
-                }else{
+
+                    Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
+                    score = (TextView) getView().findViewById(R.id.number_points);
+                    score.setText(myAttribute3.toString());
+
+                    Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
+                    rank = (TextView) getView().findViewById(R.id.number_rank);
+                    rank.setText(myAttribute4.toString());
+
+                    Integer myAttribute5 = Math.toIntExact(documentSnapshot.getLong("totalCodeScanned"));
+                    codeScanned = (TextView) getView().findViewById(R.id.number_code);
+                    codeScanned.setText(myAttribute5.toString());
+                } else {
                     Log.d(TAG, "No such document!");
                 }
             }
@@ -152,10 +142,7 @@ public class OtherPlayerFragment extends Fragment{
             }
         });
 
-        //
-
-
-        //Set listener for more button
+        // Set listener for more button
         TextView moreButton = view.findViewById(R.id.otherMoreButton);
         moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,9 +154,7 @@ public class OtherPlayerFragment extends Fragment{
             }
         });
 
-
-
-        //Get Codes
+        // Get Codes
         CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(userName);
 
         currentCodes.thenAccept(qrCodes -> {
@@ -209,7 +194,7 @@ public class OtherPlayerFragment extends Fragment{
 
                             QrCode filler = new QrCode();
 
-                            // do something with the ID
+                            // Do something with the ID
                             qrCodeTag secondTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             secondCodeView.setTag(secondTag);
@@ -222,12 +207,10 @@ public class OtherPlayerFragment extends Fragment{
         });
     }
 
-
     private void replaceFragment(Fragment fragment ){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
     }
-
 }

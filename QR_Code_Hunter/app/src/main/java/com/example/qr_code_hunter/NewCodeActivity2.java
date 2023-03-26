@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
     EditText descBox;
     TextView charCount;
     CheckBox saveGeo;
-    Button saveBtn;
+    ImageButton saveBtn;
     QrCode newCode;
     String encodedImage;
     Owner currentOwner;
