@@ -1,131 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="20dp"
+    android:paddingTop="15dp"
     android:clickable="true"
+    android:orientation="vertical"
     android:focusableInTouchMode="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/details_backBtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical|center_horizontal">
-        <TextView
-            android:id="@+id/details_backBtn"
-            android:drawableLeft="@drawable/ic_arrowback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="150dp"
-            android:paddingHorizontal="15dp"
-            />
-
-        <TextView
-            android:id="@+id/details_editCommentBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableRight="@drawable/ic_pencil"
-            android:layout_marginLeft="150dp"
-            android:paddingHorizontal="15dp"
-            android:gravity="right"
-            />
-    </LinearLayout>
+        android:drawableLeft="@drawable/ic_arrowback"
+        android:gravity="left"
+        android:paddingHorizontal="15dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:paddingTop="18dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/details_codename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Code Name"
+            android:layout_marginVertical="10dp"
+            android:text="RedBayGasArtOwlJawOakIceMudSaw"
+            android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            />
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/details_visual"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_border"
             android:gravity="center_horizontal"
             android:text="  _||||||||||||||_  \n { ----      ---- } \n{| ( + ) || ( + ) |}\n)|       ||       |(\n |      {__}      | \n |   _~~~~~~~~_   | \n  |_  [||||||]  _| \n   |_          _| \n -----||||||||----- "
-            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:background="@drawable/rounded_border"
-            />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/details_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location"
-            android:textColor="@color/black"
-            android:textSize="18sp"
             android:layout_marginVertical="5dp"
-            />
+            android:text="(53.1244, 113.8647)"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/details_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Points"
+            android:text="50pts"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:layout_marginVertical="5dp"
-            />
+            android:textSize="52sp" />
+
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Your photo"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/details_image"
-            android:layout_width="275dp"
-            android:layout_height="150dp"
-            android:background="@drawable/rounded_border"
-            android:paddingVertical="5dp"
-            />
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginVertical="15dp"
+            android:background="@drawable/rounded_border" />
 
-        <TextView
+        <Button
+            android:id="@+id/comment_dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Comment/Description"
-            android:paddingHorizontal="30dp"
-            android:layout_gravity="center_horizontal"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            />
-
-        <EditText
-            android:id="@+id/details_comment"
-            android:layout_width="275dp"
-            android:layout_height="150dp"
-            android:layout_marginVertical="5dp"
-            android:background="@drawable/rounded_border"
-            android:ems="10"
-            android:gravity="start|top"
-            android:paddingHorizontal="15dp"
-            android:paddingVertical="5dp"
-            android:textColor="@color/black"
-            android:focusable="false"
-            android:clickable="false"
-            />
-
-        <TextView
-            android:id="@+id/details_others"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="View other players who have scanned this code"
-            android:layout_marginTop="15dp"
-            android:textColor="@color/black"
-            android:textStyle="italic"
-            android:visibility="visible"
-            />
+            android:text="Show comment section" />
 
     </LinearLayout>
-</RelativeLayout>
+
+</LinearLayout>
