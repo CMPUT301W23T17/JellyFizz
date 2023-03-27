@@ -75,7 +75,7 @@ public class RankingTest {
                     }
                     completeDelete1.complete(null);
                 });
-        completeDelete1.allOf(completeDelete1, completeDelete1).join();
+        completeDelete1.join();
     }
 
 
