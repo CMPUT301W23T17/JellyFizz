@@ -204,7 +204,27 @@ public class PlayerProfileFragment extends Fragment {
                 OwnerRef.update("hideInfo", isOn);
             }
         });
-
+        // Display Mobile Phone
+        OwnerRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Get the value of the specific attribute
+                            Boolean myAttribute = documentSnapshot.getBoolean("hideInfo");
+                            // Do something with the value
+                            privacySwitch.setChecked(myAttribute);
+                        } else {
+                            Log.d(TAG, "No such document!");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error reading document", e);
+                    }
+                });
 
         //Get Codes
         CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(loginActivity.getOwnerName());

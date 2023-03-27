@@ -14,15 +14,20 @@ public class Rank {
     public int rankingTotalScore, totalScore, rankingCode, highestCode;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final CollectionReference player = db.collection("Players");
+    CollectionReference player = db.collection("Players");
 
-    public Rank(){}
+    public Rank(){
+    }
+
+    public Rank(FirebaseFirestore fireStore) {
+        db = fireStore;
+        player = db.collection("Players");
+    }
 
     public Rank(String username, int score, int rankingTotal, int rankingCode, int highestCode) {
         this.username = username;
         this.rankingTotalScore = rankingTotal;
         this.totalScore = score;
-
         this.rankingCode = rankingCode;
         this.highestCode = highestCode;
     }

@@ -14,6 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Switch
+            android:id="@+id/switch_privacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="50dp"
+            android:text="set private"
+            app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
+            app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
+            app:layout_constraintHorizontal_bias="0.912"
+            app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
+            app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
+            app:layout_constraintVertical_bias="0.153" />
+
         <TextView
             android:id="@+id/codes_scanned_string"
             android:layout_width="wrap_content"
@@ -151,19 +164,6 @@
             app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
             app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
             app:layout_constraintVertical_bias="0.475" />
-
-        <Switch
-            android:id="@+id/switch_privacy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="50dp"
-            android:text="HIDE"
-            app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
-            app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
-            app:layout_constraintHorizontal_bias="0.912"
-            app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
-            app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
-            app:layout_constraintVertical_bias="0.153" />
 
         <TextView
             android:id="@+id/mobile_phone"
