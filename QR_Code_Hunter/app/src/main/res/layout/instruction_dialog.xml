@@ -14,6 +14,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="188dp"
+            android:layout_height="23dp"
+
+            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toTopOf="@id/title"
+
+            app:layout_constraintVertical_bias="0.098"
+            app:srcCompat="@drawable/rectangle_3" />
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="wrap_content"
+            android:layout_height="400dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.285">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="300dp"
+                android:layout_height="500dp"
+                android:maxWidth="200dp"
+                android:scrollbarSize="@dimen/list_item_spacing"
+                android:scrollbars="vertical"
+                android:text="Welcome to QR Hunter! As the hunter, your mission is to scan as many QR codes as possible to climb to the top of the leaderboard and become the ultimate QR Hunter.
+To begin your journey, head to the Homepage where you can scan new QR codes. Keep a lookout for new codes and try to collect them all.
+Feeling competitive? Head to the Ranking page where you can view your own ranking as well as the worldwide ranking of other hunters. Can you make it to the top of the list?
+If you want to take a break from hunting, visit the Search page to browse through other hunter profiles and see how your collection stacks up against theirs.
+And if you're looking for a new hunting ground, check out the Map page to discover nearby QR codes waiting to be scanned.
+Finally, to keep track of your achievements, visit your own profile page to see your collection and personal information."
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+        </ScrollView>
+
         <TextView
             android:id="@+id/title"
             android:layout_width="300dp"
@@ -29,52 +72,17 @@
             tools:ignore="MissingConstraints,RtlCompat" />
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:maxWidth="200dp"
-            android:text="Welcome to QR Hunter! As the hunter, your mission is to scan as many QR codes as possible to climb to the top of the leaderboard and become the ultimate QR Hunter.
-To begin your journey, head to the Homepage where you can scan new QR codes. Keep a lookout for new codes and try to collect them all.
-Feeling competitive? Head to the Ranking page where you can view your own ranking as well as the worldwide ranking of other hunters. Can you make it to the top of the list?
-If you want to take a break from hunting, visit the Search page to browse through other hunter profiles and see how your collection stacks up against theirs.
-And if you're looking for a new hunting ground, check out the Map page to discover nearby QR codes waiting to be scanned.
-Finally, to keep track of your achievements, visit your own profile page to see your collection and personal information."
-android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            app:layout_constraintBottom_toBottomOf="@+id/title"
-            app:layout_constraintEnd_toEndOf="@+id/title"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
             android:id="@+id/instruction_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="How to Play"
             android:textColor="#23447E"
             android:textSize="25dp"
-            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toTopOf="@+id/title"
-            app:layout_constraintVertical_bias="0.0"
-            tools:ignore="MissingConstraints" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="188dp"
-            android:layout_height="23dp"
-
-            app:layout_constraintBottom_toBottomOf="@+id/title"
-
-            app:layout_constraintEnd_toEndOf="@+id/title"
-            app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toTopOf="@+id/title"
-            app:layout_constraintVertical_bias="0.064"
-            app:srcCompat="@drawable/rectangle_3" />
+            app:layout_constraintVertical_bias="1.0" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

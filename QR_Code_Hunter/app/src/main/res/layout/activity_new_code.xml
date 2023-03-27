@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/visual_rep"
-        android:layout_width="318dp"
-        android:layout_height="237dp"
+        android:layout_width="250dp"
+        android:layout_height="230dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/rounded_border"
         android:fontFamily="@font/unispace"
