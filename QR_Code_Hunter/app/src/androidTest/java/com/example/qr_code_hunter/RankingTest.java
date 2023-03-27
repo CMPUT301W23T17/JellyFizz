@@ -8,23 +8,34 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CompletableFuture;
+
 @RunWith(AndroidJUnit4.class)
 public class RankingTest {
     private Solo soloLogin;
     private Solo soloMain;
+    static FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
     // Change this username until it's unique
-    String user = "BaNhano";
+    String user = "TestRanking1";
     @Rule
     public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
+
+
     /**
      * Runs before all tests and creates solo instance.
      * @throws Exception
@@ -40,6 +51,26 @@ public class RankingTest {
         // Click register button
         soloLogin.clickOnButton("Register");
     }
+
+    @After
+    public void cleanup() throws InterruptedException {
+        CompletableFuture completeDelete1 = new CompletableFuture();
+
+        db.collection("Players").document(user).delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        System.out.println("Document successfully deleted");
+                    } else {
+                        System.out.println("Error deleting document: " + task.getException());
+                    }
+                    completeDelete1.complete(null);
+                });
+
+        completeDelete1.allOf(completeDelete1, completeDelete1).join();
+    }
+
+
+
     @Test
     public void testRankingFragment() throws Exception {
         // Wait
