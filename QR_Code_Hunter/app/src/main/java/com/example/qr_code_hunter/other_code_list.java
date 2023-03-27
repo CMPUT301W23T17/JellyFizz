@@ -101,7 +101,6 @@ public class other_code_list extends Fragment {
                         qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedCodes);
                         qrCodeListView.setAdapter(codeAdapter);
                         currentSortedCodes.addAll(sortedCodes);
-
                     }
                 });
 

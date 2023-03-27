@@ -1,89 +1,49 @@
 package com.example.qr_code_hunter;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Base64;
 
 public class CodeDetailsFragment extends Fragment {
     String hashString; // what is provided into this fragment
-    ArrayList<String> otherPlayers = new ArrayList<String>();
+    String ownerName;
+    CommentSection commentSection = new CommentSection();
+    ArrayList<CommentSection> commentList = new ArrayList<>();
+    ArrayList<CommentSection> playerList = new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     TextView codeName;
     TextView codeVisual;
     TextView codeLocation;
     TextView codeScore;
     ImageView codeImage;
-    EditText codeDesc;
-    TextView codeOthers;
     TextView backButton;
-    TextView editButton;
+    Button showComment;
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    QueryDocumentSnapshot matchFound;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public CodeDetailsFragment() {
-        // Required empty public constructor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static CodeDetailsFragment newInstance(String param1, String param2) {
-        CodeDetailsFragment fragment = new CodeDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public CodeDetailsFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Nullable
@@ -96,11 +56,7 @@ public class CodeDetailsFragment extends Fragment {
         codeLocation = view.findViewById(R.id.details_location);
         codeScore = view.findViewById(R.id.details_points);
         codeImage = view.findViewById(R.id.details_image);
-        codeDesc = view.findViewById(R.id.details_comment);
-        codeOthers = view.findViewById(R.id.details_others);
-
         backButton = view.findViewById(R.id.details_backBtn);
-        editButton = view.findViewById(R.id.details_editCommentBtn);
 
         return view;
     }
@@ -110,7 +66,9 @@ public class CodeDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = getArguments();
+        assert bundle != null;
         hashString = bundle.getString("Hash");
+        ownerName = loginActivity.getOwnerName();
 
         // Access to the QrCodes collection to get necessary data
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);
@@ -122,78 +80,65 @@ public class CodeDetailsFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if(documentSnapshot.exists()){
                             // Get necessary details
-                            String name = documentSnapshot.getString("codeName");
-                            int score = Math.toIntExact(documentSnapshot.getLong("Score"));
-
+                            String scoreText = documentSnapshot.getLong("Score").intValue()+" pts";
+                            String locText = "Geolocation not saved";
                             if(documentSnapshot.contains("latitude")) {
                                 double lat = documentSnapshot.getLong("latitude");
                                 double lng = documentSnapshot.getLong("longitude");
-                                String locText = String.valueOf(lat) + ", " + String.valueOf(lng);
-                                codeLocation.setText(locText);
-                            } else {
-                                String geoloc = "Geolocation not saved";
-                                codeLocation.setText(geoloc);
+                                locText = "(" + lat + ", " + lng + ")";
                             }
-
-                            codeName.setText(name);
-
-                            String scoreText = String.valueOf(score) + " pts";
+                            codeLocation.setText(locText);
+                            codeName.setText(documentSnapshot.getString("codeName"));
                             codeScore.setText(scoreText);
+
+                            QrCode tempCode = new QrCode();
+                            String codeBin = documentSnapshot.getString("binaryString");
+                            codeVisual.setText(tempCode.getVisualRep(codeBin));
                         }
                     }
                 });
 
+        // Display image if available
         db.collection("scannedBy")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            otherPlayers.clear(); // avoid duplicates other players upon backstack pop
-                            for(QueryDocumentSnapshot doc: task.getResult()) {
-                                DocumentReference playerRef = doc.getDocumentReference("Player");
-                                DocumentReference codeRef = doc.getDocumentReference("qrCodeScanned");
+                .whereEqualTo("qrCodeScanned",qrRef)
+                .whereEqualTo("Player",db.document("Players/"+ownerName))
+                .limit(1)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        if(document.contains("Photo")) {
+                            // Decode the encoded string
+                            byte[] byteArray = Base64.getDecoder().decode(document.getString("Photo"));
 
-                                String username = playerRef.getId();
-                                String codeString = codeRef.getId();
-
-                                if(username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
-                                    codeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            matchFound = doc;
-                                            String userComment = doc.getString("Comment");
-
-                                            if(documentSnapshot.contains("Photo")) {
-                                                String encodedImageString = doc.getString("Photo");
-
-                                                // Decode the encoded string
-                                                byte[] byteArray = Base64.getDecoder().decode(encodedImageString);
-                                                //byte[] byteArray = android.util.Base64.decode(encodedImageString, android.util.Base64.DEFAULT);
-
-                                                // Convert the array byte into bitmap
-                                                Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-
-                                                codeImage.setImageBitmap(bitmap);
-                                            } else {
-                                                codeImage.setImageResource(R.drawable.no_image);
-                                            }
-
-                                            codeDesc.setText(userComment);
-
-                                        }
-                                    });
-                                }
-                                else if (!username.equals(loginActivity.getOwnerName()) && codeString.equals(hashString)) {
-                                    // other players who have scanned this code
-                                    otherPlayers.add(username);
-                                }
-
-                            }
+                            // Convert the array byte into bitmap
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                            codeImage.setImageBitmap(bitmap);
+                        } else {
+                            codeImage.setImageResource(R.drawable.no_image);
                         }
+                    } else {
+                        Log.e("TAG", "Error getting image", task.getException());
                     }
                 });
 
+
+        // Get list of players scanned this code and list of their comments if available
+        commentSection.arrangeCommentSection(qrRef, (comments, players) -> {
+            commentList.addAll(comments);
+            playerList.addAll(players);
+        });
+
+        // Show bottom dialog of comments
+        showComment = view.findViewById(R.id.comment_dialog_btn);
+        showComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommentDialogFragment commentDialog = CommentDialogFragment.newInstance(commentList, playerList);
+                commentDialog.show(getChildFragmentManager(), commentDialog.getTag());
+            }
+        });
+
+        // Option to come back to previous fragment (user profile)
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,134 +146,5 @@ public class CodeDetailsFragment extends Fragment {
                 getParentFragmentManager().popBackStack();
             }
         });
-
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Set focus on editText field, set editText field to editable, but not clickable?
-                codeDesc.setFocusable(true);
-                codeDesc.setFocusableInTouchMode(true);
-                codeDesc.setClickable(true);
-
-                // so the comment would be updated to the database first
-                editButton.setClickable(false);
-                backButton.setClickable(false);
-
-                codeDesc.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(codeDesc, InputMethodManager.SHOW_IMPLICIT);
-
-                // Set cursor to the end of the sentence
-                codeDesc.setSelection(codeDesc.getText().length());
-
-                Toast.makeText(getActivity(), "Comment editing enabled", Toast.LENGTH_SHORT).show();
-
-                codeDesc.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if(s.length() == 150) {
-                            Toast.makeText(getContext(), "Maximum character threshold exceeded!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                    }
-                });
-            }
-        });
-
-        codeDesc.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                    codeDesc.setClickable(false);
-                    codeDesc.setFocusable(false);
-                    codeDesc.setFocusableInTouchMode(false);
-
-                    // re-enable the other buttons
-                    editButton.setClickable(true);
-                    backButton.setClickable(true);
-
-                    String updateDoc = matchFound.getId();
-                    DocumentReference toUpdate = db.collection("scannedBy").document(updateDoc);
-
-                    String newComment = codeDesc.getText().toString();
-
-                    toUpdate.update("Comment", newComment)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(getContext(), "Comment updated", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getContext(), "Error updating comment!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-            }
-        });
-
-        if (otherPlayers.size() < 1) {
-            codeOthers.setClickable(false);
-            codeOthers.setFocusable(false);
-            codeOthers.setFocusableInTouchMode(false);
-            String textLabel = "No other players have scanned this code";
-            codeOthers.setText(textLabel);
-        } else {
-            codeOthers.setClickable(true);
-            codeOthers.setFocusable(true);
-            codeOthers.setFocusableInTouchMode(true);
-            String textLabel = "View other players who have scanned this code";
-            codeOthers.setText(textLabel);
-
-            codeOthers.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // opens alert dialog
-                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
-                    builderSingle.setTitle("Other hunters who have hunted this code");
-
-                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
-                    for(String playerName: otherPlayers) {
-                        arrayAdapter.add(playerName);
-                    }
-
-                    builderSingle.setNegativeButton("Back", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String selectedPlayer = arrayAdapter.getItem(which);
-                            // go to the selectedPlayer profile
-                            Fragment fragment = new OtherPlayerFragment(selectedPlayer);
-                            FragmentManager fragmentManager = getParentFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            fragmentTransaction.replace(R.id.frame_layout, fragment);
-
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-
-                        }
-                    });
-                    builderSingle.show();
-                }
-            });
-        }
     }
 }
