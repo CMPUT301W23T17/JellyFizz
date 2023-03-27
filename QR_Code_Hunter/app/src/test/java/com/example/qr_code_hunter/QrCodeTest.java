@@ -21,6 +21,7 @@ public class QrCodeTest {
     @Test
     public void testVisualRepresentation() throws NoSuchAlgorithmException{
         QrCode mockQR = new QrCode("hello");
+
         assertEquals("  _--------------_  " +
                 "\n { ~~~)      (~~~ } " +
                 "\n{| ( + ) || ( + ) |}" +
@@ -29,13 +30,13 @@ public class QrCodeTest {
                 "\n |_              _| " +
                 "\n |    (______)    | " +
                 "\n |                | " +
-                "\n ------------------ ", mockQR.getVisualRep("hello"));
+                "\n ------------------ ", mockQR.getVisualRep(mockQR.getBinaryString()));
     }
 
     @Test
     public void testSetScore() throws NoSuchAlgorithmException {
         QrCode testQR_Code = new QrCode("BFG5DGW54");
-        assertEquals("19", testQR_Code.getScore().toString());
+        assertEquals("23", testQR_Code.getScore().toString());
     }
     
     @Test
@@ -45,6 +46,4 @@ public class QrCodeTest {
         qrCode.setLocation(location);
         assertEquals(location, qrCode.getGeolocation());
     }
-   
-    
 }

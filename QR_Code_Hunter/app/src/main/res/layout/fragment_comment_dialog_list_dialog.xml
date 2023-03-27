@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textStyle="bold"
-            android:text="PLAYERS SCANNED" />
+            android:text="ALL PLAYERS" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

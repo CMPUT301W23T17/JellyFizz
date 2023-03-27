@@ -41,10 +41,10 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
         View view = convertView;
 
-        if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) currentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.item_qrcodelist, parent, false);
-        }
+        //Creating new view to handle asynchronocity, refractor to recycler view if laggy or have time later
+        LayoutInflater inflater = (LayoutInflater) currentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.item_qrcodelist, parent, false);
+
 
         //Fetch hashString
         String hashString = mQRCodeItemList.get(position).getId();
@@ -56,7 +56,7 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         if (position < getCount() - 1) {
             QrCode nextCodeFiller = new QrCode();
 
-            String nextHashString = mQRCodeItemList.get(position+1).getId();
+            String nextHashString = mQRCodeItemList.get(position + 1).getId();
             nextScore = nextCodeFiller.setScore(nextHashString);
         } else {
             nextCode = null;
@@ -75,44 +75,46 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         //Filler view to update view later
         final View viewPost = view;
 
+        // Declare a variable to store the current position
+        final int currentPosition = position;
+
         //Wait for binary string to be done
         binaryStringFuture.thenAccept(producedString -> {
-            //Run on UI Thread for updates
-            viewPost.post(new Runnable() {
-                @Override
-                public void run() {
-                    //Objects of the current qrCode item in the list
-                    TextView qrCodeVisualRepTextView = (TextView) viewPost.findViewById(R.id.qr_code_visualRep);
-                    TextView codeNameTextView = (TextView) viewPost.findViewById(R.id.code_name_text_view);
-                    TextView pointsTextView = (TextView) viewPost.findViewById(R.id.points_text_view);
-                    TextView highestLowestCodeTextView = (TextView) viewPost.findViewById(R.id.highest_lowest_code);
-                    CheckBox checkBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
+            // Check if the current position is still the same
+                //Run on UI Thread for updates
+                viewPost.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Objects of the current qrCode item in the list
+                        TextView qrCodeVisualRepTextView = (TextView) viewPost.findViewById(R.id.qr_code_visualRep);
+                        TextView codeNameTextView = (TextView) viewPost.findViewById(R.id.code_name_text_view);
+                        TextView pointsTextView = (TextView) viewPost.findViewById(R.id.points_text_view);
+                        TextView highestLowestCodeTextView = (TextView) viewPost.findViewById(R.id.highest_lowest_code);
+                        CheckBox checkBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
 
-                    qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
-                    codeNameTextView.setText(currentQrCode.setName(producedString));
-                    pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString))+ " pts");
+                        qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
+                        codeNameTextView.setText(currentQrCode.setName(producedString));
+                        Log.d("Hash", hashString);
+                        pointsTextView.setText(String.valueOf(currentQrCode.setScore(hashString)) + " pts");
 
-                    if (position == 0 ) {
-                        highestLowestCodeTextView.setVisibility(View.VISIBLE);
-                        highestLowestCodeTextView.setText("Highest Score Code!");
-                    } else if (position == mQRCodeItemList.size() - 1) {
-                        highestLowestCodeTextView.setVisibility(View.VISIBLE);
-                        highestLowestCodeTextView.setText("Lowest Score Code!");
-                    } else  {
-                        highestLowestCodeTextView.setVisibility(View.INVISIBLE);
+                        if (position == 0) {
+                            highestLowestCodeTextView.setVisibility(View.VISIBLE);
+                            highestLowestCodeTextView.setText("Highest Score Code!");
+                        } else if (position == mQRCodeItemList.size() - 1) {
+                            highestLowestCodeTextView.setVisibility(View.VISIBLE);
+                            highestLowestCodeTextView.setText("Lowest Score Code!");
+                        } else {
+                            highestLowestCodeTextView.setVisibility(View.INVISIBLE);
+                        }
+
+                        //Create tag for Code and set the tag
+                        qrCodeTag currentTag = new qrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
+                        viewPost.setTag(currentTag);
+                        Log.d("Codes", " " + hashString);
                     }
+                });
+        });
 
-                    //Create tag for Code and set the tag
-                    qrCodeTag currentTag = new qrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
-                    viewPost.setTag(currentTag);
-
-                }
-            });
-
-        }
-        );
-
-        view.setClickable(false);
         return view;
     }
 
@@ -137,7 +139,7 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
                     }
                 });
 
-        return  binaryStringFuture;
+        return binaryStringFuture;
     }
 
     public void setData(ArrayList<DocumentReference> newData) {
