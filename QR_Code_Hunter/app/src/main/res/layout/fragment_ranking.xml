@@ -75,13 +75,7 @@
                     android:layout_height="match_parent"
                     android:alpha="0.3"
                     app:tint="#77000000"/>
-                <ImageView
-                    android:src="@drawable/bg_ranking"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginEnd="3dp"
-                    />
+
             </RelativeLayout>
             <ImageView
                 android:id="@+id/yourRankIcon"
@@ -90,16 +84,17 @@
                 android:src="@drawable/gold_trophy"
                 android:visibility="invisible"
                 android:padding="25dp"/>
+
             <TextView
                 android:id="@+id/yourRank"
                 android:layout_width="110dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textSize="28sp"
-                android:textColor="@color/black"
-                android:visibility="visible"
                 android:text="Your Rank"
-                />
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -117,6 +112,13 @@
                     android:gravity="bottom"
                     android:paddingBottom="1dp"
                     android:layout_weight="1"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:src="@drawable/bg_ranking" />
 
                 <TextView
                     android:id="@+id/yourPoints"

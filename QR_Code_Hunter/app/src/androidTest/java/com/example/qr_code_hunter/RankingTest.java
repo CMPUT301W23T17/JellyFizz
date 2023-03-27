@@ -5,6 +5,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.Assert.assertEquals;
+
+import android.widget.TextView;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -50,6 +54,12 @@ public class RankingTest {
         soloLogin.enterText(2, "6043765432");
         // Click register button
         soloLogin.clickOnButton("Register");
+
+        // Wait
+        soloMain.waitForView(R.id.scan_now);
+        // Click register button
+        soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
+        //solo.waitForView(solo.getView(R.id.buttonTotalScore));
     }
 
     @After
@@ -65,26 +75,34 @@ public class RankingTest {
                     }
                     completeDelete1.complete(null);
                 });
-
         completeDelete1.join();
     }
 
 
-
     @Test
     public void testRankingFragment() throws Exception {
-        // Wait
-        soloMain.waitForView(R.id.scan_now);
-        // Click register button
-        soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
-        //solo.waitForView(solo.getView(R.id.buttonTotalScore));
         soloMain.waitForView(R.id.buttonTotalScore);
         // Verify that the loginActivity is displayed
         onView(withId(R.id.ranking_screen)).check(matches(isDisplayed()));
-        // Test highest button is working or not
+    }
+
+    @Test
+    public void testHighestButtonHighestCode() {
+        soloMain.waitForView(R.id.buttonTotalScore);
         onView(withId(R.id.buttonHighestCode)).check(matches(isClickable()));
-        // Test total button is working or not
+    }
+
+    @Test
+    public void testHighestButtonTotalScore() {
+        soloMain.waitForView(R.id.buttonTotalScore);
         onView(withId(R.id.buttonTotalScore)).check(matches(isClickable()));
     }
 
+    @Test
+    public void testDisplayOwner() {
+        soloMain.waitForView(R.id.buttonTotalScore);
+        assertEquals("0th", ((TextView) soloMain.getView(R.id.yourRank)).getText().toString());
+        assertEquals("0 pts", ((TextView) soloMain.getView(R.id.yourPoints)).getText().toString());
+        assertEquals(user, ((TextView) soloMain.getView(R.id.yourName)).getText().toString());
+    }
 }
