@@ -262,6 +262,8 @@ public class loginActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                register.setEnabled(false);
                 //get Email adress
                 EditText emailEditText = findViewById(R.id.editTextEmail);
                 String email = emailEditText.getText().toString().trim();
@@ -283,6 +285,7 @@ public class loginActivity extends AppCompatActivity {
 
                 //if checks failed return
                 if (!verifyInput()) {
+                    register.setEnabled(true);
                     return;
                 };
 
@@ -344,12 +347,13 @@ public class loginActivity extends AppCompatActivity {
         String username = userNameView.getText().toString().trim();
         TextView userNameError = findViewById(R.id.userNameTaken);
 
-        if (username.length() < 1) {
+        if (username.length() < 1 || username.length() > 13) {
             userNameError.setText(getString(R.string.userNameLength));
             userNameError.setVisibility(View.VISIBLE);
             userNameView.requestFocus();
             return false;
         }
+
 
         // Make sure string only contains letters and numbers
         if (!username.matches("^[a-zA-Z0-9]*$")) {

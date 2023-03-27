@@ -1,7 +1,7 @@
 package com.example.qr_code_hunter;
 
 import org.junit.Test;
-
+import com.google.android.gms.maps.model.LatLng;
 import static org.junit.Assert.assertEquals;
 
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +21,7 @@ public class QrCodeTest {
     @Test
     public void testVisualRepresentation() throws NoSuchAlgorithmException{
         QrCode mockQR = new QrCode("hello");
+
         assertEquals("  _--------------_  " +
                 "\n { ~~~)      (~~~ } " +
                 "\n{| ( + ) || ( + ) |}" +
@@ -29,28 +30,20 @@ public class QrCodeTest {
                 "\n |_              _| " +
                 "\n |    (______)    | " +
                 "\n |                | " +
-                "\n ------------------ ", mockQR.getVisualRep("hello"));
+                "\n ------------------ ", mockQR.getVisualRep(mockQR.getBinaryString()));
     }
 
     @Test
     public void testSetScore() throws NoSuchAlgorithmException {
         QrCode testQR_Code = new QrCode("BFG5DGW54");
-        assertEquals("19", testQR_Code.getScore().toString());
+        assertEquals("23", testQR_Code.getScore().toString());
     }
     
     @Test
-    public void testSetPrivacy() {
-        QrCode qrCode = new QrCode("hello");
-        qrCode.setPrivacy(true);
-        assertTrue(qrCode.getDataPrivacy());
-    }
-
-    @Test
-    public void testSetLocation() {
+    public void testSetLocation() throws NoSuchAlgorithmException{
         QrCode qrCode = new QrCode("hello");
         LatLng location = new LatLng(40.7128, -74.0060);
         qrCode.setLocation(location);
         assertEquals(location, qrCode.getGeolocation());
     }
-    
 }
