@@ -1,3 +1,5 @@
+package com.example.qr_code_hunter;
+
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
