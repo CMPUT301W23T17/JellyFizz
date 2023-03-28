@@ -7,6 +7,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -34,7 +35,10 @@ public class PlayerFragmentsTest {
 
 
     // Change this username until it's unique
+//    Owner mockOwner = new Owner();
     String user = "UserFragTest";
+    String userEmail = "nic@ualberta.ca";
+    String userPhone = "1234567890";
     String tempPath = "8sHg7GKj9nLp5fDx4E7Z";
     @Rule
     public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
@@ -52,8 +56,8 @@ public class PlayerFragmentsTest {
         soloMain = new Solo(InstrumentationRegistry.getInstrumentation(), mainActivityRule.getActivity());
         // Enter valid user details
         soloLogin.enterText(0, user);
-        soloLogin.enterText(1, "nic@ualberta.ca");
-        soloLogin.enterText(2, "1234567890");
+        soloLogin.enterText(1, userEmail);
+        soloLogin.enterText(2, userPhone);
         // Click register button
         soloLogin.clickOnButton("Register");
 
@@ -63,7 +67,7 @@ public class PlayerFragmentsTest {
 
 
 //
-        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+//        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
     }
 
     @After
@@ -96,14 +100,60 @@ public class PlayerFragmentsTest {
     }
 
     @Test
-    public void testPlayerProfileFragment() throws Exception {
-        soloMain.waitForView(R.id.imageView00);
-        // Verify that the Player Profile Screen is displayed
-        onView(withId(R.id.player_profile_screen)).check(matches(isDisplayed()));
+    public void testUserInfo() throws Exception {
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        soloMain.waitForView(R.id.player_profile_screen);
+
+        assertEquals(user, ((TextView) soloMain.getView(R.id.user_name)).getText().toString());
+        assertEquals(userEmail, ((TextView) soloMain.getView(R.id.email)).getText().toString().substring(7));
+        assertEquals(userPhone, ((TextView) soloMain.getView(R.id.mobile_phone)).getText().toString().substring(14));
     }
 
     @Test
-    public void testPlayerCodeListFragment() throws Exception {
+    public void testInitialPlayerInfo() throws Exception {
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        // Navigation of Player Profile has been done during the NavBar test
+        soloMain.waitForView(R.id.player_profile_screen);
+        // Verify that the Player Profile Screen is displayed
+        //onView(withId(R.id.player_profile_screen)).check(matches(isDisplayed()));
+        assertEquals("0", ((TextView) soloMain.getView(R.id.number_points)).getText().toString());
+        assertEquals("0", ((TextView) soloMain.getView(R.id.number_code)).getText().toString());
+        assertEquals("0", ((TextView) soloMain.getView(R.id.number_rank)).getText().toString());
+    }
+
+//    @Test
+//    public void testUpdatedPlayerFragmentInfo() throws Exception {
+//        // If the user has at least a code scanned already
+//        QrCode mockCode = new QrCode("c6138abfa6a734269ef280d53f37d351d08408258322aa818f4cf9fe9fa4bb0d");
+//        mockCode.getHashString();
+////        mockQr.put("binaryString", "0110001100110110001100010011001100111000");
+////        mockQr.put("codeName", "RedBayGasArtOwlJawLogIceMudSaw");
+////        mockQr.put("Score",23);
+//
+//        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+//        soloMain.waitForView(R.id.player_profile_screen);
+//
+//
+//
+//
+//        //String mockVisRep = mockCode.getHashString();
+//
+//
+//
+//
+//        //assertEquals(mockVisRep, ((TextView) soloMain.getView(R.id.firstQrCodeImage)).getText().toString());
+//
+//
+//
+////        assertEquals("0", ((TextView) soloMain.getView(R.id.number_points)).getText().toString());
+//        assertEquals("1", ((TextView) soloMain.getView(R.id.number_code)).getText().toString());
+////        assertEquals("0", ((TextView) soloMain.getView(R.id.number_rank)).getText().toString());
+//
+//    }
+
+    @Test
+    public void testNavigateToPlayerCodeListFragment() throws Exception {
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
         soloMain.waitForView(R.id.imageView00);
         // Verify that the Player Profile Screen is displayed
         // onView(withId(R.id.player_profile_screen)).check(matches(isDisplayed()));
@@ -114,9 +164,9 @@ public class PlayerFragmentsTest {
 
         onView(withId(R.id.qr_code_list_fragment)).check(matches(isDisplayed()));
     }
-
+//
     @Test
-    public void testCodeDetailsFragment() throws Exception {
+    public void testNavigateToCodeDetailsFragment() throws Exception {
                 // Create a reference to the document in the "qrCodeScanned" collection
         DocumentReference qrCodeRef = db.collection("QrCodes").document("9b9d33f11c6f932d1b209d6b82550f32f946e6f0382989f56e925cfbeca9e255");
 
@@ -130,6 +180,8 @@ public class PlayerFragmentsTest {
         tempData.put("Comment", "For testing");
         db.collection("scannedBy").document(tempPath)
                 .set(tempData);
+
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
 
         soloMain.waitForView(R.id.imageView00);
         // Verify that the Player Profile Screen is displayed
