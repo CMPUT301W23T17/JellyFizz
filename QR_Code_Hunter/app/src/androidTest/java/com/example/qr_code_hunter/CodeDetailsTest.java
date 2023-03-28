@@ -4,6 +4,9 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+
 import com.example.qr_code_hunter.MainActivity;
 import com.example.qr_code_hunter.R;
 
