@@ -33,6 +33,8 @@ public class RankingTest {
 
     // Change this username until it's unique
     String user = "TestRanking";
+
+
     @Rule
     public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
 
