@@ -1,5 +1,9 @@
 package com.example.qr_code_hunter;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 
 import android.util.Log;
@@ -262,6 +266,24 @@ public class PlayerFragmentsTest {
 
         soloMain.waitForView(R.id.secondQrCodeImage);
         assertEquals(mockCode2.getVisualRep("0110010100111001001101100110010000110101"), ((TextView) soloMain.getView(R.id.secondQrCodeImage)).getText().toString());
+
+    }
+
+    @Test
+    public void testSwitchPrivacyButton() throws Exception {
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        soloMain.waitForView(R.id.player_profile_screen);
+
+        onView(withId(R.id.switch_privacy)).check(matches(isClickable()));
+        soloMain.clickOnView(soloMain.getView(R.id.switch_privacy));
+
+        soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
+        soloMain.waitForView(R.id.ranking_screen);
+
+        soloMain.clickOnText(user);
+        soloMain.waitForView(R.id.other_player_profile_frag);
+
+        assertEquals("Your profile is set to private. \nYou can change your privacy from your Profile screen.", ((TextView) soloMain.getView(R.id.email)).getText().toString());
 
     }
 }
