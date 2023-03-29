@@ -1,13 +1,8 @@
 package com.example.qr_code_hunter;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import static org.junit.Assert.assertEquals;
 
 import android.util.Log;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -169,7 +164,6 @@ public class PlayerFragmentsTest {
         // Navigation of Player Profile has been done during the NavBar test
         soloMain.waitForView(R.id.player_profile_screen);
         // Verify that the Player Profile Screen is displayed
-        //onView(withId(R.id.player_profile_screen)).check(matches(isDisplayed()));
         assertEquals("0", ((TextView) soloMain.getView(R.id.number_points)).getText().toString());
         assertEquals("0", ((TextView) soloMain.getView(R.id.number_code)).getText().toString());
         assertEquals("0", ((TextView) soloMain.getView(R.id.number_rank)).getText().toString());
