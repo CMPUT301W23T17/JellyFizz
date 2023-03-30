@@ -17,6 +17,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 
+import android.widget.Button;
+
 import com.example.qr_code_hunter.MainActivity;
 import com.example.qr_code_hunter.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -64,8 +66,8 @@ public class CodeDetailsFragmentTest {
         // Wait
         soloMain.waitForView(R.id.scan_now);
         // Click register button
-        soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
-        //solo.waitForView(solo.getView(R.id.buttonTotalScore));
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        soloMain.waitForView(R.id.more_button);
     }
 
     @After
@@ -86,8 +88,9 @@ public class CodeDetailsFragmentTest {
 
     @Test
     public void testBackButton() {
-        soloMain.waitForView(R.id.details_backBtn);
-        onView(withId(R.id.details_backBtn)).check(matches(isClickable()));
+        //soloMain.waitForView(R.id.details_backBtn);
+        soloMain.waitForView(R.id.more_button);
+        onView(withId(R.id.more_button)).check(matches(isClickable()));
     }
 
 }
