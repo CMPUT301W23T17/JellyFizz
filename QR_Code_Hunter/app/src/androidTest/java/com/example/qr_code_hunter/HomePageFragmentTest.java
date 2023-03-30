@@ -86,21 +86,37 @@ public class HomepageFragmentTest {
         completeDelete1.join();
     }
 
+/**
+*This test verifies that the scan button is displayed on the screen.
+*It checks that the view with the ID "scan_button" is visible to the user.
+*/
     @Test
     public void scanButtonDisplayed() {
         onView(withId(R.id.scan_button)).check(matches(isDisplayed()));
     }
 
+/**
+*This test verifies that the instruction button is displayed on the screen.
+*It checks that the view with the ID "ask_button" is visible to the user.
+*/
     @Test
     public void instructionButtonDisplayed() {
         onView(withId(R.id.ask_button)).check(matches(isDisplayed()));
     }
-
+    
+/**
+*This test verifies that clicking the scan button results in the expected behavior.
+*It performs a click on the view with the ID "scan_button".
+*/
     @Test
     public void clickScanButton() {
         onView(withId(R.id.scan_button)).perform(click());
     }
 
+/**
+*This test verifies that clicking the instruction button results in the expected behavior.
+*It performs a click on the view with the ID "ask_button".
+*/
     @Test
     public void clickInstructionButton() {
         onView(withId(R.id.ask_button)).perform(click());
