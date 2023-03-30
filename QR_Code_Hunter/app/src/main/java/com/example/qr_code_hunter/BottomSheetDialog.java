@@ -69,6 +69,9 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         }
     }
 
+     /**
+     * This function is used as an adapter to diplay list of nearby QrCodes
+     */
     private static class ItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         private final ArrayList<NearbyCode> mNearbyCodes;
