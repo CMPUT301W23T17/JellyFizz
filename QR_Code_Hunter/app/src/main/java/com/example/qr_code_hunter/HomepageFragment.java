@@ -43,7 +43,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HomepageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
@@ -55,47 +54,13 @@ public class HomepageFragment extends Fragment {
     TextView welcomeOwner;
     TextView rank;
     TextView score;
-    //Owner owner = new Owner();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public HomepageFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Home_screen.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomepageFragment newInstance(String param1, String param2) {
-        HomepageFragment fragment = new HomepageFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public HomepageFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        //owner = getActivity().getIntent().getParcelableExtra("current owner");
     }
 
     @Override
@@ -103,17 +68,19 @@ public class HomepageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
-        view.setTag("HomepageFragment");
         // Assign variable
         scanButton = view.findViewById(R.id.scan_button);
-
         // Initialize location client
         client = LocationServices.getFusedLocationProviderClient(getActivity());
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check condition
+                // Getting current user location
+                // URL          : https://www.youtube.com/watch?v=VdCQoJtNXAg
+                // Author       : Android Coding
+                // Date         : November 1, 2020
+                // Timestamp    : 5:42 - 14:03
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -125,7 +92,6 @@ public class HomepageFragment extends Fragment {
             }
 
         });
-
         // Return view
         return view;
     }
@@ -133,6 +99,7 @@ public class HomepageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        view.setTag("HomepageFragment");
         instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
@@ -213,7 +180,7 @@ public class HomepageFragment extends Fragment {
         // Initialize location manager
         LocationManager locationManager = (LocationManager) getActivity()
                 .getSystemService(Context.LOCATION_SERVICE);
-        // Check condition
+        // Check if location services is turned on
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             // When location service is enabled, get last location
             client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -240,6 +207,10 @@ public class HomepageFragment extends Fragment {
      * This opens the QR Scanner screen using a built-in library
      */
     private void scanCode() {
+        // Scanner Implementation
+        // URL      : https://www.youtube.com/watch?v=jtT60yFPelI
+        // Author   : Cambo Tutorial
+        // Date     : March 18, 2022
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);

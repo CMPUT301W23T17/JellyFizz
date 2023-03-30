@@ -24,20 +24,17 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public class CodeDetailsFragment extends Fragment {
-    String hashString; // what is provided into this fragment
-    String ownerName;
-    CommentSection commentSection = new CommentSection();
-    ArrayList<CommentSection> commentList = new ArrayList<>();
-    ArrayList<CommentSection> playerList = new ArrayList<>();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CommentSection commentSection = new CommentSection();
+    private final ArrayList<CommentSection> commentList = new ArrayList<>();
+    private final ArrayList<CommentSection> playerList = new ArrayList<>();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    TextView codeName;
-    TextView codeVisual;
-    TextView codeLocation;
-    TextView codeScore;
-    ImageView codeImage;
-    TextView backButton;
-    Button showComment;
+    private TextView codeName;
+    private TextView codeVisual;
+    private TextView codeLocation;
+    private TextView codeScore;
+    private ImageView codeImage;
+    private TextView backButton;
 
     public CodeDetailsFragment() {}
 
@@ -67,8 +64,9 @@ public class CodeDetailsFragment extends Fragment {
 
         Bundle bundle = getArguments();
         assert bundle != null;
-        hashString = bundle.getString("Hash");
-        ownerName = loginActivity.getOwnerName();
+        // what is provided into this fragment
+        String hashString = bundle.getString("Hash");
+        String ownerName = loginActivity.getOwnerName();
 
         // Access to the QrCodes collection to get necessary data
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);
@@ -101,13 +99,14 @@ public class CodeDetailsFragment extends Fragment {
         // Display image if available
         db.collection("scannedBy")
                 .whereEqualTo("qrCodeScanned",qrRef)
-                .whereEqualTo("Player",db.document("Players/"+ownerName))
+                .whereEqualTo("Player",db.document("Players/"+ ownerName))
                 .limit(1)
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         if(document.contains("Photo")) {
                             // Decode the encoded string
+                            // URL      : https://developer.android.com/reference/android/graphics/BitmapFactory
                             byte[] byteArray = Base64.getDecoder().decode(document.getString("Photo"));
 
                             // Convert the array byte into bitmap
@@ -129,7 +128,7 @@ public class CodeDetailsFragment extends Fragment {
         });
 
         // Show bottom dialog of comments
-        showComment = view.findViewById(R.id.comment_dialog_btn);
+        Button showComment = view.findViewById(R.id.comment_dialog_btn);
         showComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

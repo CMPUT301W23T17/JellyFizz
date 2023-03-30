@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class OtherPlayerFragment extends Fragment{
@@ -100,7 +102,11 @@ public class OtherPlayerFragment extends Fragment{
                     ImageView imageView = getView().findViewById(R.id.rectangle_);
                     if (hideInfo == true) {
                         imageView.setVisibility(View.GONE);
-                        email.setText("                 This profile is private.");
+                        if(Objects.equals(userName, loginActivity.getOwnerName())) {
+                            email.setText("Your profile is set to private. \nYou can change your privacy from your Profile screen.");
+                        } else {
+                            email.setText("                     This profile is private.");
+                        }
                         mobile_number.setVisibility((View.GONE));
 
                     } else {

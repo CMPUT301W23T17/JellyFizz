@@ -17,16 +17,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,39 +52,11 @@ public class qrCodeList extends Fragment {
     public Owner currentOwner;
     public boolean goToGarbage = true;
 
-    public qrCodeList() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment qrCodeList.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static qrCodeList newInstance(String param1, String param2) {
-        qrCodeList fragment = new qrCodeList();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public qrCodeList() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // pass the hashString
-        // make the username acceptance general
-
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -99,7 +76,6 @@ public class qrCodeList extends Fragment {
         displayCodes(loginActivity.getOwnerName(), new sortedCodes() {
             @Override
             public void onSuccess(ArrayList<DocumentReference> sortedCodes) {
-
                 View currentView = getView();
                 //Update on main UI thread
                 currentView.post(new Runnable() {
@@ -115,8 +91,6 @@ public class qrCodeList extends Fragment {
                         qrCodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                                 Log.d("Item Click", "Item is being clicked");
                                 Fragment fragment = new CodeDetailsFragment();
                                 FragmentManager fragmentManager = getParentFragmentManager();
@@ -139,8 +113,7 @@ public class qrCodeList extends Fragment {
             }
         });
 
-
-        //set garbage can listener
+        // Set garbage can listener
         ImageView garbageButton = view.findViewById(R.id.garbage_can_icon);
         garbageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +158,7 @@ public class qrCodeList extends Fragment {
                     }
 
 
-                    //set garbagecan to be black again
+                    //set garbage can to be black again
                     ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
                     garbageButton.setImageResource(R.drawable.ic_delete);
 

@@ -6,6 +6,9 @@
 //import androidx.test.espresso.Espresso.onView;
 //import androidx.test.espresso.matcher.RootMatchers;
 //import androidx.test.espresso.matcher.ViewMatchers.*;
+//import static android.support.test.espresso.Espresso.onView;
+//import android.support.test.espresso.Espresso;
+//
 //import androidx.test.ext.junit.rules.ActivityScenarioRule;
 //import androidx.test.ext.junit.runners.AndroidJUnit4;
 //

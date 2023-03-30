@@ -54,6 +54,11 @@ public class RankAdapter extends ArrayAdapter<Rank> {
                 else {
                     pos.setVisibility(View.VISIBLE);
                     trophy.setVisibility(View.INVISIBLE);
+
+                    // Superscript text formatting
+                    // URL      : https://stackoverflow.com/questions/3543454/subscript-and-superscript-a-string-in-android
+                    // Author   : Konstantin Burov
+                    // Date     : August 22, 2010
                     pos.setText(Html.fromHtml(String.valueOf(r.rankingTotalScore) + "<sup><small>th</small></sup>"));
                 }
                 TextView nameString = convertView.findViewById(R.id.userName);

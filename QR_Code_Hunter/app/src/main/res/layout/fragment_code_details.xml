@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_code_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="15dp"
@@ -7,6 +8,10 @@
     android:orientation="vertical"
     android:focusableInTouchMode="true">
 
+<!-- Compound Icon Text View
+     URL     : https://www.youtube.com/watch?v=dHwbjeOunjk
+     Author  : EDMT Dev
+     Date    : July 11, 2017 -->
     <TextView
         android:id="@+id/details_backBtn"
         android:layout_width="wrap_content"

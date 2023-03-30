@@ -208,11 +208,11 @@ public class QrCode implements Parcelable {
         }
         if(bin[5] == '1'){
             if(bin[6] == '1'){
-                visualRep = visualRep.concat("\n  |_  (______)  _| ");
+                visualRep = visualRep.concat("\n  |_  (______)  _|  ");
             }else{
-                visualRep = visualRep.concat("\n  |_  [||||||]  _| ");
+                visualRep = visualRep.concat("\n  |_  [||||||]  _|  ");
             }
-            visualRep = visualRep.concat("\n   |_          _| ");
+            visualRep = visualRep.concat("\n   |_          _|   ");
         }else{
             if(bin[6] == '1'){
                 visualRep = visualRep.concat("\n |    (______)    | ");

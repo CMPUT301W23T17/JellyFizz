@@ -101,20 +101,22 @@ public class RankingFragment extends Fragment {
         buttonTotalScore = getView().findViewById(R.id.buttonTotalScore);
         buttonHighestCode = getView().findViewById(R.id.buttonHighestCode);
 
+
+        //
+        final boolean[] a = new boolean[1];
         buttonTotalScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
                 /////////////////////////////////////////////////////////////////
-                rankLists.arrangeRankTotal(new Rank.ArrangeRankCallback() {
-                    @Override
-                    public void onArrangeRankComplete(ArrayList<Rank> ranking) {
-                        rankArr.addAll(ranking);
-                        adapter = new RankAdapter(getActivity(), 0, ranking, true);
-                        rankings.setAdapter(adapter);
-                        displayYourRankTotalScore(rankArr);
-                    }
+                a[0] = true;
+                ///////////////////////////////////////////////////////////////
+                rankLists.arrangeRankTotal(ranking -> {
+                    rankArr.addAll(ranking);
+                    adapter = new RankAdapter(getActivity(), 0, ranking, true);
+                    rankings.setAdapter(adapter);
+                    displayYourRankTotalScore(rankArr);
                 });
             }
         });
@@ -124,6 +126,8 @@ public class RankingFragment extends Fragment {
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#e0fbfc"));
                 //////////////////////////////////////////////////////////////////
+                a[0] = false;
+                ///////////////////////////////////////////////////////////////
                 rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
                     @Override
                     public void onArrangeRankComplete(ArrayList<Rank> ranking) {

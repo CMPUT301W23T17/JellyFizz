@@ -46,6 +46,11 @@ public class NewCodeActivity extends AppCompatActivity {
         String scannedString = getIntent().getExtras().getString("scanned string");
         Location curLoc = getIntent().getParcelableExtra("current location");
 
+        // Getting LatLng from Location
+        // URL          : https://www.youtube.com/watch?v=ByjxO66Y_1I
+        // Author       : Knowledge Extension
+        // Date         : April 23, 2020
+        // Timestamp    : 31:30 - 33:58
         geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
         LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         try {
