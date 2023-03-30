@@ -16,8 +16,7 @@ public class Rank {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference player = db.collection("Players");
 
-    public Rank(){
-    }
+    public Rank(){}
 
     public Rank(String username, int score, int rankingTotal, int rankingCode, int highestCode) {
         this.username = username;

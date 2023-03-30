@@ -67,11 +67,8 @@ public class CommentDialogFragment extends BottomSheetDialogFragment {
         RecyclerView recyclerView = view.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
-
         comment_btn.setSoundEffectsEnabled(true);
         comment_btn.setSoundEffectsEnabled(false);
-
         comment_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

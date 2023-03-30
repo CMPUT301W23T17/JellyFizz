@@ -39,10 +39,6 @@ public class PlayerProfileFragment extends Fragment {
     private TextView numberCode;
     private Switch privacySwitch;
 
-    public PlayerProfileFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

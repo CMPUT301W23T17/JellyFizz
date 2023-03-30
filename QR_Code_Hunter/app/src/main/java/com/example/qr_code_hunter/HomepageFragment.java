@@ -52,8 +52,6 @@ public class HomepageFragment extends Fragment {
     private TextView rank;
     private TextView score;
 
-    public HomepageFragment() {}
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
