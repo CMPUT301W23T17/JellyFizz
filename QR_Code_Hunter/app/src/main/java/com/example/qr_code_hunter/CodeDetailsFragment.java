@@ -23,6 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Base64;
 
+/**
+ * A simple {@link Fragment} subclass
+ * Create an instance of this fragment
+ */
 public class CodeDetailsFragment extends Fragment {
     private final CommentSection commentSection = new CommentSection();
     private final ArrayList<CommentSection> commentList = new ArrayList<>();
