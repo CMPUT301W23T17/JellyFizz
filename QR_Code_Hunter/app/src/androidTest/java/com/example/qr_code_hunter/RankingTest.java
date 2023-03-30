@@ -59,7 +59,6 @@ public class RankingTest {
         soloMain.waitForView(R.id.scan_now);
         // Click register button
         soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
-        //solo.waitForView(solo.getView(R.id.buttonTotalScore));
     }
 
     @After
@@ -104,5 +103,12 @@ public class RankingTest {
         assertEquals("0th", ((TextView) soloMain.getView(R.id.yourRank)).getText().toString());
         assertEquals("0 pts", ((TextView) soloMain.getView(R.id.yourPoints)).getText().toString());
         assertEquals(user, ((TextView) soloMain.getView(R.id.yourName)).getText().toString());
+    }
+    @Test
+    public void testSeeOtherPlayerProfile(){
+        soloMain.waitForView(R.id.buttonTotalScore);
+        soloMain.clickInList(0);
+        soloMain.waitForView(R.id.other_player_profile_frag);
+        onView(withId(R.id.other_player_profile_frag)).check(matches(isDisplayed()));
     }
 }

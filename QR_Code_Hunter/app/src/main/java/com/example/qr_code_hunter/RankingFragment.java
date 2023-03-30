@@ -27,6 +27,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -240,5 +242,15 @@ public class RankingFragment extends Fragment {
         yourName.setText(ownerName);
         String ptsLabel = String.valueOf(yourScore) + " pts";
         yourPts.setText(ptsLabel);
+    }
+
+    private String getLastElement(List<String> list) {
+        return list.get(list.size()-1);
+    }
+
+    public String callGetLastElement() {
+        List<String> list = new ArrayList<>();
+        list.add("Hello");
+        return getLastElement(list);
     }
 }
