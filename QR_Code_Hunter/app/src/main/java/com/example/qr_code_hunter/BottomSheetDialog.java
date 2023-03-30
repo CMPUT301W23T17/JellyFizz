@@ -75,7 +75,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
 
     private static class ItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        private ArrayList<NearbyCode> mItems;    private final ArrayList<NearbyCode> mNearbyCodes;
+        private final ArrayList<NearbyCode> mNearbyCodes;
 
         ItemAdapter(ArrayList<NearbyCode> nearbyCodes) {
             mNearbyCodes = nearbyCodes;
