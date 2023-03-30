@@ -69,6 +69,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
             }
         });
 
+        // Open Camera on View Click
+        // URL      : https://stackoverflow.com/questions/13977245/android-open-camera-from-button
+        // Author   : captainDizzy
+        // Date     : December 20, 2012
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +91,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
              */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Live character count for EditText
+                // URL      : https://stackoverflow.com/questions/3013791/live-character-count-for-edittext
+                // Author   : Cameron Ketcham
+                // Date     : December 15, 2010
                 String countLabel = String.valueOf(s.length()) + "/150";
                 charCount.setText(countLabel);
 
@@ -139,6 +147,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 currentOwner.addQRCode(newCode, null, encodedImage);
                             }
                         }
+                        // Delay fragment change to allow database to update first
+                        // URL      : https://stackoverflow.com/questions/41664409/wait-for-5-seconds
+                        // Author   : Eman Sallam
+                        // Date     : July 30, 2019
                         Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
                         (new Handler()).postDelayed(new Runnable() {
                             @Override
@@ -161,6 +173,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Setting picture to ImageView
+                    // URL      : https://stackoverflow.com/questions/13977245/android-open-camera-from-button
+                    // Author   : Hasan Masud
+                    // Date     : December 29, 2014
                     if(result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         Bundle bundle = data.getExtras();
@@ -168,6 +184,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         picture.setImageBitmap(finalPhoto);
 
                         // Encode image to string
+                        // URL      : https://stackoverflow.com/questions/41396194/how-to-convert-image-to-string-in-android
+                        // Author   : Dilip Ati
+                        // Date     : December 30, 2016
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         finalPhoto.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream.toByteArray();

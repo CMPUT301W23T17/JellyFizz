@@ -76,7 +76,11 @@ public class HomepageFragment extends Fragment {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check condition
+                // Getting current user location
+                // URL          : https://www.youtube.com/watch?v=VdCQoJtNXAg
+                // Author       : Android Coding
+                // Date         : November 1, 2020
+                // Timestamp    : 5:42 - 14:03
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -176,7 +180,7 @@ public class HomepageFragment extends Fragment {
         // Initialize location manager
         LocationManager locationManager = (LocationManager) getActivity()
                 .getSystemService(Context.LOCATION_SERVICE);
-        // Check condition
+        // Check if location services is turned on
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             // When location service is enabled, get last location
             client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -203,6 +207,10 @@ public class HomepageFragment extends Fragment {
      * This opens the QR Scanner screen using a built-in library
      */
     private void scanCode() {
+        // Scanner Implementation
+        // URL      : https://www.youtube.com/watch?v=jtT60yFPelI
+        // Author   : Cambo Tutorial
+        // Date     : March 18, 2022
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);

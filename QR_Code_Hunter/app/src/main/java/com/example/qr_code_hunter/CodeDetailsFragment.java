@@ -108,6 +108,7 @@ public class CodeDetailsFragment extends Fragment {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         if(document.contains("Photo")) {
                             // Decode the encoded string
+                            // URL      : https://developer.android.com/reference/android/graphics/BitmapFactory
                             byte[] byteArray = Base64.getDecoder().decode(document.getString("Photo"));
 
                             // Convert the array byte into bitmap
