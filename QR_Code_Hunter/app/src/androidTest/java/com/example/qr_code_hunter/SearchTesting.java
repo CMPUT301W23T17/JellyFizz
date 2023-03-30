@@ -1,18 +1,18 @@
 package com.example.qr_code_hunter;
 
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
+import static org.hamcrest.CoreMatchers.anything;
 import static org.junit.Assert.assertTrue;
 
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -61,7 +61,7 @@ public class SearchTesting {
         soloLogin.clickOnButton("Register");
 
         // Wait
-        soloMain.waitForView(R.id.scan_now);
+        soloMain.waitForView(R.id.score_display);
         // Click register button
         soloMain.clickOnView(soloMain.getView(R.id.search_screen));
         //solo.waitForView(solo.getView(R.id.buttonTotalScore));
@@ -114,7 +114,20 @@ public class SearchTesting {
 
         soloMain.waitForView(R.id.search_list);
 
-        onView(withId(R.id.search_list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        ListView listView = (ListView) soloMain.getView(R.id.search_list);
+
+// Click on the first item in the ListView
+        onData(anything())
+                .inAdapterView(withId(R.id.search_list))
+                .atPosition(0)
+                .perform(click());
+
+
+        soloMain.waitForView(R.id.imageView00);
+        onView(withId(R.id.imageView00)).check(matches(isDisplayed()));
+
+        soloMain.clickOnView((soloMain.getView(R.id.imageView7)));
+        soloMain.waitForView(R.id.search_bar);
     }
 
 }
