@@ -33,14 +33,14 @@ import java.util.Base64;
  * This is the second page of the new code details (editable fields)
  */
 public class NewCodeActivity2 extends AppCompatActivity {
-    ImageView picture;
-    EditText descBox;
-    TextView charCount;
-    CheckBox saveGeo;
-    ImageButton saveBtn;
-    QrCode newCode;
-    String encodedImage;
-    Owner currentOwner;
+    private ImageView picture;
+    private EditText descBox;
+    private TextView charCount;
+    private CheckBox saveGeo;
+    private ImageButton saveBtn;
+    private QrCode newCode;
+    private String encodedImage;
+    private Owner currentOwner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -164,7 +164,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
      * This opens the camera app and set the taken photograph to an ImageView
      * and encode image to string to be sent to another activity
      */
-    ActivityResultLauncher<Intent> takePhoto = registerForActivityResult(
+    protected ActivityResultLauncher<Intent> takePhoto = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override

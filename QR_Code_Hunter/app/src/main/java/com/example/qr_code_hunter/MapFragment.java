@@ -73,25 +73,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.example.qr_code_hunter.NearbyCode;
-
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    FrameLayout map;
-    GoogleMap gMap;
-    double longitude, latitude;
-    Marker marker;
-    GroundOverlay overlay;
+    protected FrameLayout map;
+    private GoogleMap gMap;
+    private double longitude, latitude;
+    private Marker marker;
+    private GroundOverlay overlay;
     private Bitmap bitmap;
     private LocationRequest locationRequest;
     private static final String TAG = "Info";
 
     List<Marker> nearbyCodes = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final CollectionReference qrCodes = db.collection("QrCodes");
+    CollectionReference qrCodes = db.collection("QrCodes");
 
     // https://stackoverflow.com/questions/61455381/how-to-replace-startactivityforresult-with-activity-result-apis
     // Author: https://stackoverflow.com/users/9255057/hardik-hirpara

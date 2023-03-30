@@ -13,19 +13,17 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    // ActivityMainBinding is an android library that allows a way to access the views
-    // in the activity_main.xml (navigation bar is stored there)
-    ActivityMainBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // ActivityMainBinding is an android library that allows a way to access the views
+        // in the activity_main.xml (navigation bar is stored there)
+        com.example.qr_code_hunter.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Check if user has created an account before on this specific device,
-        // 1) if yes: go to homepage, 2) if no: go to loginPage
+        // 1) if yes: go to homepage, // 2) if no: go to loginPage
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment(Fragment fragment ){
+    private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);

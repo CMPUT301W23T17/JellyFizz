@@ -6,13 +6,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.firebase.geofire.GeoFireUtils;
-import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,9 +18,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class Owner implements Parcelable {
 
@@ -38,7 +31,7 @@ public class Owner implements Parcelable {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference player = db.collection("Players");
-    private final CollectionReference qrcode = db.collection("QrCodes");
+    private final CollectionReference qrCode = db.collection("QrCodes");
     private final CollectionReference scanned = db.collection("scannedBy");
 
     private DocumentReference ownerRef;
@@ -46,8 +39,6 @@ public class Owner implements Parcelable {
     Boolean codeDuplicated = false;
     Boolean codeUnique = false;
     DocumentReference existedQrRef;
-
-    public Owner(){}
 
     public Owner(String phone, String email, String username, Boolean privacy,
                  ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned, int highestCode) {
@@ -59,10 +50,6 @@ public class Owner implements Parcelable {
         this.totalCodeScanned = totalCodeScanned;
         this.ownerRef = this.player.document(username);
         this.highestCode = highestCode;
-    }
-
-    public Owner(DocumentReference playerRef) {
-        this.ownerRef = playerRef;
     }
 
     protected Owner(Parcel in) {
@@ -92,7 +79,7 @@ public class Owner implements Parcelable {
      *        score of QrCode below it (QrCode are sorted in descending order)
      */
     public void deleteQRCode(String hashString, int codeScore, int nextScore) {
-        DocumentReference qrRef = qrcode.document(hashString);
+        DocumentReference qrRef = qrCode.document(hashString);
         checkUniqueCodeScanned(hashString, new CheckUniqueCallback() {
                     @Override
                     public void onCheckUniqueComplete(Boolean unique) {
@@ -120,7 +107,7 @@ public class Owner implements Parcelable {
      */
     public void checkUniqueCodeScanned(String hashString, CheckUniqueCallback callback) {
         // Get query of players scan newly scanned code
-        DocumentReference qrRef= qrcode.document(hashString);
+        DocumentReference qrRef= qrCode.document(hashString);
         scanned.whereEqualTo("qrCodeScanned",qrRef)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -142,7 +129,7 @@ public class Owner implements Parcelable {
      *        string of QrCode to be deleted
      */
     public void removeFromQrCollection(String hashString) {
-        qrcode.document(hashString)
+        qrCode.document(hashString)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -246,11 +233,11 @@ public class Owner implements Parcelable {
      *      interface deal with asynchronous problem when check code existence
      */
     public void checkQrCodeExist(String hashString, CheckExistCallback callback) {
-        DocumentReference docRef = qrcode.document(hashString);
+        DocumentReference docRef = qrCode.document(hashString);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().exists()) {
-                    existedQrRef = qrcode.document(hashString);
+                    existedQrRef = qrCode.document(hashString);
                     Log.d("Working", "Document exists!");
                 }
             } else {
@@ -282,7 +269,7 @@ public class Owner implements Parcelable {
         data.put("codeName",qrCode.getName());
         data.put("binaryString",qrCode.getBinaryString());
         // Create new document whose ID is the hash string
-        DocumentReference newRef = qrcode.document(qrCode.getHashString());
+        DocumentReference newRef = this.qrCode.document(qrCode.getHashString());
         newRef.set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -330,11 +317,6 @@ public class Owner implements Parcelable {
                     }
                 });
     }
-
-    public interface UpdateScoreCallback {
-        void onUpdateScoreComplete();
-    }
-
 
     /**
      * This update total score, rank and highest code point of the player after adding/removing given qrCode
@@ -398,17 +380,6 @@ public class Owner implements Parcelable {
             callback.onCheckDuplicateComplete(codeDuplicated);
         });
     }
-
-
-//    /**
-//     * This set privacy for owner's info (email and phone number) on their user profile
-//     * @param visibility
-//     *      true indicates shows info, false will hide info
-//     */
-//    public void setPrivacy(Boolean visibility) {
-//        this.profileInfo.privacy = visibility;
-//    }
-
 
     /**
      * This method updates the ranks of the players in the database based on their score
