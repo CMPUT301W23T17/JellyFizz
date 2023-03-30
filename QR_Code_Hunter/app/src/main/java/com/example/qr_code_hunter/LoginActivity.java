@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class LoginActivity extends AppCompatActivity {
 
-    //Owner of the account(username of player on current device)
+    // Owner of the account(username of player on current device)
     private static String owner;
     static Owner currentOwnerObject;
 
@@ -52,10 +52,6 @@ public class LoginActivity extends AppCompatActivity {
         owner = username;
     }
 
-    private static void setOwner(Owner owner1) {
-        currentOwnerObject = owner1;
-    }
-
     /**
      * Retrieves all the QR code references for a specific player from the database and returns them
      * as an ArrayList. This method queries the "Players" collection to find all documents that reference
@@ -64,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param currentPlayer The ID of the player for whom to retrieve the QR code references.
      * @return An ArrayList containing the DocumentReference objects for all the QR codes scanned by the player.
      */
-    public static CompletableFuture<ArrayList<DocumentReference>> getQR_Codes(String currentPlayer) {
+    public static CompletableFuture<ArrayList<DocumentReference>> getQrCodes(String currentPlayer) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference scannedBy = db.collection("scannedBy");
@@ -239,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
         userNameViewer.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // nothing
+                // Do nothing
             }
 
             @Override
@@ -250,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                //nothing
+                // Do nothing
             }
         });
 
@@ -261,48 +257,40 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 register.setEnabled(false);
-                //get Email adress
+                // Get email address
                 EditText emailEditText = findViewById(R.id.editTextEmail);
                 String email = emailEditText.getText().toString().trim();
 
 
-                //get Phone Number
+                // Get Phone Number
                 EditText phoneNumbertext = findViewById(R.id.editTextPhone);
                 String phoneNumber = phoneNumbertext.getText().toString().trim();
 
-                //get UserName
+                // Get UserName
                 EditText userNameView = findViewById(R.id.editTextUsername);
                 String username = userNameView.getText().toString().trim();
 
 
-                //stall program to ensure database queries have been completed
+                // Stall program to ensure database queries have been completed
                 while (handler.hasMessages(12)) {
 
                 }
 
-                //if checks failed return
+                // If checks failed return
                 if (!verifyInput()) {
                     register.setEnabled(true);
                     return;
                 };
 
-                //all checks passed, register key to shared Permissions to allow not to register next time
+                // All checks passed, register key to shared Permissions to allow not to register next time
                 registerKey(username);
 
-                //Register user and go to homepage
+                // Register user and go to homepage
                 registerUser(username, email, phoneNumber, playersRef);
             }
         });
 
     }
-
-
-    /**
-     * This function is used to return owner object.
-     * @return return Owner object.
-     */
-    public Owner getOwnerNew() {return currentOwnerObject;}
-
 
     private boolean verifyUsername() {
         //verify UserName error button is invisible

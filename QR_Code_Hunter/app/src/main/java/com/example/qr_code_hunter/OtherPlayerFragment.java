@@ -157,7 +157,7 @@ public class OtherPlayerFragment extends Fragment{
         });
 
         // Get Codes
-        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQR_Codes(username);
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQrCodes(username);
 
         currentCodes.thenAccept(qrCodes -> {
             TextView firstCodeView = getView().findViewById(R.id.otherFirstQrCodeImage);
