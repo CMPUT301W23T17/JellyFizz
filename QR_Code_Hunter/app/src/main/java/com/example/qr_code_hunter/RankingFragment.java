@@ -103,17 +103,12 @@ public class RankingFragment extends Fragment {
         buttonTotalScore = getView().findViewById(R.id.buttonTotalScore);
         buttonHighestCode = getView().findViewById(R.id.buttonHighestCode);
 
-
-        //
-        final boolean[] a = new boolean[1];
+        // Show total score ranking
         buttonTotalScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
-                /////////////////////////////////////////////////////////////////
-                a[0] = true;
-                ///////////////////////////////////////////////////////////////
                 rankLists.arrangeRankTotal(ranking -> {
                     rankArr.addAll(ranking);
                     adapter = new RankAdapter(getActivity(), 0, ranking, true);
@@ -122,14 +117,12 @@ public class RankingFragment extends Fragment {
                 });
             }
         });
+        // Show highest code ranking
         buttonHighestCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#e0fbfc"));
-                //////////////////////////////////////////////////////////////////
-                a[0] = false;
-                ///////////////////////////////////////////////////////////////
                 rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
                     @Override
                     public void onArrangeRankComplete(ArrayList<Rank> ranking) {
@@ -141,10 +134,12 @@ public class RankingFragment extends Fragment {
                 });
             }
         });
+        // Set the total score ranking as default
         buttonTotalScore.setSoundEffectsEnabled(false);
         buttonTotalScore.performClick();
         buttonTotalScore.setSoundEffectsEnabled(true);
 
+        // Click to see other player profile
         rankings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -153,6 +148,8 @@ public class RankingFragment extends Fragment {
         });
 
     }
+
+    // change fragment to see other people profile
     private void replaceFragment(Fragment fragment ){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
