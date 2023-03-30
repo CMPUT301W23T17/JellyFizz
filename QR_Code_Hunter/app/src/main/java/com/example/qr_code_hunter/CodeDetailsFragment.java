@@ -66,7 +66,7 @@ public class CodeDetailsFragment extends Fragment {
         assert bundle != null;
         // what is provided into this fragment
         String hashString = bundle.getString("Hash");
-        String ownerName = loginActivity.getOwnerName();
+        String ownerName = LoginActivity.getOwnerName();
 
         // Access to the QrCodes collection to get necessary data
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);

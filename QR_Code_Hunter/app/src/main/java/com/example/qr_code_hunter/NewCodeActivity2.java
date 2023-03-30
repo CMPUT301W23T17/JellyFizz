@@ -54,10 +54,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
         saveBtn.setEnabled(false);
         newCode = getIntent().getParcelableExtra("New QrCode");
 
-        String ownerPass = loginActivity.getOwnerName();
+        String ownerPass = LoginActivity.getOwnerName();
 
         //set the owner object, still need to discuss what is happening with this list of qrcodes
-        loginActivity.createOwnerObject( ownerPass, new loginActivity.getAllInfo() {
+        LoginActivity.createOwnerObject( ownerPass, new LoginActivity.getAllInfo() {
             @Override
             public void onGetInfo(Owner owner) {
                 currentOwner = owner;

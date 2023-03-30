@@ -13,7 +13,7 @@
         android:id="@+id/search_screen"
         android:name="com.example.qr_code_hunter.SearchFragment"
         android:label="search_screen"
-        tools:layout="@layout/searching" />
+        tools:layout="@layout/fragment_searching" />
     <fragment
         android:id="@+id/map_screen"
         android:name="com.example.qr_code_hunter.MapFragment"

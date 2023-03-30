@@ -30,7 +30,7 @@ public class RankingFragment extends Fragment {
     private ListView rankings;
     private TextView buttonTotalScore, buttonHighestCode;
     private RankAdapter adapter;
-    private String ownerName = loginActivity.getOwnerName();
+    private String ownerName = LoginActivity.getOwnerName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

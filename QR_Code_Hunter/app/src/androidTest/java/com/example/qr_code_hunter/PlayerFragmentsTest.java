@@ -40,7 +40,7 @@ public class PlayerFragmentsTest {
     String userEmail = "nic@ualberta.ca";
     String userPhone = "1234567890";
     @Rule
-    public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
 

@@ -19,11 +19,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
+public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
     private Context currentContext;
     private ArrayList<DocumentReference> mQRCodeItemList;
 
-    public qrCodeAdapter(Context context, int resource, ArrayList<DocumentReference> qrCodeItemList) {
+    public QrCodeAdapter(Context context, int resource, ArrayList<DocumentReference> qrCodeItemList) {
         super(context, resource, qrCodeItemList);
 
         currentContext = context;
@@ -41,16 +41,14 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
         View view = convertView;
 
-        //Creating new view to handle asynchronocity, refractor to recycler view if laggy or have time later
+        // Creating new view to handle asynchronocity, refactor to recycler view if laggy or have time later
         LayoutInflater inflater = (LayoutInflater) currentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.item_qrcodelist, parent, false);
 
-
-        //Fetch hashString
+        // Fetch hashString
         String hashString = mQRCodeItemList.get(position).getId();
 
-
-        //Fetch next item in list and it's score
+        // Fetch next item in list and its score
         DocumentReference nextCode;
         int nextScore;
         if (position < getCount() - 1) {
@@ -61,27 +59,27 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         } else {
             nextCode = null;
 
-            //If no next score, Set the score to 0
+            // If no next score, Set the score to 0
             nextScore = 0;
         }
 
 
-        //Fetch binaryString
+        // Fetch binaryString
         CompletableFuture<String> binaryStringFuture = fetchBinaryString(mQRCodeItemList.get(position));
 
-        //Create filler QrCode
+        // Create filler QrCode
         QrCode currentQrCode = new QrCode();
 
-        //Filler view to update view later
+        // Filler view to update view later
         final View viewPost = view;
 
         // Declare a variable to store the current position
         final int currentPosition = position;
 
-        //Wait for binary string to be done
+        // Wait for binary string to be done
         binaryStringFuture.thenAccept(producedString -> {
             // Check if the current position is still the same
-                //Run on UI Thread for updates
+                // Run on UI Thread for updates
                 viewPost.post(new Runnable() {
                     @Override
                     public void run() {
@@ -107,8 +105,8 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
                             highestLowestCodeTextView.setVisibility(View.INVISIBLE);
                         }
 
-                        //Create tag for Code and set the tag
-                        qrCodeTag currentTag = new qrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
+                        // Create tag for Code and set the tag
+                        QrCodeTag currentTag = new QrCodeTag(hashString, currentQrCode.setScore(hashString), nextScore);
                         viewPost.setTag(currentTag);
                         Log.d("Codes", " " + hashString);
                     }

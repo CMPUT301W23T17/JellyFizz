@@ -7,7 +7,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -18,9 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,8 +37,8 @@ public class DeleteQrCodeTest {
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
-    public ActivityTestRule<loginActivity> rule =
-            new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> rule =
+            new ActivityTestRule<>(LoginActivity.class, true, true);
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
     /**

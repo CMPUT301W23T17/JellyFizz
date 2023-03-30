@@ -99,7 +99,7 @@ public class OtherPlayerFragment extends Fragment{
                     ImageView imageView = getView().findViewById(R.id.rectangle_);
                     if (hideInfo == true) {
                         imageView.setVisibility(View.GONE);
-                        if(Objects.equals(username, loginActivity.getOwnerName())) {
+                        if(Objects.equals(username, LoginActivity.getOwnerName())) {
                             email.setText("Your profile is set to private. \nYou can change your privacy from your Profile screen.");
                         } else {
                             email.setText("                     This profile is private.");
@@ -151,13 +151,13 @@ public class OtherPlayerFragment extends Fragment{
             public void onClick(View v) {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, new other_code_list(username));
+                fragmentTransaction.replace(R.id.frame_layout, new OtherCodeList(username));
                 fragmentTransaction.commit();
             }
         });
 
         // Get Codes
-        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(username);
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQR_Codes(username);
 
         currentCodes.thenAccept(qrCodes -> {
             TextView firstCodeView = getView().findViewById(R.id.otherFirstQrCodeImage);
@@ -176,7 +176,7 @@ public class OtherPlayerFragment extends Fragment{
                             String binaryString = (String) documentSnapshot.get("binaryString");
                             QrCode filler = new QrCode();
 
-                            qrCodeTag firstTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+                            QrCodeTag firstTag = new QrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             firstCodeView.setTag(firstTag);
                             firstCodeView.setText(filler.getVisualRep(binaryString));
@@ -196,7 +196,7 @@ public class OtherPlayerFragment extends Fragment{
                             QrCode filler = new QrCode();
 
                             // Do something with the ID
-                            qrCodeTag secondTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+                            QrCodeTag secondTag = new QrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             secondCodeView.setTag(secondTag);
                             secondCodeView.setText(filler.getVisualRep(binaryString));

@@ -57,7 +57,7 @@ public class PlayerProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get the owner name
-        String ownerName = loginActivity.getOwnerName();
+        String ownerName = LoginActivity.getOwnerName();
         TextView userName = (TextView) getView().findViewById(R.id.user_name);
         userName.setText(ownerName);
         // Access to the player collection
@@ -72,7 +72,7 @@ public class PlayerProfileFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, new qrCodeList());
+                fragmentTransaction.replace(R.id.frame_layout, new QrCodeList());
                 fragmentTransaction.commit();
             }
         });
@@ -224,7 +224,7 @@ public class PlayerProfileFragment extends Fragment {
                 });
 
         //Get Codes
-        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(loginActivity.getOwnerName());
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQR_Codes(LoginActivity.getOwnerName());
 
         currentCodes.thenAccept(qrCodes -> {
             TextView firstCodeView = getView().findViewById(R.id.firstQrCodeImage);
@@ -246,7 +246,7 @@ public class PlayerProfileFragment extends Fragment {
                             QrCode filler = new QrCode();
 
                             // do something with the ID
-                            qrCodeTag firstTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+                            QrCodeTag firstTag = new QrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             firstCodeView.setTag(firstTag);
                             firstCodeView.setText(filler.getVisualRep(binaryString));
@@ -265,7 +265,7 @@ public class PlayerProfileFragment extends Fragment {
                             String binaryString = (String) documentSnapshot.get("binaryString");
                             QrCode filler = new QrCode();
 
-                            qrCodeTag secondTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+                            QrCodeTag secondTag = new QrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             secondCodeView.setTag(secondTag);
                             secondCodeView.setText(filler.getVisualRep(binaryString));

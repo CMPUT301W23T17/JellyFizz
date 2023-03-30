@@ -24,7 +24,7 @@ public class qrCodeListTests {
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
-    public ActivityTestRule<loginActivity> rule = new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> rule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
     @BeforeClass
     public static void setUpDependencies() {

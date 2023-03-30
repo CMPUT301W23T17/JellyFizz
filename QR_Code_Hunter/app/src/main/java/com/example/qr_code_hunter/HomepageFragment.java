@@ -100,7 +100,7 @@ public class HomepageFragment extends Fragment {
         builder = new AlertDialog.Builder(getActivity());
 
         // Display user name
-        String ownerName = loginActivity.getOwnerName();
+        String ownerName = LoginActivity.getOwnerName();
         TextView welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
         welcomeOwner.setText("HELLO, "+ ownerName+ " !");
 
