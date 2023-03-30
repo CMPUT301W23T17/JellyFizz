@@ -262,7 +262,7 @@ public class QrCodeList extends Fragment {
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
 
         ArrayList<DocumentReference> playerQrCodes = new ArrayList<DocumentReference>();
-        CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = LoginActivity.getQR_Codes(username);
+        CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = LoginActivity.getQrCodes(username);
 
         qrCodesFuture.thenCompose(qrCodesDocRef -> {
             // Create a list of CompletableFuture<Integer> objects that will eventually be completed with the scores of the QR codes

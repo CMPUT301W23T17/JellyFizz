@@ -220,7 +220,7 @@ public class PlayerProfileFragment extends Fragment {
                 });
 
         //Get Codes
-        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQR_Codes(LoginActivity.getOwnerName());
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQrCodes(LoginActivity.getOwnerName());
 
         currentCodes.thenAccept(qrCodes -> {
             TextView firstCodeView = getView().findViewById(R.id.firstQrCodeImage);
