@@ -388,20 +388,20 @@ public class Owner implements Parcelable {
         player.orderBy("score", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                int rank = 1;
+                int lastRank = 1;
                 int position = 1;
                 int nextScore = 0;
                 for(QueryDocumentSnapshot document: queryDocumentSnapshots){
                     int score = document.getLong("score").intValue();
-                    document.getReference().update("rank", rank);
+                    document.getReference().update("rank", lastRank);
                     // only update if there is still more documents in the query
                     if (position < queryDocumentSnapshots.size()) {
                         QueryDocumentSnapshot nextDocument = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(position);
                         nextScore = nextDocument.getLong("score").intValue();
                         if (nextScore == 0) {
-                            rank = 0;
+                            lastRank = 0;
                         } else if (nextScore < score && nextDocument != null) {
-                            rank++;
+                            lastRank = position + 1;
                         }
                         position++;
                     }

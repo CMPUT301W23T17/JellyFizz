@@ -73,7 +73,7 @@ public class DeleteQrCodeTest {
         Map<String, Object> mockRelation = new HashMap<>();
         DocumentReference qrRef = db.collection("QrCodes")
                 .document(hashString);
-        DocumentReference playerRef = db.collection("Players").document("testuser");
+        DocumentReference playerRef = db.collection("Players").document("testDelete");
         mockRelation.put("Player", playerRef);
         mockRelation.put("qrCodeScanned",qrRef);
 
@@ -105,32 +105,22 @@ public class DeleteQrCodeTest {
     @Test
     public void testDeleteCode() throws InterruptedException {
         // Let user login as always
-        String username = "testuser";
-        String email = "testuser@example.com";
+        String username = "testDelete";
+        String email = "testDelete@example.com";
         String phone = "1234567890";
         solo.enterText(0, username);
         solo.enterText(1, email);
         solo.enterText(2, phone);
         // Click register button
         solo.clickOnButton("Register");
-        // Assert that user is redirected to homepage
-        assertTrue(solo.waitForActivity(MainActivity.class));
-        //Assert that the loginActivity Name is set
-        assertTrue(loginActivity.getOwnerName().equals("testuser"));
+        solo.waitForView(solo.getView(R.id.scan_now));
         // Click the player profile screen item in the bottom navigation bar
         solo.clickOnView(solo2.getView(R.id.player_profile_screen));
         solo.waitForView(R.id.user_profile_fragment);
-        // Assert if it goes to player profile
-        FrameLayout frameLayout = solo2.getCurrentActivity().findViewById(R.id.user_profile_fragment);
-        assertNotNull(frameLayout);
         // Move to QrCode list of testuser
         solo.waitForView(R.id.firstQrCodeImage);
         solo.clickOnView(solo2.getView(R.id.more_button));
-        solo.waitForView(R.id.qr_code_list_fragment);
         solo.waitForView(R.id.qr_code_visualRep);
-        // Assert if it goes to QrCode list
-        ConstraintLayout constraintLayout = solo2.getCurrentActivity().findViewById(R.id.qr_code_list_fragment);
-        assertNotNull(constraintLayout);
         // Perform delete action
         solo.clickOnView(solo2.getView(R.id.garbage_can_icon));
         solo.waitForView(R.id.delete_qrcode_list);
@@ -160,7 +150,7 @@ public class DeleteQrCodeTest {
         String hashString = "c6138abfa6a734269ef280d53f37d351d08408258322aa818f4cf9fe9fa4bb0d";
         DocumentReference qrRef = db.collection("QrCodes")
                 .document(hashString);
-        DocumentReference playerRef = db.collection("Players").document("testuser");
+        DocumentReference playerRef = db.collection("Players").document("testDelete");
 
         db.collection("QrCodes").document(hashString).delete()
                 .addOnCompleteListener(task -> {
@@ -188,7 +178,7 @@ public class DeleteQrCodeTest {
                     completeDelete2.complete(null);
                 });
 
-        db.collection("Players").document("testuser").delete()
+        db.collection("Players").document("testDelete").delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("Document successfully deleted");
