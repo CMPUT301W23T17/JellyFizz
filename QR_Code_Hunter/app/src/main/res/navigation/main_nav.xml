@@ -13,12 +13,12 @@
         android:id="@+id/search_screen"
         android:name="com.example.qr_code_hunter.SearchFragment"
         android:label="search_screen"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/searching" />
     <fragment
         android:id="@+id/map_screen"
         android:name="com.example.qr_code_hunter.MapFragment"
         android:label="map_screen"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/activity_google_maps" />
     <fragment
         android:id="@+id/ranking_screen"
         android:name="com.example.qr_code_hunter.RankingFragment"
