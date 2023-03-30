@@ -80,7 +80,8 @@ public class PlayerProfileFragment extends Fragment {
             }
         });
 
-        // Display Email
+        // Display Email by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -103,7 +104,8 @@ public class PlayerProfileFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
-        // Display Mobile Phone
+        // Display Mobile Phone by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -126,6 +128,8 @@ public class PlayerProfileFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
+        // Display score by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -149,6 +153,8 @@ public class PlayerProfileFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
+        // Display Rank by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -171,6 +177,8 @@ public class PlayerProfileFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
+        // Display total score by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -194,6 +202,7 @@ public class PlayerProfileFragment extends Fragment {
                     }
                 });
         // Update privacy profile information of owner in database
+        // Link: https://chat.openai.com/
         privacySwitch = getView().findViewById(R.id.switch_privacy);
         privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -204,7 +213,8 @@ public class PlayerProfileFragment extends Fragment {
                 OwnerRef.update("hideInfo", isOn);
             }
         });
-        // Display Mobile Phone
+        // Display Privacy by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override

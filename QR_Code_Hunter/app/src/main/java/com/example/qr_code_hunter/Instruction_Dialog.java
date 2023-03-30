@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+// How to create Instruction Dialog in Fragment
+// Link: https://chat.openai.com/
 public class Instruction_Dialog extends AppCompatDialogFragment {
     public Dialog onCreateDialog (Bundle savedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -19,43 +21,7 @@ public class Instruction_Dialog extends AppCompatDialogFragment {
 
         // Inflate the layout for the dialog
         View view = inflater.inflate(R.layout.instruction_dialog, null);
-
-//        // Customize the dialog UI
-//        TextView titleTextView = view.findViewById(R.id.title);
-//        titleTextView.setText("Enter your name");
-
-        // Add the view to the dialog builder
         builder.setView(view);
-
-//        // Add action buttons
-//        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // User clicked OK button
-//                    }
-//                })
-//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        // User cancelled the dialog
-//                    }
-//                });
-
-//        // Set the dialog title and message
-//        builder.setTitle("My Dialog")
-//                .setMessage("This is a custom dialog fragment");
-//
-//        // Add a positive button
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                // Do something
-//            }
-//        });
-//
-//        // Add a negative button
-//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                // Do something
-//            }
-//        });
         return builder.create();
     }
 }
