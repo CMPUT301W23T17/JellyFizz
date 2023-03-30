@@ -41,19 +41,24 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
-                    replaceFragment(new HomepageFragment());
+                    if(!(getVisibleFragment() instanceof HomepageFragment)){
+                        replaceFragment(new HomepageFragment());}
                     break;
                 case R.id.map_screen:
-                    replaceFragment(new MapFragment());
+                    if(!(getVisibleFragment() instanceof MapFragment)){
+                        replaceFragment(new MapFragment());}
                     break;
                 case R.id.search_screen:
-                    replaceFragment(new SearchFragment());
+                    if(!(getVisibleFragment() instanceof SearchFragment)){
+                        replaceFragment(new SearchFragment());}
                     break;
                 case R.id.player_profile_screen:
-                    replaceFragment(new PlayerProfileFragment());
+                    if(!(getVisibleFragment() instanceof PlayerProfileFragment)){
+                        replaceFragment(new PlayerProfileFragment());}
                     break;
                 case R.id.ranking_screen:
-                    replaceFragment(new RankingFragment());
+                    if(!(getVisibleFragment() instanceof RankingFragment)){
+                        replaceFragment(new RankingFragment());}
                     break;
             }
             return true;
