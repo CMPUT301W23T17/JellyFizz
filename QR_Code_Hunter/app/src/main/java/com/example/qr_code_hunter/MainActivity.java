@@ -41,8 +41,12 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
+
+                    replaceFragment(new HomepageFragment());
+                    
                     if(!(getVisibleFragment() instanceof HomepageFragment)){
                         replaceFragment(new HomepageFragment());}
+
                     break;
                 case R.id.map_screen:
                     if(!(getVisibleFragment() instanceof MapFragment)){
