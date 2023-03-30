@@ -1,11 +1,7 @@
 package com.example.qr_code_hunter;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class loginActivity extends AppCompatActivity {
 
@@ -56,8 +51,6 @@ public class loginActivity extends AppCompatActivity {
     public static void setOwnerName(String username) {
         owner = username;
     }
-
-
 
     private static void setOwner(Owner owner1) {
         currentOwnerObject = owner1;
@@ -124,7 +117,7 @@ public class loginActivity extends AppCompatActivity {
      * @param inputOwner The username of current player
      * @param callback  when to stop function when fetching data completes
      */
-    public static void setCurrentOwnerObject(String inputOwner, getAllInfo callback) {
+    public static void createOwnerObject(String inputOwner, getAllInfo callback) {
         playersRef.document(inputOwner).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -187,6 +180,9 @@ public class loginActivity extends AppCompatActivity {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                boolean characterVerification = verifyUsername();
+                if (!characterVerification) return;
+
                 Thread currentThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -196,6 +192,7 @@ public class loginActivity extends AppCompatActivity {
 
                         //this empty message is used as a key to handle asynchornosity
                         handler.sendEmptyMessage(12);
+
 
                         if (!username.isEmpty()) {
                             playersRef.whereEqualTo(FieldPath.documentId(), username)
@@ -306,6 +303,34 @@ public class loginActivity extends AppCompatActivity {
      */
     public Owner getOwnerNew() {return currentOwnerObject;}
 
+
+    private boolean verifyUsername() {
+        //verify UserName error button is invisible
+        EditText userNameView = findViewById(R.id.editTextUsername);
+        String username = userNameView.getText().toString().trim();
+        TextView userNameError = findViewById(R.id.userNameTaken);
+
+
+        if (username.length() < 1 || username.length() > 13) {
+            userNameError.setText(getString(R.string.userNameLength));
+            userNameError.setVisibility(View.VISIBLE);
+            userNameView.requestFocus();
+            return false;
+        }
+
+
+        // Make sure string only contains letters and numbers
+        if (!username.matches("^[a-zA-Z0-9]*$")) {
+            userNameError.setText(R.string.userNameInvalidCharacters);
+            Log.d("String Checking", username);
+            userNameError.setVisibility(View.VISIBLE);
+            userNameView.requestFocus();
+            return false;
+        }
+
+      return true;
+    }
+
     /**
      This method is used to verify user input when registering for an account.
      It verifies that the email entered is a valid email address and that the phone number entered
@@ -342,27 +367,13 @@ public class loginActivity extends AppCompatActivity {
             phoneError.setVisibility(View.INVISIBLE);
         }
 
-        //verify UserName error button is invisible
+        //Username verification
         EditText userNameView = findViewById(R.id.editTextUsername);
         String username = userNameView.getText().toString().trim();
         TextView userNameError = findViewById(R.id.userNameTaken);
 
-        if (username.length() < 1 || username.length() > 13) {
-            userNameError.setText(getString(R.string.userNameLength));
-            userNameError.setVisibility(View.VISIBLE);
-            userNameView.requestFocus();
-            return false;
-        }
-
-
-        // Make sure string only contains letters and numbers
-        if (!username.matches("^[a-zA-Z0-9]*$")) {
-            userNameError.setText(R.string.userNameInvalidCharacters);
-            Log.d("String Checking", username);
-            userNameError.setVisibility(View.VISIBLE);
-            userNameView.requestFocus();
-            return false;
-        }
+        boolean userName = verifyUsername();
+        if (!userName) return false;
 
         if (userNameError.getVisibility() != View.INVISIBLE) {
             // The TextView is currently visible

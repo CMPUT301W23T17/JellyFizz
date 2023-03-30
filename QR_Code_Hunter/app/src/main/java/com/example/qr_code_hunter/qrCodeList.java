@@ -17,21 +17,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -254,7 +249,7 @@ public class qrCodeList extends Fragment {
 
 
                     //Delete from database
-                    loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+                    loginActivity.createOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
                         @Override
                         public void onGetInfo(Owner owner) {
                             currentOwner = owner;
@@ -262,6 +257,27 @@ public class qrCodeList extends Fragment {
                         }
                     });
                 }
+
+                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                    View currentview = qrCodeDisplay.getChildAt(i);
+                    CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
+
+                    if (currentCheckBox.isChecked()) {
+                        currentCheckBox.toggle();
+                    }
+
+                    currentCheckBox.setVisibility(View.INVISIBLE);
+                }
+
+
+                //set garbagecan to be black again
+                ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
+                garbageButton.setImageResource(R.drawable.ic_delete);
+
+                //set deleteButton to be invisible
+                Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                deleteButton.setVisibility(View.GONE);
+                goToGarbage = true;
 
                 //update adapter
                 adapter1.notifyDataSetChanged();

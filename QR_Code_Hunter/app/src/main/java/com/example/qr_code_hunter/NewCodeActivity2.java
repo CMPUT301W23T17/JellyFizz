@@ -9,9 +9,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,8 +28,6 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This is the second page of the new code details (editable fields)
@@ -61,7 +57,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
         String ownerPass = loginActivity.getOwnerName();
 
         //set the owner object, still need to discuss what is happening with this list of qrcodes
-        loginActivity.setCurrentOwnerObject( ownerPass, new loginActivity.getAllInfo() {
+        loginActivity.createOwnerObject( ownerPass, new loginActivity.getAllInfo() {
             @Override
             public void onGetInfo(Owner owner) {
                 currentOwner = owner;
