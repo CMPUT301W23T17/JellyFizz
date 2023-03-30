@@ -19,11 +19,6 @@ public class Rank {
     public Rank(){
     }
 
-    public Rank(FirebaseFirestore fireStore) {
-        db = fireStore;
-        player = db.collection("Players");
-    }
-
     public Rank(String username, int score, int rankingTotal, int rankingCode, int highestCode) {
         this.username = username;
         this.rankingTotalScore = rankingTotal;

@@ -1,7 +1,5 @@
 package com.example.qr_code_hunter;
 
-import static android.content.ContentValues.TAG;
-
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -12,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -35,10 +27,10 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class RankingFragment extends Fragment {
-    ListView rankings;
-    TextView buttonTotalScore, buttonHighestCode;
-    RankAdapter adapter;
-    String ownerName = loginActivity.getOwnerName();
+    private ListView rankings;
+    private TextView buttonTotalScore, buttonHighestCode;
+    private RankAdapter adapter;
+    private String ownerName = loginActivity.getOwnerName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -151,14 +143,14 @@ public class RankingFragment extends Fragment {
         });
 
     }
-    private void replaceFragment(Fragment fragment ){
+    private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-    public void displayYourRankTotalScore( ArrayList<Rank> rankArr) {
+    public void displayYourRankTotalScore(ArrayList<Rank> rankArr) {
         TextView yourName = getView().findViewById(R.id.yourName);
         TextView yourPts = getView().findViewById(R.id.yourPoints);
 

@@ -28,9 +28,9 @@ import java.util.ArrayList;
  */
 public class SearchFragment extends Fragment {
 
-    Search search;
-    ListView listView;
-    ArrayAdapter adapter;
+    private Search search;
+    private ListView listView;
+    private ArrayAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

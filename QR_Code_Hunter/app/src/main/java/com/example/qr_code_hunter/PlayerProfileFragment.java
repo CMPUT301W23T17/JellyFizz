@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,14 +32,12 @@ import java.util.concurrent.CompletableFuture;
  * create an instance of this fragment.
  */
 public class PlayerProfileFragment extends Fragment {
-    TextView userName;
-    TextView email;
-    TextView mobile_number;
-    TextView rank;
-    TextView score;
-    TextView numberCode;
-    Switch privacySwitch;
-
+    private TextView email;
+    private TextView mobileNumber;
+    private TextView rank;
+    private TextView score;
+    private TextView numberCode;
+    private Switch privacySwitch;
 
     public PlayerProfileFragment() {
         // Required empty public constructor
@@ -61,7 +58,7 @@ public class PlayerProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Get the owner name
         String ownerName = loginActivity.getOwnerName();
-        userName = (TextView) getView().findViewById(R.id.user_name);
+        TextView userName = (TextView) getView().findViewById(R.id.user_name);
         userName.setText(ownerName);
         // Access to the player collection
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -112,8 +109,8 @@ public class PlayerProfileFragment extends Fragment {
                             // Get the value of the specific attribute
                             String myAttribute = documentSnapshot.getString("phoneNumber");
                             // Do something with the value
-                            mobile_number = (TextView) getView().findViewById(R.id.mobile_phone);
-                            mobile_number.setText("Mobile Phone: "+ myAttribute);
+                            mobileNumber = (TextView) getView().findViewById(R.id.mobile_phone);
+                            mobileNumber.setText("Mobile Phone: "+ myAttribute);
                             Log.d(TAG, "Value of myAttribute: " + myAttribute);
                         } else {
                             Log.d(TAG, "No such document!");
