@@ -86,6 +86,10 @@ public class CodeDetailsFragmentTest {
         completeDelete1.join();
     }
 
+/**
+*This method is a unit test that verifies the behavior of the back button on the app.
+*It waits for the more button to be visible on the screen and then checks that it is clickable.
+*/
     @Test
     public void testBackButton() {
         //soloMain.waitForView(R.id.details_backBtn);
