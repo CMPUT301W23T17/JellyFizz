@@ -2,10 +2,17 @@ package com.example.qr_code_hunter;
 
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.Assert.assertTrue;
+
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -88,7 +95,26 @@ public class SearchTesting {
         soloMain.waitForView(R.id.search_bar);
 //        // Verify that the loginActivity is displayed
         soloMain.enterText(0,"D");
-//        onView(withId(R.id.search_screen)).check(matches(isDisplayed()));
+        soloMain.clickOnView(soloMain.getView(R.id.search_bar));
+
+        soloMain.waitForView(R.id.search_list);
+
+        ListView listView = (ListView) soloMain.getView(R.id.search_list);
+        ListAdapter adapter = listView.getAdapter();
+
+        assertTrue(adapter.getCount() > 0);
+    }
+
+    @Test
+    public void testOtherProfile() throws Exception{
+        soloMain.waitForView(R.id.search_bar);
+
+        soloMain.enterText(0,"D");
+        soloMain.clickOnView((soloMain.getView(R.id.search_bar)));
+
+        soloMain.waitForView(R.id.search_list);
+
+        onView(withId(R.id.search_list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
     }
 
 }
