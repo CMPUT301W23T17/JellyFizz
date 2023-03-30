@@ -176,7 +176,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         for (Marker point: nearbyCodes) {
                             point.remove();
                         }
-                        onCameraIdle(latLng.latitude,latLng.longitude);
+                        findNearbyQrCodes(latLng.latitude,latLng.longitude);
                     }
                 });
 
@@ -192,11 +192,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
             @Override
             public void onError(@NonNull Status status) {
-                // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
     }
+
+    /**
+     * This function is to create a radial gradient with radius of 500m (in ratio of maps)
+     */
     // https://developer.android.com/reference/android/graphics/RadialGradient
     // Android Developer Community
     // Use to get a pain of a radial gradiant
@@ -222,6 +225,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         canvas.drawCircle(radius, radius, radius, paint);
     }
 
+    /**
+     * This function is used to get current location from phone's GPS 
+     */
     private void getLocation() {
         // https://developers.google.com/android/reference/com/google/android/gms/location/LocationResult
         // Author: Google developer community
@@ -268,6 +274,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * This function is used to turn on GPS
+     */
     // https://www.youtube.com/watch?v=E0JiNsxD6L8
     // Author: Technical Coding - https://www.youtube.com/@TechnicalCoding
     // Turn on GPS on your device
@@ -306,6 +315,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * This function is used to check whether GPS is on
+     */
     // https://www.youtube.com/watch?v=E0JiNsxD6L8
     // Author: Technical Coding - https://www.youtube.com/@TechnicalCoding
     // Check to see if GPS is enabled for the device
@@ -326,7 +338,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.gMap = googleMap;
-
         //This is called to show nearby qr codes
         qrCodes.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -336,7 +347,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 for (Marker point: nearbyCodes) {
                     point.remove();
                 }
-                onCameraIdle(latitude,longitude);
+                findNearbyQrCodes(latitude,longitude);
             }
         });
 
@@ -348,7 +359,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         try {
             // Convert the Bitmap object to a BitmapDescriptor object
             BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
-
             // Add a GroundOverlay to the map with the BitmapDescriptor object
             GroundOverlayOptions options = new GroundOverlayOptions()
                     .image(descriptor)
@@ -370,18 +380,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    // This method is called to show nearby QrCode
-    // https://firebase.google.com/docs/firestore/solutions/geoqueries#query_geohashes
-    // Author: Firebase.google.com
-    // I use the GeoFireUtils.getDistanceBetween(a,b) to find distance between two location on map
-    public void onCameraIdle(double latitude, double longitude) {
+    /**
+     * This function is used to find all nearby QrCode within 500m of the current location
+     */
+    public void findNearbyQrCodes(double latitude, double longitude) {
         final GeoLocation center = new GeoLocation(latitude, longitude);
         final double radiusInM = 500;
         ArrayList<LatLng> existedLoc = new ArrayList<>();
-
-        //filter all codes, make sure they are within the bound of the screen
-        qrCodes
-                .get()
+        
+        qrCodes.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -392,6 +399,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     double lat = document.getDouble("latitude");
                                     double lng = document.getDouble("longitude");
                                         GeoLocation docLocation = new GeoLocation(lat, lng);
+                                    // https://firebase.google.com/docs/firestore/solutions/geoqueries#query_geohashes
+                                    // Author: Firebase.google.com
+                                    // I use the GeoFireUtils.getDistanceBetween(a,b) to find distance between two location on map
                                         double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
                                         if (distanceInM <= radiusInM) {
                                             MarkerTag newTag = new MarkerTag();
@@ -426,7 +436,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
-
+    /**
+     * This function is used to display codes information on click
+     */
     // This function is used to show bottom dialog when user click markers
     public void solveOnClick(Marker marker) {
         MarkerTag newTag = new MarkerTag();
