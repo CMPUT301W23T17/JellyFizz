@@ -81,6 +81,14 @@ public class other_code_list extends Fragment {
         return inflater.inflate(R.layout.fragment_other_code_list, container, false);
     }
 
+
+    /**
+     * This method retrieves a list of QR codes associated with the current user and sorts them based on their scores.
+     * It then populates the UI with the sorted list of QR codes using a custom adapter. This method is executed on the main UI thread
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -120,6 +128,16 @@ public class other_code_list extends Fragment {
 
     }
 
+
+    /**
+     This method retrieves the QR codes associated with a given user and displays them in descending order
+
+     of scores. The method uses a callback to communicate the sorted QR codes back to the calling method.
+
+     @param username The username associated with the QR codes to be retrieved and sorted.
+
+     @param callback A callback that communicates the sorted QR codes back to the calling method.
+     */
     public void displayCodes(String username, qrCodeList.sortedCodes callback) {
 
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
@@ -157,6 +175,14 @@ public class other_code_list extends Fragment {
         });
     }
 
+
+    /**
+     This method retrieves the score associated with a given QR code and returns it as a CompletableFuture.
+
+     @param docRef A DocumentReference object that represents the QR code whose score is to be retrieved.
+
+     @return A CompletableFuture<Integer> object that eventually contains the score associated with the given QR code.
+     */
     public CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
 
         CompletableFuture<Integer> currentScoreFuture = new CompletableFuture<Integer>();

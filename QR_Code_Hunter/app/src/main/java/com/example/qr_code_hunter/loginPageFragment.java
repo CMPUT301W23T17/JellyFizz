@@ -90,7 +90,10 @@ public class loginPageFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_login_page, container, false);
     }
 
-
+    /**
+     Registers a new account with the given username by storing it in SharedPreferences.
+     @param username the username to be registered
+     */
     private void registerKey(String username) {
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -99,11 +102,14 @@ public class loginPageFragment extends Fragment {
         editor.apply();
     }
 
+    /**
+     Navigates to the HomepageFragment by replacing the current fragment in the FrameLayout container.
+     */
     private void goToHomepage() {
         Fragment homePage = new HomepageFragment();
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,homePage);
+        fragmentTransaction.replace(R.id.frame_layout, homePage);
         fragmentTransaction.commit();
     }
 }

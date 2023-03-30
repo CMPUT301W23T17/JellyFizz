@@ -23,6 +23,18 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
     private Context currentContext;
     private ArrayList<DocumentReference> mQRCodeItemList;
 
+
+
+    /**
+     Constructs a new qrCodeAdapter with the given context, resource ID, and list of QR code items. These qrCodeItems are represented as
+     Document References
+
+     @param context The current context.
+
+     @param resource The resource ID for a layout file containing a TextView to use when instantiating views.
+
+     @param qrCodeItemList The list of QR code items to display.
+     */
     public qrCodeAdapter(Context context, int resource, ArrayList<DocumentReference> qrCodeItemList) {
         super(context, resource, qrCodeItemList);
 
@@ -31,11 +43,19 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
     }
 
+
+    /**
+     Returns the number of items in the list.
+     @return The number of items in the list.
+     */
     @Override
     public int getCount() {
         return mQRCodeItemList.size();
     }
 
+    /**
+     * This method is responsible for setting up each individual qrCodeItem. It fetches their binaryString from the databse.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -118,6 +138,14 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         return view;
     }
 
+
+    /**
+     This method fetches a binary string from the Firestore database corresponding to a given document reference.
+
+     @param currentDocument the document reference for which the binary string is to be fetched.
+
+     @return a CompletableFuture that will complete with the binary string from the database when it is successfully fetched.
+     */
     public CompletableFuture<String> fetchBinaryString(DocumentReference currentDocument) {
 
         CompletableFuture<String> binaryStringFuture = new CompletableFuture<String>();
@@ -142,6 +170,10 @@ public class qrCodeAdapter extends ArrayAdapter<DocumentReference> {
         return binaryStringFuture;
     }
 
+    /**
+     This method updates the data in the adapter with a new ArrayList of DocumentReferences. Each DocumentReferennce represents a QrCode item
+     @param newData the new ArrayList of DocumentReferences to set as the data in the adapter.
+     */
     public void setData(ArrayList<DocumentReference> newData) {
         mQRCodeItemList = newData;
     }

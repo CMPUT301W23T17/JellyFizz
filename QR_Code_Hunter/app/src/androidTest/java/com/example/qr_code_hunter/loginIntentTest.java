@@ -49,26 +49,6 @@ public class loginIntentTest {
     @Rule
     public ActivityTestRule<loginActivity> rule = new ActivityTestRule<>(loginActivity.class, true, true);
 
-    @BeforeClass
-    public static void setUpDependencies() {
-        CompletableFuture complete1 = new CompletableFuture<>();
-
-//        //This will be the test user for the tests
-//        String testUser = "abcdefghijkl";
-//
-//        Map<String, Object> currentPlayer = new HashMap<>();
-//        currentPlayer.put("email", "...");
-//
-//        // Check if player document exists
-//        db.collection("Players").document(testUser).set(currentPlayer).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void unused) {
-//                complete1.complete(null);
-//            }
-//        });
-//
-//        complete1.join();
-    }
 
     /**
      * Runs before all tests and creates solo instance.
@@ -80,8 +60,6 @@ public class loginIntentTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
 
     }
-
-
 
 
     //Runs after every Method
@@ -145,18 +123,6 @@ public class loginIntentTest {
         solo.enterText(1, email);
         solo.enterText(2, phone);
 
-        String naughtyString1;
-        String naughtyString2;
-        String naughtyString3;
-        String naughtyString4;
-        String naughtyString5;
-        String naughtyString6;
-        String naughtyString7;
-        String naughtyString8;
-        String naughtyString9;
-        String naughtyString10;
-        String naughtyString11;
-
         String[] naughtyStrings = {
                 "drop table users", // attempts SQL injection
                 "<script>alert('xss')</script>", // attempts cross-site scripting
@@ -168,7 +134,7 @@ public class loginIntentTest {
                 "testuser\\", // attempts SQL injection via backslash
                 "téstüsér", // uses non-ASCII characters
                 "", // empty string
-                "testuser", // already taken username
+                "testuser", // already taken usernamel, test duplicate username
                 "ddddddddddddddddddddddddddddddd", // too long username
                 "dasd../gh" // invalid characters in username
         };
