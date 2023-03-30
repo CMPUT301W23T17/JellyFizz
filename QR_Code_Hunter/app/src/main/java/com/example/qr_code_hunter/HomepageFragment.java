@@ -46,15 +46,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
-    ImageButton instruction_button;
-    AlertDialog.Builder builder;
-    View scanButton;
-    FusedLocationProviderClient client;
+    protected AlertDialog.Builder builder;
+    private FusedLocationProviderClient client;
     private Location currentLocation;
-    TextView welcomeOwner;
-    TextView rank;
-    TextView score;
-
+    private TextView rank;
+    private TextView score;
 
     public HomepageFragment() {}
 
@@ -69,7 +65,7 @@ public class HomepageFragment extends Fragment {
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         // Assign variable
-        scanButton = view.findViewById(R.id.scan_button);
+        View scanButton = view.findViewById(R.id.scan_button);
         // Initialize location client
         client = LocationServices.getFusedLocationProviderClient(getActivity());
 
@@ -100,12 +96,12 @@ public class HomepageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.setTag("HomepageFragment");
-        instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
+        ImageButton instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
         // Display user name
         String ownerName = loginActivity.getOwnerName();
-        welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
+        TextView welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
         welcomeOwner.setText("HELLO, "+ ownerName+ " !");
 
         instruction_button.setOnClickListener(new View.OnClickListener() {
