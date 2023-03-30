@@ -13,30 +13,28 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    // ActivityMainBinding is an android library that allows a way to access the views
-    // in the activity_main.xml (navigation bar is stored there)
-    ActivityMainBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // ActivityMainBinding is an android library that allows a way to access the views
+        // in the activity_main.xml (navigation bar is stored there)
+        com.example.qr_code_hunter.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Check if user has created an account before on this specific device,
-        // 1) if yes: go to homepage, 2) if no: go to loginPage
+        // 1) if yes: go to homepage, // 2) if no: go to loginPage
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
 
         if (accountCreated) {
             // Set the ownerName to userName
-            loginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
+            LoginActivity.setOwnerName(prefs.getString(accountCreatedKey, ""));
             replaceFragment(new HomepageFragment());
 
         } else {
-            Intent intent = new Intent(this, loginActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
 
@@ -45,25 +43,33 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.home_screen:
 
                     replaceFragment(new HomepageFragment());
+                    
+                    if(!(getVisibleFragment() instanceof HomepageFragment)){
+                        replaceFragment(new HomepageFragment());}
+
                     break;
                 case R.id.map_screen:
-                    replaceFragment(new MapFragment());
+                    if(!(getVisibleFragment() instanceof MapFragment)){
+                        replaceFragment(new MapFragment());}
                     break;
                 case R.id.search_screen:
-                    replaceFragment(new SearchFragment());
+                    if(!(getVisibleFragment() instanceof SearchFragment)){
+                        replaceFragment(new SearchFragment());}
                     break;
                 case R.id.player_profile_screen:
-                    replaceFragment(new PlayerProfileFragment());
+                    if(!(getVisibleFragment() instanceof PlayerProfileFragment)){
+                        replaceFragment(new PlayerProfileFragment());}
                     break;
                 case R.id.ranking_screen:
-                    replaceFragment(new RankingFragment());
+                    if(!(getVisibleFragment() instanceof RankingFragment)){
+                        replaceFragment(new RankingFragment());}
                     break;
             }
             return true;
         });
     }
 
-    private void replaceFragment(Fragment fragment ){
+    private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);

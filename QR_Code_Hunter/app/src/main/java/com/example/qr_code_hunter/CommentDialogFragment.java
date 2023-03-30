@@ -19,11 +19,7 @@ import com.example.qr_code_hunter.databinding.FragmentCommentDialogListDialogBin
 import java.util.ArrayList;
 
 /**
- * <p>A fragment that shows a list of items as a modal bottom sheet.</p>
- * <p>You can show this modal bottom sheet from your activity like this:</p>
- * <pre>
- *     CommentDialogFragment.newInstance(30).show(getSupportFragmentManager(), "dialog");
- * </pre>
+ * A fragment that shows a list of comment of each player who have scanned that code
  */
 public class CommentDialogFragment extends BottomSheetDialogFragment {
     
@@ -66,12 +62,9 @@ public class CommentDialogFragment extends BottomSheetDialogFragment {
         TextView player_btn = view.findViewById(R.id.buttonPLayers);
         RecyclerView recyclerView = view.findViewById(R.id.comment_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
-
+        // Deal with option to see all comments/ players scanned the code
         comment_btn.setSoundEffectsEnabled(true);
         comment_btn.setSoundEffectsEnabled(false);
-
         comment_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +107,9 @@ public class CommentDialogFragment extends BottomSheetDialogFragment {
         }
     }
 
+     /**
+     * This class acts as an adapter to show comment section list
+     */
     private static class ItemAdapter extends RecyclerView.Adapter<CommentDialogFragment.ViewHolder> {
 
         private ArrayList<CommentSection> mComments;

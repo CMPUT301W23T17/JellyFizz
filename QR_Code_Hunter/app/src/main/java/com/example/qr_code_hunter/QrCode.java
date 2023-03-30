@@ -1,28 +1,22 @@
 package com.example.qr_code_hunter;
 
-import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class QrCode implements Parcelable {
-//    private ArrayList<DocumentReference> playerList = new ArrayList<>();
     private String codeName = "";
-//    private String visualRep = "";
     private String hashString;
     private String binaryString;
     private Integer score;
-//    private Boolean dataPrivacy;
     private LatLng geolocation;
-    ShaGenerator sha = new ShaGenerator();
+    private ShaGenerator sha = new ShaGenerator();
 
     private static Map<Character, Integer> alphabetPoints = Map.of(
             'a', 10,
@@ -34,9 +28,6 @@ public class QrCode implements Parcelable {
     );
 
     QrCode(String scannedString) throws NoSuchAlgorithmException {
-//        setName(sha.shaGeneratorBinary(scannedString));
-//        setVisualRep(sha.shaGeneratorBinary(scannedString));
-//        setScore(sha.shaGeneratorHexadecimal(scannedString));
         this.hashString = sha.shaGeneratorHexadecimal(scannedString);
         this.binaryString = sha.shaGeneratorBinary(scannedString);
         setScore(hashString);
@@ -44,22 +35,17 @@ public class QrCode implements Parcelable {
     }
 
     // Empty Constructor to access methods
-    QrCode() {
-
-    }
+    QrCode() {}
 
     protected QrCode(Parcel in) {
         binaryString = in.readString();
         codeName = in.readString();
-//        visualRep = in.readString();
         hashString = in.readString();
         if (in.readByte() == 0) {
             score = null;
         } else {
             score = in.readInt();
         }
-//        byte tmpDataPrivacy = in.readByte();
-//        dataPrivacy = tmpDataPrivacy == 0 ? null : tmpDataPrivacy == 1;
     }
 
     /**
@@ -73,7 +59,6 @@ public class QrCode implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(binaryString);
         dest.writeString(codeName);
-//        dest.writeString(visualRep);
         dest.writeString(hashString);
         if (score == null) {
             dest.writeByte((byte) 0);
@@ -81,7 +66,6 @@ public class QrCode implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeInt(score);
         }
-//        dest.writeByte((byte) (dataPrivacy == null ? 0 : dataPrivacy ? 1 : 2));
     }
 
     public static final Creator<QrCode> CREATOR = new Creator<QrCode>() {
@@ -208,11 +192,11 @@ public class QrCode implements Parcelable {
         }
         if(bin[5] == '1'){
             if(bin[6] == '1'){
-                visualRep = visualRep.concat("\n  |_  (______)  _| ");
+                visualRep = visualRep.concat("\n  |_  (______)  _|  ");
             }else{
-                visualRep = visualRep.concat("\n  |_  [||||||]  _| ");
+                visualRep = visualRep.concat("\n  |_  [||||||]  _|  ");
             }
-            visualRep = visualRep.concat("\n   |_          _| ");
+            visualRep = visualRep.concat("\n   |_          _|   ");
         }else{
             if(bin[6] == '1'){
                 visualRep = visualRep.concat("\n |    (______)    | ");
@@ -229,15 +213,6 @@ public class QrCode implements Parcelable {
         return visualRep;
     }
 
-//    /**
-//     * This sets the privacy of the QrCode
-//     * @param
-//     *     privacy true if hidden, false if shown
-//     */
-//    public void setPrivacy(Boolean privacy) {
-//        dataPrivacy = privacy;
-//    }
-
     /**
      * This sets the geolocation of the QrCode
      * @param
@@ -246,24 +221,6 @@ public class QrCode implements Parcelable {
     public void setLocation(LatLng location) {
         geolocation = location;
     }
-
-//    /**
-//     * This adds a player to the list of players who have scanned the QrCode
-//     * @param
-//     *     username the string of the player username to be added
-//     */
-//    public void addPlayerScan(String username) {
-//        // method not done
-//    }
-
-//    /**
-//     * This removes a player from the list of players who have scanned the QrCode
-//     * @param
-//     *     username the string of the player username to be deleted
-//     */
-//    public void removePlayerScan(String username) {
-//        // method not done
-//    }
 
     /**
      * This returns the unique name of a QrCode
@@ -300,24 +257,6 @@ public class QrCode implements Parcelable {
     public LatLng getGeolocation() {
         return geolocation;
     }
-
-//    /**
-//     * This returns the list of players that have scanned the QrCode
-//     * @return
-//     *      Returns an array list of type Document Reference
-//     */
-////    public ArrayList<DocumentReference> getPlayerList() {
-////        return playerList;
-////    }
-
-//    /**
-//     * This returns the privacy set on the QrCode
-//     * @return
-//     *      Returns a Boolean (true if hidden, false if shown)
-//     */
-////    public Boolean getPrivacy() {
-////        return dataPrivacy;
-////    }
 
     /**
      * This returns the hash string of the scanned QrCode

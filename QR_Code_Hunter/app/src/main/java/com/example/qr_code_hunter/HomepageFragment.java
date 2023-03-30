@@ -46,17 +46,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * create an instance of this fragment.
  */
 public class HomepageFragment extends Fragment {
-    ImageButton instruction_button;
-    AlertDialog.Builder builder;
-    View scanButton;
-    FusedLocationProviderClient client;
+    protected AlertDialog.Builder builder;
+    private FusedLocationProviderClient client;
     private Location currentLocation;
-    TextView welcomeOwner;
-    TextView rank;
-    TextView score;
-
-
-    public HomepageFragment() {}
+    private TextView rank;
+    private TextView score;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,14 +63,18 @@ public class HomepageFragment extends Fragment {
         // Initialize view
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         // Assign variable
-        scanButton = view.findViewById(R.id.scan_button);
+        View scanButton = view.findViewById(R.id.scan_button);
         // Initialize location client
         client = LocationServices.getFusedLocationProviderClient(getActivity());
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check condition
+                // Getting current user location
+                // URL          : https://www.youtube.com/watch?v=VdCQoJtNXAg
+                // Author       : Android Coding
+                // Date         : November 1, 2020
+                // Timestamp    : 5:42 - 14:03
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -96,12 +94,12 @@ public class HomepageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.setTag("HomepageFragment");
-        instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
+        ImageButton instruction_button = (ImageButton) getView().findViewById(R.id.ask_button);
         builder = new AlertDialog.Builder(getActivity());
 
         // Display user name
-        String ownerName = loginActivity.getOwnerName();
-        welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
+        String ownerName = LoginActivity.getOwnerName();
+        TextView welcomeOwner = (TextView) getView().findViewById(R.id.welcome_user);
         welcomeOwner.setText("HELLO, "+ ownerName+ " !");
 
         instruction_button.setOnClickListener(new View.OnClickListener() {
@@ -163,8 +161,11 @@ public class HomepageFragment extends Fragment {
                 });
     }
 
+    /**
+     * This opens the instruction dialog
+     */
     private void openDialog() {
-        Instruction_Dialog instruction_dialog = new Instruction_Dialog();
+        InstructionDialog instruction_dialog = new InstructionDialog();
         instruction_dialog.show(getParentFragmentManager(),"dede");
     }
 
@@ -176,7 +177,7 @@ public class HomepageFragment extends Fragment {
         // Initialize location manager
         LocationManager locationManager = (LocationManager) getActivity()
                 .getSystemService(Context.LOCATION_SERVICE);
-        // Check condition
+        // Check if location services is turned on
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             // When location service is enabled, get last location
             client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -203,6 +204,10 @@ public class HomepageFragment extends Fragment {
      * This opens the QR Scanner screen using a built-in library
      */
     private void scanCode() {
+        // Scanner Implementation
+        // URL      : https://www.youtube.com/watch?v=jtT60yFPelI
+        // Author   : Cambo Tutorial
+        // Date     : March 18, 2022
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);

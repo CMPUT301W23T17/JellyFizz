@@ -1,7 +1,5 @@
 package com.example.qr_code_hunter;
 
-import static android.content.ContentValues.TAG;
-
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -12,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,63 +18,22 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RankingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class RankingFragment extends Fragment {
-    ListView rankings;
-    TextView buttonTotalScore, buttonHighestCode;
-    RankAdapter adapter;
-    String ownerName = loginActivity.getOwnerName();
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public RankingFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Ranking_screen.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RankingFragment newInstance(String param1, String param2) {
-        RankingFragment fragment = new RankingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ListView rankings;
+    private TextView buttonTotalScore, buttonHighestCode;
+    private RankAdapter adapter;
+    private String ownerName = LoginActivity.getOwnerName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -109,9 +65,7 @@ public class RankingFragment extends Fragment {
             public void onClick(View view) {
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
-                /////////////////////////////////////////////////////////////////
                 a[0] = true;
-                ///////////////////////////////////////////////////////////////
                 rankLists.arrangeRankTotal(ranking -> {
                     rankArr.addAll(ranking);
                     adapter = new RankAdapter(getActivity(), 0, ranking, true);
@@ -125,9 +79,7 @@ public class RankingFragment extends Fragment {
             public void onClick(View view) {
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#e0fbfc"));
-                //////////////////////////////////////////////////////////////////
                 a[0] = false;
-                ///////////////////////////////////////////////////////////////
                 rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
                     @Override
                     public void onArrangeRankComplete(ArrayList<Rank> ranking) {
@@ -151,14 +103,14 @@ public class RankingFragment extends Fragment {
         });
 
     }
-    private void replaceFragment(Fragment fragment ){
+    private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-    public void displayYourRankTotalScore( ArrayList<Rank> rankArr) {
+    public void displayYourRankTotalScore(ArrayList<Rank> rankArr) {
         TextView yourName = getView().findViewById(R.id.yourName);
         TextView yourPts = getView().findViewById(R.id.yourPoints);
 

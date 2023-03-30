@@ -24,29 +24,28 @@ import java.util.Locale;
  * This is the first page of the new code details (non-editable fields)
  */
 public class NewCodeActivity extends AppCompatActivity {
-    TextView codeName;
-    TextView visualRep;
-    TextView codeLoc;
-    TextView codePts;
-    ImageButton nextPageBtn;
-    QrCode newCode;
-    Geocoder geocoder;
-    List<Address> myAddress;
+    private QrCode newCode;
+    private List<Address> myAddress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_code);
-        codeName = findViewById(R.id.code_name);
-        visualRep = findViewById(R.id.visual_rep);
-        codeLoc = findViewById(R.id.code_location);
-        codePts = findViewById(R.id.points_label);
-        nextPageBtn = findViewById(R.id.next_button);
+        TextView codeName = findViewById(R.id.code_name);
+        TextView visualRep = findViewById(R.id.visual_rep);
+        TextView codeLoc = findViewById(R.id.code_location);
+        TextView codePts = findViewById(R.id.points_label);
+        ImageButton nextPageBtn = findViewById(R.id.next_button);
 
         String scannedString = getIntent().getExtras().getString("scanned string");
         Location curLoc = getIntent().getParcelableExtra("current location");
 
-        geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
+        // Getting LatLng from Location
+        // URL          : https://www.youtube.com/watch?v=ByjxO66Y_1I
+        // Author       : Knowledge Extension
+        // Date         : April 23, 2020
+        // Timestamp    : 31:30 - 33:58
+        Geocoder geocoder = new Geocoder(NewCodeActivity.this, Locale.getDefault());
         LatLng latLng = new LatLng(curLoc.getLatitude(), curLoc.getLongitude());
         try {
             myAddress = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);

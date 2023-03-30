@@ -15,11 +15,7 @@ import com.example.qr_code_hunter.databinding.BottomSheetListBinding;
 import java.util.ArrayList;
 
 /**
- * <p>A fragment that shows a list of items as a modal bottom sheet.</p>
- * <p>You can show this modal bottom sheet from your activity like this:</p>
- * <pre>
- *     BottomSheetDialog.newInstance(30).show(getSupportFragmentManager(), "dialog");
- * </pre>
+ * A fragment that shows a list of nearby QrCodes as a modal bottom sheet 
  */
 public class BottomSheetDialog extends BottomSheetDialogFragment {
 
@@ -73,9 +69,12 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
         }
     }
 
+     /**
+     * This function is used as an adapter to diplay list of nearby QrCodes
+     */
     private static class ItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-        private ArrayList<NearbyCode> mItems;    private final ArrayList<NearbyCode> mNearbyCodes;
+        private final ArrayList<NearbyCode> mNearbyCodes;
 
         ItemAdapter(ArrayList<NearbyCode> nearbyCodes) {
             mNearbyCodes = nearbyCodes;

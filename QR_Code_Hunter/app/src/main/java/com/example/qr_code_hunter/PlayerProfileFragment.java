@@ -31,18 +31,12 @@ import java.util.concurrent.CompletableFuture;
  * create an instance of this fragment.
  */
 public class PlayerProfileFragment extends Fragment {
-    TextView userName;
-    TextView email;
-    TextView mobile_number;
-    TextView rank;
-    TextView score;
-    TextView numberCode;
-    Switch privacySwitch;
-
-
-    public PlayerProfileFragment() {
-        // Required empty public constructor
-    }
+    private TextView email;
+    private TextView mobileNumber;
+    private TextView rank;
+    private TextView score;
+    private TextView numberCode;
+    private Switch privacySwitch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +52,8 @@ public class PlayerProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get the owner name
-        String ownerName = loginActivity.getOwnerName();
-        userName = (TextView) getView().findViewById(R.id.user_name);
+        String ownerName = LoginActivity.getOwnerName();
+        TextView userName = (TextView) getView().findViewById(R.id.user_name);
         userName.setText(ownerName);
         // Access to the player collection
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -73,7 +67,7 @@ public class PlayerProfileFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, new qrCodeList());
+                fragmentTransaction.replace(R.id.frame_layout, new QrCodeList());
                 fragmentTransaction.commit();
             }
         });
@@ -110,8 +104,8 @@ public class PlayerProfileFragment extends Fragment {
                             // Get the value of the specific attribute
                             String myAttribute = documentSnapshot.getString("phoneNumber");
                             // Do something with the value
-                            mobile_number = (TextView) getView().findViewById(R.id.mobile_phone);
-                            mobile_number.setText("Mobile Phone: "+ myAttribute);
+                            mobileNumber = (TextView) getView().findViewById(R.id.mobile_phone);
+                            mobileNumber.setText("Mobile Phone: "+ myAttribute);
                             Log.d(TAG, "Value of myAttribute: " + myAttribute);
                         } else {
                             Log.d(TAG, "No such document!");
@@ -225,7 +219,7 @@ public class PlayerProfileFragment extends Fragment {
                 });
 
         //Get Codes
-        CompletableFuture<ArrayList<DocumentReference>> currentCodes = loginActivity.getQR_Codes(loginActivity.getOwnerName());
+        CompletableFuture<ArrayList<DocumentReference>> currentCodes = LoginActivity.getQrCodes(LoginActivity.getOwnerName());
 
         currentCodes.thenAccept(qrCodes -> {
             TextView firstCodeView = getView().findViewById(R.id.firstQrCodeImage);
@@ -247,7 +241,7 @@ public class PlayerProfileFragment extends Fragment {
                             QrCode filler = new QrCode();
 
                             // do something with the ID
-                            qrCodeTag firstTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+                            QrCodeTag firstTag = new QrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             firstCodeView.setTag(firstTag);
                             firstCodeView.setText(filler.getVisualRep(binaryString));
@@ -266,7 +260,7 @@ public class PlayerProfileFragment extends Fragment {
                             String binaryString = (String) documentSnapshot.get("binaryString");
                             QrCode filler = new QrCode();
 
-                            qrCodeTag secondTag = new qrCodeTag(documentSnapshot.getId(), 0, 0);
+                            QrCodeTag secondTag = new QrCodeTag(documentSnapshot.getId(), 0, 0);
 
                             secondCodeView.setTag(secondTag);
                             secondCodeView.setText(filler.getVisualRep(binaryString));

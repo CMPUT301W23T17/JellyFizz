@@ -5,7 +5,8 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/google_map_fragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
@@ -26,6 +27,7 @@
         app:cardCornerRadius="30dp"
         app:cardBackgroundColor="@color/white"
         app:cardElevation="2dp"
+        android:id="@+id/search_bar_maps"
         >
 
         <fragment

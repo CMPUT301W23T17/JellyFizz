@@ -17,31 +17,37 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
+ * Use the {@link QrCodeList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class qrCodeList extends Fragment {
+public class QrCodeList extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
     public Owner currentOwner;
     public boolean goToGarbage = true;
 
-    public qrCodeList() {}
+    public QrCodeList() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +68,7 @@ public class qrCodeList extends Fragment {
 
         ArrayList<DocumentReference> currentSortedCodes = new ArrayList<>();
 
-        displayCodes(loginActivity.getOwnerName(), new sortedCodes() {
+        displayCodes(LoginActivity.getOwnerName(), new sortedCodes() {
             @Override
             public void onSuccess(ArrayList<DocumentReference> sortedCodes) {
                 View currentView = getView();
@@ -73,7 +79,7 @@ public class qrCodeList extends Fragment {
                         View currentView = getView();
                         ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
 
-                        qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedCodes);
+                        QrCodeAdapter codeAdapter = new QrCodeAdapter(getActivity(), 0, sortedCodes);
                         qrCodeListView.setAdapter(codeAdapter);
                         currentSortedCodes.addAll(sortedCodes);
 
@@ -91,6 +97,7 @@ public class qrCodeList extends Fragment {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("Hash", selectedHash);
                                 fragment.setArguments(bundle);
+
 
                                 fragmentTransaction.addToBackStack(null);
                                 fragmentTransaction.commit();
@@ -159,6 +166,8 @@ public class qrCodeList extends Fragment {
 
         });
 
+
+
         //set garbage can listener
         ImageView undoGarbageButton = view.findViewById(R.id.return_button);
         undoGarbageButton.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +180,8 @@ public class qrCodeList extends Fragment {
             }
         });
 
+
+
         //set deleteButton
         Button deleteButton = view.findViewById(R.id.delete_qrcode_list);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +191,7 @@ public class qrCodeList extends Fragment {
 
                 if (qrCodeDisplay.getCount() < 1) return;
 
-                qrCodeAdapter adapter1 = (qrCodeAdapter)qrCodeDisplay.getAdapter();
+                QrCodeAdapter adapter1 = (QrCodeAdapter)qrCodeDisplay.getAdapter();
                 adapter1.setData(currentSortedCodes);
 
                 List<Integer> itemsToRemove = new ArrayList<>();
@@ -200,10 +211,13 @@ public class qrCodeList extends Fragment {
                 Collections.reverse(itemsToRemove);
                 for (int i : itemsToRemove) {
                     currentSortedCodes.remove(i);
+
                     View item = qrCodeDisplay.getChildAt(i);
-                    qrCodeTag currentTag = (qrCodeTag) item.getTag();
+                    QrCodeTag currentTag = (QrCodeTag) item.getTag();
+
+
                     //Delete from database
-                    loginActivity.setCurrentOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+                    LoginActivity.createOwnerObject(LoginActivity.getOwnerName(), new LoginActivity.getAllInfo() {
                         @Override
                         public void onGetInfo(Owner owner) {
                             currentOwner = owner;
@@ -211,6 +225,28 @@ public class qrCodeList extends Fragment {
                         }
                     });
                 }
+
+                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                    View currentview = qrCodeDisplay.getChildAt(i);
+                    CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
+
+                    if (currentCheckBox.isChecked()) {
+                        currentCheckBox.toggle();
+                    }
+
+                    currentCheckBox.setVisibility(View.INVISIBLE);
+                }
+
+
+                //set garbagecan to be black again
+                ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
+                garbageButton.setImageResource(R.drawable.ic_delete);
+
+                //set deleteButton to be invisible
+                Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                deleteButton.setVisibility(View.GONE);
+                goToGarbage = true;
+
                 //update adapter
                 adapter1.notifyDataSetChanged();
             }
@@ -226,11 +262,13 @@ public class qrCodeList extends Fragment {
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
 
         ArrayList<DocumentReference> playerQrCodes = new ArrayList<DocumentReference>();
-        CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = loginActivity.getQR_Codes(username);
+        CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = LoginActivity.getQrCodes(username);
+
         qrCodesFuture.thenCompose(qrCodesDocRef -> {
             // Create a list of CompletableFuture<Integer> objects that will eventually be completed with the scores of the QR codes
             List<CompletableFuture<Integer>> scoreFutures = new ArrayList<>();
             for (DocumentReference qrCode : qrCodesDocRef) {
+
                 scoreFutures.add(getScoreCode(qrCode));
                 playerQrCodes.add(qrCode);
             }
@@ -257,7 +295,9 @@ public class qrCodeList extends Fragment {
     }
 
     public static CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
+
         CompletableFuture<Integer> currentScoreFuture = new CompletableFuture<Integer>();
+
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

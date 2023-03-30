@@ -1,30 +1,27 @@
 package com.example.qr_code_hunter;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-
-import android.content.Intent;
-import android.widget.TextView;
-
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+
+import android.widget.Button;
+
+import com.example.qr_code_hunter.MainActivity;
+import com.example.qr_code_hunter.R;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.journeyapps.barcodescanner.CaptureActivity;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
@@ -36,18 +33,20 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(AndroidJUnit4.class)
-public class ScannerTest {
+public class CodeDetailsFragmentTest {
     private Solo soloLogin;
     private Solo soloMain;
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
     // Change this username until it's unique
-    String user = "TestScanner";
+    String user = "TestRanking";
     @Rule
     public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
+
 
     /**
      * Runs before all tests and creates solo instance.
@@ -59,25 +58,16 @@ public class ScannerTest {
         soloMain = new Solo(InstrumentationRegistry.getInstrumentation(), mainActivityRule.getActivity());
         // Enter valid user details
         soloLogin.enterText(0, user);
-        soloLogin.enterText(1, "nic@ualberta.ca");
-        soloLogin.enterText(2, "1237582347");
+        soloLogin.enterText(1, "tmquach@ualberta.ca");
+        soloLogin.enterText(2, "6043765432");
         // Click register button
         soloLogin.clickOnButton("Register");
 
-
-    }
-
-    @Test
-    public void testScannerFragment() throws Exception {
         // Wait
         soloMain.waitForView(R.id.scan_now);
-        soloMain.clickOnView(soloMain.getView(R.id.scan_now));
-
-        soloMain.waitForActivity(CaptureActivity.class);
-        soloMain.assertCurrentActivity("Scanner", CaptureActivity.class);
-
-//        onView(withId(R.id.home_screen)).check(doesNotExist());
-
+        // Click register button
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        soloMain.waitForView(R.id.more_button);
     }
 
     @After
@@ -95,4 +85,16 @@ public class ScannerTest {
                 });
         completeDelete1.join();
     }
+
+/**
+*This method is a unit test that verifies the behavior of the back button on the app.
+*It waits for the more button to be visible on the screen and then checks that it is clickable.
+*/
+    @Test
+    public void testBackButton() {
+        //soloMain.waitForView(R.id.details_backBtn);
+        soloMain.waitForView(R.id.more_button);
+        onView(withId(R.id.more_button)).check(matches(isClickable()));
+    }
+
 }

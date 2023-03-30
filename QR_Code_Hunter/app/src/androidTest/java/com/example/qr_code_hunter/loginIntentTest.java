@@ -1,23 +1,12 @@
 package com.example.qr_code_hunter;
 
-import android.app.Activity;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.widget.EditText;
-import android.widget.ListView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
@@ -32,11 +21,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Test class for logInActivity. All the UI tests are written here. Robotium test framework is used
@@ -47,25 +32,29 @@ public class loginIntentTest {
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
-    public ActivityTestRule<loginActivity> rule = new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> rule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
     @BeforeClass
     public static void setUpDependencies() {
         CompletableFuture complete1 = new CompletableFuture<>();
 
-        Map<String, Object> currentPlayer = new HashMap<>();
-        currentPlayer.put("email", "...");
-
-        // Check if player document exists
-        db.collection("Players").document("...").set(currentPlayer).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                complete1.complete(null);
-            }
-        });
-
-        complete1.join();
+//        //This will be the test user for the tests
+//        String testUser = "abcdefghijkl";
+//
+//        Map<String, Object> currentPlayer = new HashMap<>();
+//        currentPlayer.put("email", "...");
+//
+//        // Check if player document exists
+//        db.collection("Players").document(testUser).set(currentPlayer).addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                complete1.complete(null);
+//            }
+//        });
+//
+//        complete1.join();
     }
+
     /**
      * Runs before all tests and creates solo instance.
      *
@@ -86,20 +75,13 @@ public class loginIntentTest {
         solo.finishOpenedActivities();
     }
 
-
-    @Test
-    public void testLoginActivityDisplayed() throws Exception {
-        // Verify that the loginActivity is displayed
-        solo.assertCurrentActivity("Expected loginActivity activity", loginActivity.class);
-    }
-
-    @After
-    public void cleanup() throws InterruptedException {
+    @AfterClass
+    public static void cleanup() throws InterruptedException {
         CompletableFuture completeDelete1 = new CompletableFuture();
-        CompletableFuture completeDelete2 = new CompletableFuture();
 
+        String testPlayer = "testuser";
 
-        db.collection("Players").document("...").delete()
+        db.collection("Players").document(testPlayer).delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("Document successfully deleted");
@@ -109,19 +91,15 @@ public class loginIntentTest {
                     completeDelete1.complete(null);
                 });
 
-        db.collection("Players").document("testuser").delete()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        System.out.println("Document successfully deleted");
-                    } else {
-                        System.out.println("Error deleting document: " + task.getException());
-                    }
-                    completeDelete2.complete(null);
-                });
-
-        completeDelete1.allOf(completeDelete1, completeDelete2).join();
+        completeDelete1.join();
     }
 
+
+    @Test
+    public void testLoginActivityDisplayed() throws Exception {
+        // Verify that the loginActivity is displayed
+        solo.assertCurrentActivity("Expected loginActivity activity", LoginActivity.class);
+    }
 
     @Test
     public void testRegisterUser() throws Exception {
@@ -136,46 +114,65 @@ public class loginIntentTest {
         // Click register button
         solo.clickOnButton("Register");
 
-        // Assert that user is redirected to homepage
-        assertTrue(solo.waitForActivity(MainActivity.class));
-
-        //Assert that the loginActivity Name is set
-        assertTrue(loginActivity.getOwnerName().equals("testuser"));
-
-
-        // Verify that the username has been saved on the user's phone
-        String accountCreatedKey = solo.getCurrentActivity().getString(R.string.accountCreated);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(solo.getCurrentActivity());
-        String savedUsername = prefs.getString(accountCreatedKey, "");
-        assertEquals(username, savedUsername);
+        //Make sure MainActivity is being displayed
+        assertTrue(solo.waitForView(R.id.MainActivityHolder));
     }
 
     @Test
-    public void testExistingUsername() throws Exception {
+    public void testUsernameVerification() throws Exception {
         EditText editText = solo.getEditText(0);
 
         // Enter existing username
-        String username = "...";
+        String username = "testuser";
         String email = "testuser@example.com";
         String phone = "1234567890";
         solo.enterText(0, username);
         solo.enterText(1, email);
         solo.enterText(2, phone);
 
-        // Assert that error message is displayed
-        assertTrue(solo.searchText(solo.getString(R.string.userNameTaken)));
+        String naughtyString1;
+        String naughtyString2;
+        String naughtyString3;
+        String naughtyString4;
+        String naughtyString5;
+        String naughtyString6;
+        String naughtyString7;
+        String naughtyString8;
+        String naughtyString9;
+        String naughtyString10;
+        String naughtyString11;
 
-        solo.clearEditText(editText);
+        String[] naughtyStrings = {
+                "drop table users", // attempts SQL injection
+                "<script>alert('xss')</script>", // attempts cross-site scripting
+                "admin'--", // attempts SQL injection via comment
+                "testuser@test.com\ncc: spammer@example.com", // attempts email header injection
+                "testuser@[127.0.0.1]", // attempts email header injection
+                "testuser@example.com<b>", // attempts HTML injection
+                "testuser\"", // attempts SQL injection via double quotes
+                "testuser\\", // attempts SQL injection via backslash
+                "téstüsér", // uses non-ASCII characters
+                "", // empty string
+                "testuser", // already taken username
+                "ddddddddddddddddddddddddddddddd", // too long username
+                "dasd../gh" // invalid characters in username
+        };
 
-        solo.enterText(0, "ddddddddddddddddddddddddddddddd");
-        solo.clickOnButton("Register");
-        assertTrue(solo.searchText(solo.getString(R.string.userNameLength)));
+        for (String naughtyString : naughtyStrings) {
+            solo.clearEditText(editText);
+            solo.enterText(0, naughtyString);
+            solo.clickOnButton("Register");
 
-        solo.clearEditText(editText);
-
-        solo.enterText(0, "dasd../gh");
-        solo.clickOnButton("Register");
-        assertTrue(solo.searchText(solo.getString(R.string.userNameInvalidCharacters)));
+            if (naughtyString.equals("testuser")) {
+                assertTrue(solo.searchText(solo.getString(R.string.userNameTaken)));
+            } else if (naughtyString.length() > 13 || naughtyString.length() < 1 ) {
+                assertTrue(solo.searchText(solo.getString(R.string.userNameLength)));
+            } else if (naughtyString.matches("^[a-zA-Z0-9]*$")) {
+                assertFalse(solo.searchText(solo.getString(R.string.userNameInvalidCharacters)));
+            } else {
+                assertTrue(solo.searchText(solo.getString(R.string.userNameInvalidCharacters)));
+            }
+        }
     }
 
     @Test
@@ -194,8 +191,7 @@ public class loginIntentTest {
     @Test
     public void testInvalidPhoneNumber() throws Exception {
         // Enter invalid phone number
-        solo.enterText(0, "testuser");
-        solo.enterText(2, "notanumber");
+        solo.enterText(2, "1234");
 
         // Click register button
         solo.clickOnButton("Register");

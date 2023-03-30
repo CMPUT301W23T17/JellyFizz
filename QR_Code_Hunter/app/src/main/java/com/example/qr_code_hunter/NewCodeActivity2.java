@@ -9,9 +9,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,21 +28,19 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This is the second page of the new code details (editable fields)
  */
 public class NewCodeActivity2 extends AppCompatActivity {
-    ImageView picture;
-    EditText descBox;
-    TextView charCount;
-    CheckBox saveGeo;
-    ImageButton saveBtn;
-    QrCode newCode;
-    String encodedImage;
-    Owner currentOwner;
+    private ImageView picture;
+    private EditText descBox;
+    private TextView charCount;
+    private CheckBox saveGeo;
+    private ImageButton saveBtn;
+    private QrCode newCode;
+    private String encodedImage;
+    private Owner currentOwner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,10 +54,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
         saveBtn.setEnabled(false);
         newCode = getIntent().getParcelableExtra("New QrCode");
 
-        String ownerPass = loginActivity.getOwnerName();
+        String ownerPass = LoginActivity.getOwnerName();
 
         //set the owner object, still need to discuss what is happening with this list of qrcodes
-        loginActivity.setCurrentOwnerObject( ownerPass, new loginActivity.getAllInfo() {
+        LoginActivity.createOwnerObject( ownerPass, new LoginActivity.getAllInfo() {
             @Override
             public void onGetInfo(Owner owner) {
                 currentOwner = owner;
@@ -69,6 +65,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
             }
         });
 
+        // Open Camera on View Click
+        // URL      : https://stackoverflow.com/questions/13977245/android-open-camera-from-button
+        // Author   : captainDizzy
+        // Date     : December 20, 2012
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +87,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
              */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Live character count for EditText
+                // URL      : https://stackoverflow.com/questions/3013791/live-character-count-for-edittext
+                // Author   : Cameron Ketcham
+                // Date     : December 15, 2010
                 String countLabel = String.valueOf(s.length()) + "/150";
                 charCount.setText(countLabel);
 
@@ -139,6 +143,10 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 currentOwner.addQRCode(newCode, null, encodedImage);
                             }
                         }
+                        // Delay fragment change to allow database to update first
+                        // URL      : https://stackoverflow.com/questions/41664409/wait-for-5-seconds
+                        // Author   : Eman Sallam
+                        // Date     : July 30, 2019
                         Intent intent = new Intent(NewCodeActivity2.this, MainActivity.class);
                         (new Handler()).postDelayed(new Runnable() {
                             @Override
@@ -156,11 +164,15 @@ public class NewCodeActivity2 extends AppCompatActivity {
      * This opens the camera app and set the taken photograph to an ImageView
      * and encode image to string to be sent to another activity
      */
-    ActivityResultLauncher<Intent> takePhoto = registerForActivityResult(
+    protected ActivityResultLauncher<Intent> takePhoto = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Setting picture to ImageView
+                    // URL      : https://stackoverflow.com/questions/13977245/android-open-camera-from-button
+                    // Author   : Hasan Masud
+                    // Date     : December 29, 2014
                     if(result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         Bundle bundle = data.getExtras();
@@ -168,6 +180,9 @@ public class NewCodeActivity2 extends AppCompatActivity {
                         picture.setImageBitmap(finalPhoto);
 
                         // Encode image to string
+                        // URL      : https://stackoverflow.com/questions/41396194/how-to-convert-image-to-string-in-android
+                        // Author   : Dilip Ati
+                        // Date     : December 30, 2016
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         finalPhoto.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream.toByteArray();
