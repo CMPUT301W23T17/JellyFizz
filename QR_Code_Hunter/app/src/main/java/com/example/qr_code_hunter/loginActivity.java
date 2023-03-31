@@ -40,7 +40,6 @@ public class loginActivity extends AppCompatActivity {
     //Owner of the account(username of player on current device)
     private static String owner;
     static Owner currentOwnerObject;
-
     // Database
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
     static CollectionReference playersRef = db.collection("Players");
