@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class ShaGenerator {
     /**
+     * Link: https://chat.openai.com/
      * This converts a string into binary representation using SHA-256 algorithm
      * @param
      *     input string from a scanned QrCode
@@ -28,6 +29,7 @@ public class ShaGenerator {
     }
 
     /**
+     * Link: https://chat.openai.com/
      * This converts a string into hexadecimal representation using SHA-256 algorithm
      * @param
      *     input string from a scanned QrCode
