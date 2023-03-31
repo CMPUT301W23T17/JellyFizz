@@ -92,8 +92,10 @@ public class CodeDetailsFragment extends Fragment {
                             String scoreText = documentSnapshot.getLong("Score").intValue()+" pts";
                             String locText = "Geolocation not saved";
                             if(documentSnapshot.contains("latitude")) {
-                                double lat = documentSnapshot.getLong("latitude");
-                                double lng = documentSnapshot.getLong("longitude");
+//                                double lat = documentSnapshot.getLong("latitude");
+//                                double lng = documentSnapshot.getLong("longitude");
+                                double lat = documentSnapshot.getDouble("latitude");
+                                double lng = documentSnapshot.getDouble("longitude");
 
                                 // Display location based on LatLng
                                 // URL      : https://stackoverflow.com/questions/22096011/what-does-each-androids-location-address-method-return
@@ -106,7 +108,8 @@ public class CodeDetailsFragment extends Fragment {
                                     e.printStackTrace();
                                 }
 
-                                locText = myAddress.get(0).getLocality() + ", " + myAddress.get(0).getAdminArea() + ", " + myAddress.get(0).getCountryCode();
+                                locText = myAddress.get(0).getLocality() + ", " + myAddress.get(0).getAdminArea() + ", " + myAddress.get(0).getCountryCode()
+                                            + "\n" + "(" + lat + ", " + lng + ")";
                             }
 
                             codeLocation.setText(locText);
