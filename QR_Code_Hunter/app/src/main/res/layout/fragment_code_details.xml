@@ -87,7 +87,11 @@
             android:id="@+id/comment_dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show comment section" />
+            android:text="Show comment section"
+            android:background="@drawable/rounded_corner_background"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:padding="5dp"/>
 
     </LinearLayout>
 
