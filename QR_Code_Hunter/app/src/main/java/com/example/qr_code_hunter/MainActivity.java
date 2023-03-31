@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
+
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Check if user has created an account before on this specific device,
-        // 1) if yes: go to homepage, // 2) if no: go to loginPage
+        // 1) if yes: go to homepage, 2) if no: go to loginPage
         String accountCreatedKey = getString(R.string.accountCreated);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean accountCreated = prefs.contains(accountCreatedKey);
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment ){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment getVisibleFragment() {
         FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
+
         for (Fragment fragment: fragments) {
             if (fragment != null && fragment.isVisible()) return fragment;
         }
