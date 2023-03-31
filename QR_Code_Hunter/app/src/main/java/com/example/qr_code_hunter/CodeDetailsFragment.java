@@ -45,7 +45,6 @@ public class CodeDetailsFragment extends Fragment {
     private TextView codeScore;
     private ImageView codeImage;
     private ImageView backButton;
-    private List<Address> myAddress;
 
     public CodeDetailsFragment() {}
 
@@ -92,11 +91,10 @@ public class CodeDetailsFragment extends Fragment {
                             String scoreText = documentSnapshot.getLong("Score").intValue()+" pts";
                             String locText = "Geolocation not saved";
                             if(documentSnapshot.contains("latitude")) {
-//                                double lat = documentSnapshot.getLong("latitude");
-//                                double lng = documentSnapshot.getLong("longitude");
                                 double lat = documentSnapshot.getDouble("latitude");
                                 double lng = documentSnapshot.getDouble("longitude");
 
+                                List<Address> myAddress = null;
                                 // Display location based on LatLng
                                 // URL      : https://stackoverflow.com/questions/22096011/what-does-each-androids-location-address-method-return
                                 // Author   : Carlos Alberto Murillo
