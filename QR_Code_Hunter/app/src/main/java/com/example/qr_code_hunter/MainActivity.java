@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         // ActivityMainBinding is an android library that allows a way to access the views
         // in the activity_main.xml (navigation bar is stored there)
-        com.example.qr_code_hunter.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Check if user has created an account before on this specific device,
@@ -38,44 +40,31 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        // Disabling NavBar spam
-        final Fragment[] frag = {getSupportFragmentManager().findFragmentById(R.id.frame_layout)};
-
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
-                    if(! (frag[0] instanceof HomepageFragment)) {
-                        replaceFragment(new HomepageFragment());
-                        frag[0] = new HomepageFragment();
-                    }
+                    if(!(getVisibleFragment() instanceof HomepageFragment)){
+                        replaceFragment(new HomepageFragment());}
                     break;
 
                 case R.id.map_screen:
-                    if(! (frag[0] instanceof MapFragment)) {
-                        replaceFragment(new MapFragment());
-                        frag[0] = new MapFragment();
-                    }
+                    if(!(getVisibleFragment() instanceof MapFragment)){
+                        replaceFragment(new MapFragment());}
                     break;
 
                 case R.id.search_screen:
-                    if(! (frag[0] instanceof SearchFragment)) {
-                        replaceFragment(new SearchFragment());
-                        frag[0] = new SearchFragment();
-                    }
+                    if(!(getVisibleFragment() instanceof SearchFragment)){
+                        replaceFragment(new SearchFragment());}
                     break;
 
                 case R.id.player_profile_screen:
-                    if(! (frag[0] instanceof PlayerProfileFragment)) {
-                        replaceFragment(new PlayerProfileFragment());
-                        frag[0] = new PlayerProfileFragment();
-                    }
+                    if(!(getVisibleFragment() instanceof PlayerProfileFragment)){
+                        replaceFragment(new PlayerProfileFragment());}
                     break;
 
                 case R.id.ranking_screen:
-                    if(! (frag[0] instanceof RankingFragment)) {
-                        replaceFragment(new RankingFragment());
-                        frag[0] = new RankingFragment();
-                    }
+                    if(!(getVisibleFragment() instanceof RankingFragment)){
+                        replaceFragment(new RankingFragment());}
                     break;
             }
             return true;
@@ -87,5 +76,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
+    }
+
+    private Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment: fragments) {
+            if (fragment != null && fragment.isVisible()) return fragment;
+        }
+        return null;
     }
 }
