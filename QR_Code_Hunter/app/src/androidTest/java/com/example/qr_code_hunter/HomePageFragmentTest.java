@@ -121,4 +121,30 @@ public class HomepageFragmentTest {
     public void clickInstructionButton() {
         onView(withId(R.id.ask_button)).perform(click());
     }
+    
+/**
+*This tests the change between fragments of navigation bar
+*/
+    @Test
+    public void testNavigation() {
+        // Click on Map screen
+        onView(withId(R.id.map_screen)).perform(click());
+        onView(withId(R.id.map)).check(matches(isDisplayed()));
+
+        // Click on Search screen
+        onView(withId(R.id.search_screen)).perform(click());
+        onView(withId(R.id.search_bar)).check(matches(isDisplayed()));
+
+        // Click on Home screen
+        onView(withId(R.id.home_screen)).perform(click());
+        onView(withId(R.id.scan_now)).check(matches(isDisplayed()));
+
+        // Click on Ranking screen
+        onView(withId(R.id.ranking_screen)).perform(click());
+        onView(withId(R.id.ranking_screen)).check(matches(isDisplayed()));
+
+        // Click on Player Profile screen
+        onView(withId(R.id.player_profile_screen)).perform(click());
+        onView(withId(R.id.owner_infor_box)).check(matches(isDisplayed()));
+    }
 }
