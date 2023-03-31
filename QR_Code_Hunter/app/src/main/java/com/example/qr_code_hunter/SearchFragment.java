@@ -1,13 +1,6 @@
 package com.example.qr_code_hunter;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 
@@ -58,7 +57,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 EditText text = getView().findViewById(R.id.enter_username);
-                search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {
+                search.searchPlayer(text.getText().toString(), new Search.SearchPlayerCallback() {   //Use ChatGpt for callback method
                     @Override
                     public void onSearchPlayerComplete(ArrayList<ArrayList<String>> usernames){
                         listArrayList.addAll(usernames);
@@ -97,7 +96,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void replaceFragment(Fragment fragment ){
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();        //Had help from ChatGpt on how fragmentManager works and how to apply it
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.addToBackStack(null);
