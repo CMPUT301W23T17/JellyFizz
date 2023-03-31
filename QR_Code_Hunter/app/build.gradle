@@ -65,7 +65,7 @@ dependencies {
 
     implementation 'com.firebase:geofire-android-common:3.1.0'
     implementation 'com.google.firebase:firebase-firestore:24.4.5'
-    //implementation files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar")
+    implementation files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar")
 
     // for camera
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
