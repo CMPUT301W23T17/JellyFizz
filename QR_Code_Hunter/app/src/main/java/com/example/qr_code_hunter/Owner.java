@@ -19,6 +19,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Owner implements Parcelable {
 
@@ -39,6 +42,10 @@ public class Owner implements Parcelable {
     Boolean codeDuplicated = false;
     Boolean codeUnique = false;
     DocumentReference existedQrRef;
+
+    public Owner(String username) {
+        this.ownerRef = this.player.document(username);
+    }
 
     public Owner(String phone, String email, String username, Boolean privacy,
                  ArrayList<DocumentReference> codeScanned, int score, int rank, int totalCodeScanned, int highestCode) {
@@ -69,29 +76,40 @@ public class Owner implements Parcelable {
         }
     };
 
-    /**
-     * This function delete QrCode
-     * @param hashString
-     *        string of QrCode to be deleted
-     * @param codeScore
-     *        score of QrCode to be deleted
-     * @param nextScore
-     *        score of QrCode below it (QrCode are sorted in descending order)
-     */
-    public void deleteQRCode(String hashString, int codeScore, int nextScore) {
-        DocumentReference qrRef = qrCode.document(hashString);
-        checkUniqueCodeScanned(hashString, new CheckUniqueCallback() {
-                    @Override
-                    public void onCheckUniqueComplete(Boolean unique) {
-                        if (unique) {
-                            removeFromQrCollection(hashString);
-                        }
-                        removeRelationship(qrRef);
-                        updateRankingRelated(codeScore,-1,nextScore);
-                        updateRank();
-                        totalCodeScanned -= 1;
-                    }
-                });
+//    /**
+//     * This function delete QrCode
+//     * @param hashString
+//     *        string of QrCode to be deleted
+//     * @param codeScore
+//     *        score of QrCode to be deleted
+//     * @param nextScore
+//     *        score of QrCode below it (QrCode are sorted in descending order)
+//     */
+    public void deleteQRCode(ArrayList<QrCodeTag> tagsToDelete) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        for (int i = 0; i < tagsToDelete.size(); i++) {
+            QrCodeTag tag = tagsToDelete.get(i);
+
+            DocumentReference qrRef = qrCode.document(tag.hashString);
+
+            CompletableFuture<String> removeRelationshipFuture = removeRelationship(qrRef);
+            CompletableFuture<String> updateRankingRelatedFuture = updateRankingRelated(tag.score, -1, tag.nextScore);
+            CompletableFuture<String> updateRank = updateRank();
+
+            final String hashes = tag.hashString;
+
+            Runnable deletionOperation = () -> {
+                removeRelationshipFuture.join();
+                updateRankingRelatedFuture.join();
+                updateRank.join();
+                Log.d("Hashes", tag.hashString);
+            };
+
+            executorService.submit(deletionOperation);
+        }
+
+        executorService.shutdown();
     }
 
     public interface CheckUniqueCallback {
@@ -151,7 +169,10 @@ public class Owner implements Parcelable {
      * @param qrRef
      *        document reference to the qrcode to be deleted
      */
-    public void removeRelationship(DocumentReference qrRef) {
+    public CompletableFuture<String> removeRelationship(DocumentReference qrRef) {
+
+        CompletableFuture<String> removeRelationshipComplete = new CompletableFuture<>();
+
         // Get query of players scan newly scanned code
         Query query = scanned.whereEqualTo("Player",ownerRef)
                 .whereEqualTo("qrCodeScanned",qrRef)
@@ -159,13 +180,20 @@ public class Owner implements Parcelable {
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (DocumentSnapshot document : task.getResult()) {
-                    document.getReference().delete();
-                    Log.d("Working", "Document deleted!");
+                    document.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d("Working", "Document deleted!");
+                            removeRelationshipComplete.complete("Sucess");
+                        }
+                    });
                 }
             } else {
                 Log.e("Working", "Failed with: ", task.getException());
             }
         });
+
+        return removeRelationshipComplete;
     }
 
     /**
@@ -193,6 +221,46 @@ public class Owner implements Parcelable {
         });
     }
 
+    /**
+     * This update total score, rank and highest code point of the player after adding/removing given qrCode
+     * @param
+     *      codeScore score of the newly scanned code
+     * @param
+     *      addition 1 represents add, -1 represent subtract
+     */
+    public CompletableFuture<String> updateRankingRelated(int codeScore, int addition, int nextScore) {
+        CompletableFuture<String> updateRankingComplete = new CompletableFuture<>();
+
+        int newScore = totalScore + (addition*codeScore);
+        int newTotalCodeScanned = totalCodeScanned + addition;
+        totalScore = newScore;
+        totalCodeScanned = newTotalCodeScanned;
+
+        Map<String, Object> data = new HashMap<>();
+        if (addition == 1 && codeScore > highestCode) {
+            highestCode = codeScore;
+            data.put("highestCode",highestCode);
+        } else if (addition == -1 && codeScore == highestCode) {
+            data.put("highestCode",nextScore);
+        }
+        data.put("score",newScore);
+        data.put("totalCodeScanned",newTotalCodeScanned);
+        ownerRef.update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Working", "Score, CodeNum, highest code updated successfully");
+                        updateRankingComplete.complete("Sucess");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Working", "Not updated" + e.toString());
+                    }
+                });
+        return updateRankingComplete;
+    }
 
     /**
      * Describe the kinds of special objects contained in this Parcelable
@@ -318,39 +386,7 @@ public class Owner implements Parcelable {
                 });
     }
 
-    /**
-     * This update total score, rank and highest code point of the player after adding/removing given qrCode
-     * @param
-     *      codeScore score of the newly scanned code
-     * @param
-     *      addition 1 represents add, -1 represent subtract
-     */
-    public void updateRankingRelated(int codeScore, int addition, int nextScore) {
-        int newScore = totalScore + (addition*codeScore);
-        int newTotalCodeScanned = totalCodeScanned + addition;
-        Map<String, Object> data = new HashMap<>();
-        if (addition == 1 && codeScore > highestCode) {
-            highestCode = codeScore;
-            data.put("highestCode",highestCode);
-        } else if (addition == -1 && codeScore == highestCode) {
-            data.put("highestCode",nextScore);
-        }
-        data.put("score",newScore);
-        data.put("totalCodeScanned",newTotalCodeScanned);
-        ownerRef.update(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Working", "Score, CodeNum, highest code updated successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Working", "Not updated" + e.toString());
-                    }
-                });
-    }
+
 
     public interface CheckDuplicateCallback {
         void onCheckDuplicateComplete(Boolean duplicated);
@@ -384,7 +420,9 @@ public class Owner implements Parcelable {
     /**
      * This method updates the ranks of the players in the database based on their score
      */
-    public void updateRank() {
+    public CompletableFuture<String> updateRank() {
+
+        CompletableFuture<String> updateRankCompleted = new CompletableFuture<>();
         player.orderBy("score", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -406,7 +444,11 @@ public class Owner implements Parcelable {
                         position++;
                     }
                 }
+
+                updateRankCompleted.complete("Success");
             }
         });
+
+        return updateRankCompleted;
     }
 }
