@@ -115,7 +115,7 @@ public class QrCodeList extends Fragment {
                 ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
 
                 if (goToGarbage) {
-                    for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                    for (int i = 0; i < qrCodeDisplay.getCount() && i < 5; i++) {
                         View currentview = qrCodeDisplay.getChildAt(i);
                         CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
                         currentCheckBox.setVisibility(View.VISIBLE);
@@ -140,7 +140,7 @@ public class QrCodeList extends Fragment {
                     goToGarbage = false;
                 } else {
 
-                    for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                    for (int i = 0; i < qrCodeDisplay.getCount() && i < 5; i++) {
                         View currentview = qrCodeDisplay.getChildAt(i);
                         CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
 
@@ -195,7 +195,7 @@ public class QrCodeList extends Fragment {
 
                 List<Integer> itemsToRemove = new ArrayList<>();
 
-                for(int i = 0; i < adapter1.getCount(); i++) {
+                for(int i = 0; i < adapter1.getCount() && i < 5; i++) {
                     View item = qrCodeDisplay.getChildAt(i);
                     CheckBox checkBox = item.findViewById(R.id.qrCodeCheckbox);
 
@@ -206,26 +206,32 @@ public class QrCodeList extends Fragment {
                     }
                 }
 
+
                 // Remove the items from the list in reverse order
                 Collections.reverse(itemsToRemove);
+                ArrayList<QrCodeTag> tags = new ArrayList<>();
+
                 for (int i : itemsToRemove) {
+                    //Remove from storage of tags within the adapter
                     currentSortedCodes.remove(i);
 
                     View item = qrCodeDisplay.getChildAt(i);
                     QrCodeTag currentTag = (QrCodeTag) item.getTag();
 
-
-                    //Delete from database
-                    LoginActivity.createOwnerObject(LoginActivity.getOwnerName(), new LoginActivity.getAllInfo() {
-                        @Override
-                        public void onGetInfo(Owner owner) {
-                            currentOwner = owner;
-                            currentOwner.deleteQRCode(currentTag.hashString, currentTag.score, currentTag.nextScore);
-                        }
-                    });
+                    //Add tags to list to delete
+                    tags.add(currentTag);
                 }
 
-                for (int i = 0; i < qrCodeDisplay.getCount(); i++) {
+                LoginActivity.createOwnerObject(LoginActivity.getOwnerName(), new LoginActivity.getAllInfo() {
+                    @Override
+                    public void onGetInfo(Owner owner) {
+                        currentOwner = owner;
+                        currentOwner.deleteQRCode(tags);
+                    }
+                });
+
+
+                for (int i = 0; i < qrCodeDisplay.getCount() && i < 5; i++) {
                     View currentview = qrCodeDisplay.getChildAt(i);
                     CheckBox currentCheckBox = currentview.findViewById(R.id.qrCodeCheckbox);
 

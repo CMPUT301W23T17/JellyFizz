@@ -136,9 +136,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             } else {
                 Log.d("Database error", "Could not fetch data from database");
-
-                //Put this here for now, will have to discuss with Quin later why
-                callback.onGetInfo(currentOwnerObject);
             }
 
         });
