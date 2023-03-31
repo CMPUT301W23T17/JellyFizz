@@ -161,6 +161,9 @@ public class HomepageFragment extends Fragment {
                 });
     }
 
+    /**
+     * This opens the instruction dialog
+     */
     private void openDialog() {
         InstructionDialog instruction_dialog = new InstructionDialog();
         instruction_dialog.show(getParentFragmentManager(),"dede");
