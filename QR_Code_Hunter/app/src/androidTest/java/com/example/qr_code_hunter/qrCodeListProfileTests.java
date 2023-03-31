@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+//CHATGPT was used for this test class
 @RunWith(AndroidJUnit4.class)
 public class qrCodeListProfileTests {
 
@@ -100,7 +101,8 @@ public class qrCodeListProfileTests {
     static String[] testHashStrings = {hashString3, hashString2, hashString1};
 
     /**
-     * Create mock qrCode for user to delete
+     * Create mock dependencies that tests in this class will be using, these include creating a testuser, creating mock qrCodes and
+     * adding the relationship from the qrCode to the player in the database
      */
     @BeforeClass
     public static void setUpDependencies() {
@@ -155,6 +157,10 @@ public class qrCodeListProfileTests {
 
     }
 
+    /**
+     * cleans up all database dependecies that were created by the setUpDepencies method. Cleans the database
+     * @throws InterruptedException
+     */
     @After
     public void cleanup() throws InterruptedException {
         ArrayList<CompletableFuture> features = new ArrayList<>();
@@ -219,6 +225,9 @@ public class qrCodeListProfileTests {
     }
 
 
+    /**
+     * This method tests all functionality to do with displaying the list of qrCodes
+     */
     @Test
     public void testCodesDisplayed() {
         assertTrue(solo.waitForView(R.id.qr_code_lister));

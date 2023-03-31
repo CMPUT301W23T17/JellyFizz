@@ -18,6 +18,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
+//CHATGPT was referenced
 @RunWith(AndroidJUnit4.class)
 public class loginMainInteraction {
 
@@ -25,6 +26,11 @@ public class loginMainInteraction {
     public ActivityTestRule<MainActivity> mActivityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
+    /**
+     * This tests the interaction between the loginPage and the main page. In particular, this method checks whether the correct conditions for
+     * each activty are set when the activity is being displayed
+     * @throws Exception
+     */
     @Test
     public void testLoginVsHomePageDisplayed() throws Exception {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(

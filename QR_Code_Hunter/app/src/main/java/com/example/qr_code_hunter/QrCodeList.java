@@ -32,6 +32,8 @@ import java.util.concurrent.CompletableFuture;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
+
+//CHATGPT was referenced
 public class QrCodeList extends Fragment {
     public Owner currentOwner;
     public boolean goToGarbage = true;
