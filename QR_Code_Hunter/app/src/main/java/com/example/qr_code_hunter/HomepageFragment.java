@@ -112,7 +112,8 @@ public class HomepageFragment extends Fragment {
         // Access to the player collection
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference OwnerRef = db.collection("Players").document(ownerName);
-        // Display Rank
+        // Display Rank by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -135,7 +136,8 @@ public class HomepageFragment extends Fragment {
                         Log.e(TAG, "Error reading document", e);
                     }
                 });
-        // Display Score
+        // Display Score by accessing to firebase
+        // Link: https://chat.openai.com/
         OwnerRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -160,10 +162,8 @@ public class HomepageFragment extends Fragment {
                     }
                 });
     }
-
-    /**
-     * This opens the instruction dialog
-     */
+    // How to create Instruction Dialog in Fragment
+    // Link: https://chat.openai.com/
     private void openDialog() {
         InstructionDialog instruction_dialog = new InstructionDialog();
         instruction_dialog.show(getParentFragmentManager(),"dede");
