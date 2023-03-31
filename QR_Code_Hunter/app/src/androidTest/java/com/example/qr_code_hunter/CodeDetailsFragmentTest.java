@@ -42,7 +42,7 @@ public class CodeDetailsFragmentTest {
     // Change this username until it's unique
     String user = "TestRanking";
     @Rule
-    public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);

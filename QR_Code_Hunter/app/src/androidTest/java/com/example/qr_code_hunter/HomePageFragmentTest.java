@@ -32,7 +32,7 @@ import com.robotium.solo.Solo;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(AndroidJUnit4.class)
-public class HomepageFragmentTest {
+public class HomePageFragmentTest {
 
     private Solo soloLogin;
     private Solo soloMain;
@@ -42,7 +42,7 @@ public class HomepageFragmentTest {
     // Change this username until it's unique
     String user = "TestRanking";
     @Rule
-    public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);

@@ -44,8 +44,8 @@ public class qrCodeListProfileTests {
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
-    public ActivityTestRule<loginActivity> rule =
-            new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> rule =
+            new ActivityTestRule<>(LoginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
@@ -252,7 +252,7 @@ public class qrCodeListProfileTests {
 
 
             //Verify Tag
-            qrCodeTag currentTag = (qrCodeTag) listItemView.getTag();
+            QrCodeTag currentTag = (QrCodeTag) listItemView.getTag();
 
             assertEquals(score, currentTag.score);
             assertEquals(testHashStrings[i], currentTag.hashString);
