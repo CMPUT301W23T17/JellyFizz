@@ -17,28 +17,23 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link qrCodeList} factory method to
+ * Use the {@link QrCodeList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class qrCodeList extends Fragment {
+public class QrCodeList extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,7 +47,7 @@ public class qrCodeList extends Fragment {
     public Owner currentOwner;
     public boolean goToGarbage = true;
 
-    public qrCodeList() {}
+    public QrCodeList() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,24 +62,13 @@ public class qrCodeList extends Fragment {
 
     }
 
-    /**
-     Overrides the {@link androidx.fragment.app.Fragment#onViewCreated(View, Bundle)} method to set up the UI elements and
-
-     functionalities of the QR code list screen. This includes setting up the adapter for the ListView, adding item click listeners,
-
-     setting up the garbage can button and delete button functionality, and handling the return button.
-
-     @param view The View object associated with this fragment.
-
-     @param savedInstanceState A Bundle object containing the saved state of the fragment.
-     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         ArrayList<DocumentReference> currentSortedCodes = new ArrayList<>();
 
-        displayCodes(loginActivity.getOwnerName(), new sortedCodes() {
+        displayCodes(LoginActivity.getOwnerName(), new sortedCodes() {
             @Override
             public void onSuccess(ArrayList<DocumentReference> sortedCodes) {
                 View currentView = getView();
@@ -95,7 +79,7 @@ public class qrCodeList extends Fragment {
                         View currentView = getView();
                         ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
 
-                        qrCodeAdapter codeAdapter = new qrCodeAdapter(getActivity(), 0, sortedCodes);
+                        QrCodeAdapter codeAdapter = new QrCodeAdapter(getActivity(), 0, sortedCodes);
                         qrCodeListView.setAdapter(codeAdapter);
                         currentSortedCodes.addAll(sortedCodes);
 
@@ -207,7 +191,7 @@ public class qrCodeList extends Fragment {
 
                 if (qrCodeDisplay.getCount() < 1) return;
 
-                qrCodeAdapter adapter1 = (qrCodeAdapter)qrCodeDisplay.getAdapter();
+                QrCodeAdapter adapter1 = (QrCodeAdapter)qrCodeDisplay.getAdapter();
                 adapter1.setData(currentSortedCodes);
 
                 List<Integer> itemsToRemove = new ArrayList<>();
@@ -229,11 +213,11 @@ public class qrCodeList extends Fragment {
                     currentSortedCodes.remove(i);
 
                     View item = qrCodeDisplay.getChildAt(i);
-                    qrCodeTag currentTag = (qrCodeTag) item.getTag();
+                    QrCodeTag currentTag = (QrCodeTag) item.getTag();
 
 
                     //Delete from database
-                    loginActivity.createOwnerObject(loginActivity.getOwnerName(), new loginActivity.getAllInfo() {
+                    LoginActivity.createOwnerObject(LoginActivity.getOwnerName(), new LoginActivity.getAllInfo() {
                         @Override
                         public void onGetInfo(Owner owner) {
                             currentOwner = owner;
@@ -269,27 +253,16 @@ public class qrCodeList extends Fragment {
         });
     }
 
-    /**
-     Interface that defines a method to be called when a list of DocumentReferences is successfully sorted.
-     */
     public interface sortedCodes {
         void onSuccess(ArrayList<DocumentReference> sortedCodes);
     }
 
-
-    /**
-     This method displays the sorted QR codes for a given username by sorting them based on their scores and then relying on a callback
-
-     @param username the username for which the QR codes are to be displayed
-
-     @param callback the sortedCodes object to be called upon successful sorting of the ArrayList of DocumentReferences
-     */
     public void displayCodes(String username, sortedCodes callback) {
 
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
 
         ArrayList<DocumentReference> playerQrCodes = new ArrayList<DocumentReference>();
-        CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = loginActivity.getQR_Codes(username);
+        CompletableFuture<ArrayList<DocumentReference>> qrCodesFuture = LoginActivity.getQrCodes(username);
 
         qrCodesFuture.thenCompose(qrCodesDocRef -> {
             // Create a list of CompletableFuture<Integer> objects that will eventually be completed with the scores of the QR codes
@@ -321,13 +294,6 @@ public class qrCodeList extends Fragment {
         });
     }
 
-    /**
-     This method gets the score of a given DocumentReference object.
-
-     @param docRef the DocumentReference object for which the score is to be obtained
-
-     @return a CompletableFuture<Integer> object which will eventually be completed with the score of the given DocumentReference
-     */
     public static CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
 
         CompletableFuture<Integer> currentScoreFuture = new CompletableFuture<Integer>();

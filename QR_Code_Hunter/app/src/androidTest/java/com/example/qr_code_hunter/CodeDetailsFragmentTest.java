@@ -1,18 +1,26 @@
 package com.example.qr_code_hunter;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import static org.junit.Assert.assertEquals;
-
-import android.widget.TextView;
-
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.assertion.ViewAssertions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+
+import android.widget.Button;
+
+import com.example.qr_code_hunter.MainActivity;
+import com.example.qr_code_hunter.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 
@@ -25,7 +33,7 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(AndroidJUnit4.class)
-public class RankingTest {
+public class CodeDetailsFragmentTest {
     private Solo soloLogin;
     private Solo soloMain;
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -33,10 +41,8 @@ public class RankingTest {
 
     // Change this username until it's unique
     String user = "TestRanking";
-
-
     @Rule
-    public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
+    public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
@@ -60,8 +66,8 @@ public class RankingTest {
         // Wait
         soloMain.waitForView(R.id.scan_now);
         // Click register button
-        soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
-        //solo.waitForView(solo.getView(R.id.buttonTotalScore));
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        soloMain.waitForView(R.id.more_button);
     }
 
     @After
@@ -80,31 +86,15 @@ public class RankingTest {
         completeDelete1.join();
     }
 
-
+/**
+*This method is a unit test that verifies the behavior of the back button on the app.
+*It waits for the more button to be visible on the screen and then checks that it is clickable.
+*/
     @Test
-    public void testRankingFragment() throws Exception {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        // Verify that the loginActivity is displayed
-        onView(withId(R.id.ranking_screen)).check(matches(isDisplayed()));
+    public void testBackButton() {
+        //soloMain.waitForView(R.id.details_backBtn);
+        soloMain.waitForView(R.id.more_button);
+        onView(withId(R.id.more_button)).check(matches(isClickable()));
     }
 
-    @Test
-    public void testHighestButtonHighestCode() {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        onView(withId(R.id.buttonHighestCode)).check(matches(isClickable()));
-    }
-
-    @Test
-    public void testHighestButtonTotalScore() {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        onView(withId(R.id.buttonTotalScore)).check(matches(isClickable()));
-    }
-
-    @Test
-    public void testDisplayOwner() {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        assertEquals("0th", ((TextView) soloMain.getView(R.id.yourRank)).getText().toString());
-        assertEquals("0 pts", ((TextView) soloMain.getView(R.id.yourPoints)).getText().toString());
-        assertEquals(user, ((TextView) soloMain.getView(R.id.yourName)).getText().toString());
-    }
 }

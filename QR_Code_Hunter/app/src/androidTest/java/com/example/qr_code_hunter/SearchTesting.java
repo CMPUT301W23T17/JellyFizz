@@ -1,13 +1,17 @@
 package com.example.qr_code_hunter;
+
+
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.anything;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.assertEquals;
-
-import android.widget.TextView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -25,18 +29,17 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(AndroidJUnit4.class)
-public class RankingTest {
+public class SearchTesting {
     private Solo soloLogin;
     private Solo soloMain;
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-    // Change this username until it's unique
-    String user = "TestRanking";
+    String user = "DanTestSearch";
 
 
     @Rule
-    public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
+    public ActivityTestRule<loginActivity> logInRule = new ActivityTestRule<>(loginActivity.class, true, true);
 
     public ActivityTestRule<MainActivity> mainActivityRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
@@ -52,15 +55,15 @@ public class RankingTest {
         soloMain = new Solo(InstrumentationRegistry.getInstrumentation(), mainActivityRule.getActivity());
         // Enter valid user details
         soloLogin.enterText(0, user);
-        soloLogin.enterText(1, "tmquach@ualberta.ca");
-        soloLogin.enterText(2, "6043765432");
+        soloLogin.enterText(1, "akanmu@ualberta.ca");
+        soloLogin.enterText(2, "6045556795");
         // Click register button
         soloLogin.clickOnButton("Register");
 
         // Wait
-        soloMain.waitForView(R.id.scan_now);
+        soloMain.waitForView(R.id.score_display);
         // Click register button
-        soloMain.clickOnView(soloMain.getView(R.id.ranking_screen));
+        soloMain.clickOnView(soloMain.getView(R.id.search_screen));
         //solo.waitForView(solo.getView(R.id.buttonTotalScore));
     }
 
@@ -80,31 +83,51 @@ public class RankingTest {
         completeDelete1.join();
     }
 
-
     @Test
-    public void testRankingFragment() throws Exception {
-        soloMain.waitForView(R.id.buttonTotalScore);
+    public void testSearchScreen() throws Exception {
+        soloMain.waitForView(R.id.search_bar);
         // Verify that the loginActivity is displayed
-        onView(withId(R.id.ranking_screen)).check(matches(isDisplayed()));
+        onView(withId(R.id.search_screen)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testHighestButtonHighestCode() {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        onView(withId(R.id.buttonHighestCode)).check(matches(isClickable()));
+    public void testSearching() throws Exception {
+        soloMain.waitForView(R.id.search_bar);
+//        // Verify that the loginActivity is displayed
+        soloMain.enterText(0,"D");
+        soloMain.clickOnView(soloMain.getView(R.id.search_bar));
+
+        soloMain.waitForView(R.id.search_list);
+
+        ListView listView = (ListView) soloMain.getView(R.id.search_list);
+        ListAdapter adapter = listView.getAdapter();
+
+        assertTrue(adapter.getCount() > 0);
     }
 
     @Test
-    public void testHighestButtonTotalScore() {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        onView(withId(R.id.buttonTotalScore)).check(matches(isClickable()));
+    public void testOtherProfile() throws Exception{
+        soloMain.waitForView(R.id.search_bar);
+
+        soloMain.enterText(0,"D");
+        soloMain.clickOnView((soloMain.getView(R.id.search_bar)));
+
+        soloMain.waitForView(R.id.search_list);
+
+        ListView listView = (ListView) soloMain.getView(R.id.search_list);
+
+// Click on the first item in the ListView
+        onData(anything())
+                .inAdapterView(withId(R.id.search_list))
+                .atPosition(0)
+                .perform(click());
+
+
+        soloMain.waitForView(R.id.imageView00);
+        onView(withId(R.id.imageView00)).check(matches(isDisplayed()));
+
+        soloMain.clickOnView((soloMain.getView(R.id.imageView7)));
+        soloMain.waitForView(R.id.search_bar);
     }
 
-    @Test
-    public void testDisplayOwner() {
-        soloMain.waitForView(R.id.buttonTotalScore);
-        assertEquals("0th", ((TextView) soloMain.getView(R.id.yourRank)).getText().toString());
-        assertEquals("0 pts", ((TextView) soloMain.getView(R.id.yourPoints)).getText().toString());
-        assertEquals(user, ((TextView) soloMain.getView(R.id.yourName)).getText().toString());
-    }
 }

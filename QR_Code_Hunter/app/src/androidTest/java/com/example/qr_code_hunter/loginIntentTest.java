@@ -1,23 +1,12 @@
 package com.example.qr_code_hunter;
 
-import android.app.Activity;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.widget.EditText;
-import android.widget.ListView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
@@ -32,11 +21,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Test class for logInActivity. All the UI tests are written here. Robotium test framework is used
@@ -47,7 +32,7 @@ public class loginIntentTest {
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
-    public ActivityTestRule<loginActivity> rule = new ActivityTestRule<>(loginActivity.class, true, true);
+    public ActivityTestRule<LoginActivity> rule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
 
     /**
@@ -91,7 +76,7 @@ public class loginIntentTest {
     @Test
     public void testLoginActivityDisplayed() throws Exception {
         // Verify that the loginActivity is displayed
-        solo.assertCurrentActivity("Expected loginActivity activity", loginActivity.class);
+        solo.assertCurrentActivity("Expected loginActivity activity", LoginActivity.class);
     }
 
     @Test
