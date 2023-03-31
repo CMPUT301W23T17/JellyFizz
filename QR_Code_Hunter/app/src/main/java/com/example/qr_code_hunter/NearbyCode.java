@@ -3,6 +3,9 @@ package com.example.qr_code_hunter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * This class is used to store brief information for nearby codes to be displayed in bottom sheet dialog
+ */
 public class NearbyCode implements Parcelable {
     private String codeName;
     private String distance;
