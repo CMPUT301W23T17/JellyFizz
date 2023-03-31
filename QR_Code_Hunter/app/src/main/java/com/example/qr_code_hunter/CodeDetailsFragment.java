@@ -2,6 +2,8 @@ package com.example.qr_code_hunter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,13 +17,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass
@@ -39,6 +45,7 @@ public class CodeDetailsFragment extends Fragment {
     private TextView codeScore;
     private ImageView codeImage;
     private ImageView backButton;
+    private List<Address> myAddress;
 
     public CodeDetailsFragment() {}
 
@@ -87,8 +94,21 @@ public class CodeDetailsFragment extends Fragment {
                             if(documentSnapshot.contains("latitude")) {
                                 double lat = documentSnapshot.getLong("latitude");
                                 double lng = documentSnapshot.getLong("longitude");
-                                locText = "(" + lat + ", " + lng + ")";
+
+                                // Display location based on LatLng
+                                // URL      : https://stackoverflow.com/questions/22096011/what-does-each-androids-location-address-method-return
+                                // Author   : Carlos Alberto Murillo
+                                // Date     : November 16, 2014
+                                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                                try {
+                                    myAddress = geocoder.getFromLocation(lat, lng, 1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                locText = myAddress.get(0).getLocality() + ", " + myAddress.get(0).getAdminArea() + ", " + myAddress.get(0).getCountryCode();
                             }
+
                             codeLocation.setText(locText);
                             codeName.setText(documentSnapshot.getString("codeName"));
                             codeScore.setText(scoreText);
