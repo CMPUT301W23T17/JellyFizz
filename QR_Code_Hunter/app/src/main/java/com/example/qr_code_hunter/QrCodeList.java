@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link QrCodeList#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class QrCodeList extends Fragment {
@@ -62,6 +61,14 @@ public class QrCodeList extends Fragment {
 
     }
 
+
+    /**
+     Overrides the {@link androidx.fragment.app.Fragment#onViewCreated(View, Bundle)} method to set up the UI elements and
+     functionalities of the QR code list screen. This includes setting up the adapter for the ListView, adding item click listeners,
+     setting up the garbage can button and delete button functionality, and handling the return button.
+     @param view The View object associated with this fragment.
+     @param savedInstanceState A Bundle object containing the saved state of the fragment.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -253,10 +260,19 @@ public class QrCodeList extends Fragment {
         });
     }
 
+    /**
+     Interface that defines a method to be called when a list of DocumentReferences is successfully sorted.
+     */
     public interface sortedCodes {
         void onSuccess(ArrayList<DocumentReference> sortedCodes);
     }
 
+
+    /**
+     This method displays the sorted QR codes for a given username by sorting them based on their scores and then relying on a callback
+     @param username the username for which the QR codes are to be displayed
+     @param callback the sortedCodes object to be called upon successful sorting of the ArrayList of DocumentReferences
+     */
     public void displayCodes(String username, sortedCodes callback) {
 
         ArrayList<DocumentReference> returnedDocs = new ArrayList<DocumentReference>();
@@ -294,6 +310,12 @@ public class QrCodeList extends Fragment {
         });
     }
 
+
+    /**
+     This method gets the score of a given DocumentReference object.
+     @param docRef the DocumentReference object for which the score is to be obtained
+     @return a CompletableFuture<Integer> object which will eventually be completed with the score of the given DocumentReference
+     */
     public static CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
 
         CompletableFuture<Integer> currentScoreFuture = new CompletableFuture<Integer>();
