@@ -38,7 +38,7 @@ public class CodeDetailsFragment extends Fragment {
     private TextView codeLocation;
     private TextView codeScore;
     private ImageView codeImage;
-    private TextView backButton;
+    private ImageView backButton;
 
     public CodeDetailsFragment() {}
 

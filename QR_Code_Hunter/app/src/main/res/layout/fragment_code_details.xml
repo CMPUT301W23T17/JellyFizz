@@ -12,13 +12,14 @@
      URL     : https://www.youtube.com/watch?v=dHwbjeOunjk
      Author  : EDMT Dev
      Date    : July 11, 2017 -->
-    <TextView
+    <ImageView
         android:id="@+id/details_backBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_arrowback"
-        android:gravity="left"
-        android:paddingHorizontal="15dp" />
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/arrow"
+        android:gravity="start" />
 
     <LinearLayout
         android:layout_width="match_parent"
