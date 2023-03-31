@@ -16,6 +16,8 @@ import android.os.Handler;
 
 import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
    // ActivityMainBinding is an android library that allows a way to access the views
     // in the activity_main.xml (navigation bar is stored there)
