@@ -38,31 +38,44 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        // Disabling NavBar spam
+        final Fragment[] frag = {getSupportFragmentManager().findFragmentById(R.id.frame_layout)};
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
-
-                    replaceFragment(new HomepageFragment());
-                    
-                    if(!(getVisibleFragment() instanceof HomepageFragment)){
-                        replaceFragment(new HomepageFragment());}
-
+                    if(! (frag[0] instanceof HomepageFragment)) {
+                        replaceFragment(new HomepageFragment());
+                        frag[0] = new HomepageFragment();
+                    }
                     break;
+
                 case R.id.map_screen:
-                    if(!(getVisibleFragment() instanceof MapFragment)){
-                        replaceFragment(new MapFragment());}
+                    if(! (frag[0] instanceof MapFragment)) {
+                        replaceFragment(new MapFragment());
+                        frag[0] = new MapFragment();
+                    }
                     break;
+
                 case R.id.search_screen:
-                    if(!(getVisibleFragment() instanceof SearchFragment)){
-                        replaceFragment(new SearchFragment());}
+                    if(! (frag[0] instanceof SearchFragment)) {
+                        replaceFragment(new SearchFragment());
+                        frag[0] = new SearchFragment();
+                    }
                     break;
+
                 case R.id.player_profile_screen:
-                    if(!(getVisibleFragment() instanceof PlayerProfileFragment)){
-                        replaceFragment(new PlayerProfileFragment());}
+                    if(! (frag[0] instanceof PlayerProfileFragment)) {
+                        replaceFragment(new PlayerProfileFragment());
+                        frag[0] = new PlayerProfileFragment();
+                    }
                     break;
+
                 case R.id.ranking_screen:
-                    if(!(getVisibleFragment() instanceof RankingFragment)){
-                        replaceFragment(new RankingFragment());}
+                    if(! (frag[0] instanceof RankingFragment)) {
+                        replaceFragment(new RankingFragment());
+                        frag[0] = new RankingFragment();
+                    }
                     break;
             }
             return true;
