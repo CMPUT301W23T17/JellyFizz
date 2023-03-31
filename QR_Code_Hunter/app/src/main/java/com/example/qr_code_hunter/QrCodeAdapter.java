@@ -19,6 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
+//CHATGPT was referenced
 public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
     private Context currentContext;
     private ArrayList<DocumentReference> mQRCodeItemList;
