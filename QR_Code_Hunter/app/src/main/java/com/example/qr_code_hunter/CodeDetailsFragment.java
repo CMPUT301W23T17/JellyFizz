@@ -23,6 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Base64;
 
+/**
+ * A simple {@link Fragment} subclass
+ * Create an instance of this fragment
+ */
 public class CodeDetailsFragment extends Fragment {
     private final CommentSection commentSection = new CommentSection();
     private final ArrayList<CommentSection> commentList = new ArrayList<>();
@@ -66,7 +70,7 @@ public class CodeDetailsFragment extends Fragment {
         assert bundle != null;
         // what is provided into this fragment
         String hashString = bundle.getString("Hash");
-        String ownerName = loginActivity.getOwnerName();
+        String ownerName = LoginActivity.getOwnerName();
 
         // Access to the QrCodes collection to get necessary data
         DocumentReference qrRef = db.collection("QrCodes").document(hashString);
