@@ -59,7 +59,7 @@ public class OtherCodeList extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<DocumentReference> currentSortedCodes = new ArrayList<>();
+        ArrayList<deleteTag> currentSortedCodes = new ArrayList<>();
 
         displayCodes(username, new QrCodeList.sortedCodes() {
             @Override
@@ -72,9 +72,16 @@ public class OtherCodeList extends Fragment {
                     public void run() {
                         ListView qrCodeListView = currentView.findViewById(R.id.qr_code_lister);
 
-                        QrCodeAdapter codeAdapter = new QrCodeAdapter(getActivity(), 0, sortedCodes);
+
+
+                        currentSortedCodes.clear();
+                        for (DocumentReference item: sortedCodes) {
+                            deleteTag currentDelete = new deleteTag(item);
+                            currentSortedCodes.add(currentDelete);
+                        }
+
+                        QrCodeAdapter codeAdapter = new QrCodeAdapter(getActivity(), 0, currentSortedCodes);
                         qrCodeListView.setAdapter(codeAdapter);
-                        currentSortedCodes.addAll(sortedCodes);
                     }
                 });
 

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 //CHATGPT was referenced
-public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
+public class QrCodeAdapter extends ArrayAdapter<deleteTag> {
     private Context currentContext;
-    private ArrayList<DocumentReference> mQRCodeItemList;
+    private ArrayList<deleteTag> mQRCodeItemList;
 
     /**
      Constructs a new qrCodeAdapter with the given context, resource ID, and list of QR code items. These qrCodeItems are represented as
@@ -32,7 +32,7 @@ public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
      @param qrCodeItemList The list of QR code items to display.
      */
 
-    public QrCodeAdapter(Context context, int resource, ArrayList<DocumentReference> qrCodeItemList) {
+    public QrCodeAdapter(Context context, int resource, ArrayList<deleteTag> qrCodeItemList) {
         super(context, resource, qrCodeItemList);
 
         currentContext = context;
@@ -62,7 +62,7 @@ public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
         view = inflater.inflate(R.layout.item_qrcodelist, parent, false);
 
         // Fetch hashString
-        String hashString = mQRCodeItemList.get(position).getId();
+        String hashString = mQRCodeItemList.get(position).getHashString().getId();
 
         // Fetch next item in list and its score
         DocumentReference nextCode;
@@ -70,7 +70,7 @@ public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
         if (position < getCount() - 1) {
             QrCode nextCodeFiller = new QrCode();
 
-            String nextHashString = mQRCodeItemList.get(position + 1).getId();
+            String nextHashString = mQRCodeItemList.get(position + 1).getHashString().getId();
             nextScore = nextCodeFiller.setScore(nextHashString);
         } else {
             nextCode = null;
@@ -81,7 +81,7 @@ public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
 
 
         // Fetch binaryString
-        CompletableFuture<String> binaryStringFuture = fetchBinaryString(mQRCodeItemList.get(position));
+        CompletableFuture<String> binaryStringFuture = fetchBinaryString(mQRCodeItemList.get(position).getHashString());
 
         // Create filler QrCode
         QrCode currentQrCode = new QrCode();
@@ -105,6 +105,14 @@ public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
                         TextView pointsTextView = (TextView) viewPost.findViewById(R.id.points_text_view);
                         TextView highestLowestCodeTextView = (TextView) viewPost.findViewById(R.id.highest_lowest_code);
                         CheckBox checkBox = (CheckBox) viewPost.findViewById(R.id.qrCodeCheckbox);
+
+                        if(mQRCodeItemList.get(position).isChecked()) {
+                            checkBox.setVisibility(View.VISIBLE);
+                            checkBox.setChecked(true);
+                        } else {
+                            checkBox.setVisibility(View.INVISIBLE);
+                            checkBox.setChecked(false);
+                        }
 
                         qrCodeVisualRepTextView.setText(currentQrCode.getVisualRep(producedString));
                         codeNameTextView.setText(currentQrCode.setName(producedString));
@@ -166,8 +174,7 @@ public class QrCodeAdapter extends ArrayAdapter<DocumentReference> {
      This method updates the data in the adapter with a new ArrayList of DocumentReferences. Each DocumentReferennce represents a QrCode item
      @param newData the new ArrayList of DocumentReferences to set as the data in the adapter.
      */
-    public void setData(ArrayList<DocumentReference> newData) {
+    public void setData(ArrayList<deleteTag> newData) {
         mQRCodeItemList = newData;
     }
-
 }

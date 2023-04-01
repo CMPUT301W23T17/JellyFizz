@@ -288,7 +288,7 @@ public class qrCodeListProfileTests {
         // Delete first item
         solo.clickOnView(solo2.getView(R.id.garbage_can_icon));
         assertTrue(solo.waitForView(R.id.delete_qrcode_list));
-        solo.clickOnCheckBox(0);
+        solo.clickInList(0);
         solo.clickOnButton("DELETE SELECTED CODES");
 
         // Wait for the list to update

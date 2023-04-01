@@ -76,15 +76,18 @@ public class Owner implements Parcelable {
         }
     };
 
-//    /**
-//     * This function delete QrCode
-//     * @param hashString
-//     *        string of QrCode to be deleted
-//     * @param codeScore
-//     *        score of QrCode to be deleted
-//     * @param nextScore
-//     *        score of QrCode below it (QrCode are sorted in descending order)
-//     */
+
+    /**
+     Deletes the specified QR code tags by removing their relationship, updating their ranking,
+
+     and updating the overall ranking. This method uses an ExecutorService to execute the deletion
+
+     operations concurrently on a separate thread.
+
+     @param tagsToDelete An ArrayList of QrCodeTag objects to be deleted.
+
+     @throws NullPointerException if tagsToDelete is null.
+     */
     public void deleteQRCode(ArrayList<QrCodeTag> tagsToDelete) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 

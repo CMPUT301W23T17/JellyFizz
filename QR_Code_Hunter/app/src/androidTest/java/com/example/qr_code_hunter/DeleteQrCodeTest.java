@@ -121,7 +121,7 @@ public class DeleteQrCodeTest {
         // Perform delete action
         solo.clickOnView(solo2.getView(R.id.garbage_can_icon));
         solo.waitForView(R.id.delete_qrcode_list);
-        solo.clickOnCheckBox(0);
+        solo.clickInList(0);
         solo.clickOnButton("DELETE SELECTED CODES");
         solo.clickOnView(solo2.getView(R.id.qr_code_lister));
         // Check if successfully delete
