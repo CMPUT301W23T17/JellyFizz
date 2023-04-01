@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/qr_code_list_fragment"
     android:paddingTop="15dp"
-    android:background="@color/white"
+    android:background="#88FBED"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +12,7 @@
         android:id="@+id/top_buttons_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
+        android:background="#88FBED"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -24,11 +24,25 @@
             android:padding="2dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="3dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:clickable="true"
             android:src="@drawable/ic_delete" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="MY CODE LIST"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/return_button"
@@ -46,10 +60,10 @@
         android:id="@+id/qr_code_lister"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#FFFFFF"
+        android:background="#ECFFFC"
         app:layout_constraintTop_toBottomOf="@+id/top_buttons_layout"
-        app:layout_constraintBottom_toTopOf="@+id/delete_qrcode_list"
-        app:layout_constraintHeight_percent="0.9"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.94"/>
 
     <Button
         android:id="@+id/delete_qrcode_list"

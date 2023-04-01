@@ -10,6 +10,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used as item to display in recycler view for bottom modal sheet
+ */
 public class CommentSection implements Parcelable {
     private String username;
     private String comment;

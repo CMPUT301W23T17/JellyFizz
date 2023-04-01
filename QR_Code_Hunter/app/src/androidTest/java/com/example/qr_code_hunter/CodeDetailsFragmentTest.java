@@ -40,7 +40,7 @@ public class CodeDetailsFragmentTest {
 
 
     // Change this username until it's unique
-    String user = "TestRanking";
+    String user = "TestCodeDetailFragment";
     @Rule
     public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
@@ -92,7 +92,7 @@ public class CodeDetailsFragmentTest {
 */
     @Test
     public void testBackButton() {
-        //soloMain.waitForView(R.id.details_backBtn);
+        soloMain.waitForView(R.id.home_screen);
         soloMain.waitForView(R.id.more_button);
         onView(withId(R.id.more_button)).check(matches(isClickable()));
     }

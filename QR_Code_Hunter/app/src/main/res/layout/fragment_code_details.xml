@@ -6,19 +6,21 @@
     android:paddingTop="15dp"
     android:clickable="true"
     android:orientation="vertical"
+    android:background="#ECFFFC"
     android:focusableInTouchMode="true">
 
 <!-- Compound Icon Text View
      URL     : https://www.youtube.com/watch?v=dHwbjeOunjk
      Author  : EDMT Dev
      Date    : July 11, 2017 -->
-    <TextView
+    <ImageView
         android:id="@+id/details_backBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_arrowback"
-        android:gravity="left"
-        android:paddingHorizontal="15dp" />
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/arrow"
+        android:gravity="start" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,6 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="5dp"
             android:text="(53.1244, 113.8647)"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:textColor="@color/black"
             android:textSize="18sp" />
 

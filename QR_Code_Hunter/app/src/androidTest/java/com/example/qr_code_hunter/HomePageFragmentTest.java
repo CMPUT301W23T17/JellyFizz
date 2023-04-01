@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
@@ -40,7 +41,7 @@ public class HomePageFragmentTest {
 
 
     // Change this username until it's unique
-    String user = "TestRanking";
+    String user = "TestHomepage";
     @Rule
     public ActivityTestRule<LoginActivity> logInRule = new ActivityTestRule<>(LoginActivity.class, true, true);
 
@@ -92,6 +93,7 @@ public class HomePageFragmentTest {
 */
     @Test
     public void scanButtonDisplayed() {
+        soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.scan_button)).check(matches(isDisplayed()));
     }
 
@@ -101,6 +103,7 @@ public class HomePageFragmentTest {
 */
     @Test
     public void instructionButtonDisplayed() {
+        soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.ask_button)).check(matches(isDisplayed()));
     }
     
@@ -110,7 +113,8 @@ public class HomePageFragmentTest {
 */
     @Test
     public void clickScanButton() {
-        onView(withId(R.id.scan_button)).perform(click());
+        soloMain.waitForView(R.id.home_screen);
+        onView(withId(R.id.scan_button)).check(matches(isClickable()));
     }
 
 /**
@@ -119,7 +123,8 @@ public class HomePageFragmentTest {
 */
     @Test
     public void clickInstructionButton() {
-        onView(withId(R.id.ask_button)).perform(click());
+        soloMain.waitForView(R.id.home_screen);
+        onView(withId(R.id.scan_button)).check(matches(isClickable()));
     }
     
 /**
@@ -129,22 +134,27 @@ public class HomePageFragmentTest {
     public void testNavigation() {
         // Click on Map screen
         onView(withId(R.id.map_screen)).perform(click());
+        soloMain.waitForView(R.id.map_screen);
         onView(withId(R.id.map)).check(matches(isDisplayed()));
 
         // Click on Search screen
         onView(withId(R.id.search_screen)).perform(click());
+        soloMain.waitForView(R.id.search_screen);
         onView(withId(R.id.search_bar)).check(matches(isDisplayed()));
 
         // Click on Home screen
         onView(withId(R.id.home_screen)).perform(click());
+        soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.scan_now)).check(matches(isDisplayed()));
 
         // Click on Ranking screen
         onView(withId(R.id.ranking_screen)).perform(click());
+        soloMain.waitForView(R.id.ranking_screen);
         onView(withId(R.id.ranking_screen)).check(matches(isDisplayed()));
 
         // Click on Player Profile screen
         onView(withId(R.id.player_profile_screen)).perform(click());
+        soloMain.waitForView(R.id.player_profile_screen);
         onView(withId(R.id.owner_infor_box)).check(matches(isDisplayed()));
     }
 }

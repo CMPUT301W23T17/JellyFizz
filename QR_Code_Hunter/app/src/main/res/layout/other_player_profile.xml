@@ -208,14 +208,14 @@
 
         <TextView
             android:id="@+id/otherFirstQrCodeImage"
-            android:layout_width="165dp"
-            android:layout_height="149dp"
+            android:layout_width="181dp"
+            android:layout_height="165dp"
             android:clickable="true"
             android:fontFamily="@font/unispace"
             android:gravity="center"
             android:src="@drawable/qrcode_image"
-            android:textColor="@color/teal_200"
             android:text=""
+            android:textColor="@color/teal_200"
             android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/otherSecondQrCodeImage"
@@ -226,8 +226,8 @@
 
         <TextView
             android:id="@+id/otherSecondQrCodeImage"
-            android:layout_width="163dp"
-            android:layout_height="150dp"
+            android:layout_width="180dp"
+            android:layout_height="163dp"
             android:clickable="true"
             android:fontFamily="@font/unispace"
             android:gravity="center"

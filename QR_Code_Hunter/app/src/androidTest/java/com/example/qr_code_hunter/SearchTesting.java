@@ -60,11 +60,10 @@ public class SearchTesting {
         // Click register button
         soloLogin.clickOnButton("Register");
 
-        // Wait
-        soloMain.waitForView(R.id.score_display);
-        // Click register button
+
+
+        soloMain.waitForView(R.id.home_screen);
         soloMain.clickOnView(soloMain.getView(R.id.search_screen));
-        //solo.waitForView(solo.getView(R.id.buttonTotalScore));
     }
 
     @After
@@ -85,14 +84,14 @@ public class SearchTesting {
 
     @Test
     public void testSearchScreen() throws Exception {
-        soloMain.waitForView(R.id.search_bar);
+        soloMain.waitForView(R.id.search_screen);
         // Verify that the loginActivity is displayed
         onView(withId(R.id.search_screen)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testSearching() throws Exception {
-        soloMain.waitForView(R.id.search_bar);
+        soloMain.waitForView(R.id.search_screen);
 //        // Verify that the loginActivity is displayed
         soloMain.enterText(0,"D");
         soloMain.clickOnView(soloMain.getView(R.id.search_bar));
@@ -107,16 +106,14 @@ public class SearchTesting {
 
     @Test
     public void testOtherProfile() throws Exception{
-        soloMain.waitForView(R.id.search_bar);
+        soloMain.waitForView(R.id.search_screen);
 
         soloMain.enterText(0,"D");
         soloMain.clickOnView((soloMain.getView(R.id.search_bar)));
 
         soloMain.waitForView(R.id.search_list);
 
-        ListView listView = (ListView) soloMain.getView(R.id.search_list);
-
-// Click on the first item in the ListView
+        // Click on the first item in the ListView
         onData(anything())
                 .inAdapterView(withId(R.id.search_list))
                 .atPosition(0)

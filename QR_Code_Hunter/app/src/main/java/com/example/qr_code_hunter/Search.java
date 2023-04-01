@@ -14,7 +14,7 @@ public class Search {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final CollectionReference player = db.collection("Players");
 
-    public interface SearchPlayerCallback {
+    public interface SearchPlayerCallback {                        //Used ChatGpt for callback interface
         void onSearchPlayerComplete(ArrayList<ArrayList<String>> usernames);
     }
 
@@ -26,7 +26,7 @@ public class Search {
     public void searchPlayer(String string, SearchPlayerCallback callback) {
         ArrayList<ArrayList<String>> usernames = new ArrayList<>();
         if(string.length() != 0) {
-            Query query = player.whereGreaterThanOrEqualTo(FieldPath.documentId(), string)
+            Query query = player.whereGreaterThanOrEqualTo(FieldPath.documentId(), string)  //Used ChatGpt to get the query needed
                     .orderBy(FieldPath.documentId())
                     .limit(10);
             query.get().addOnCompleteListener(task -> {

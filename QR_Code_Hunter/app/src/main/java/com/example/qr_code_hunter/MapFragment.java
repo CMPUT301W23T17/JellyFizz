@@ -92,6 +92,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //    Map<LatLng, MarkerTag> nearbyCodes = new HashMap<LatLng, MarkerTag>();
     ArrayList<Marker> foundMarkers = new ArrayList<>();
     AutocompleteSupportFragment autocompleteFragment;
+    private boolean hasLocationPermission = false;
 
     // https://stackoverflow.com/questions/61455381/how-to-replace-startactivityforresult-with-activity-result-apis
     // Author: https://stackoverflow.com/users/9255057/hardik-hirpara
@@ -103,6 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     if (result.containsKey(Manifest.permission.ACCESS_FINE_LOCATION)
                             && result.get(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         // Permission granted, call getLocation()
+                        hasLocationPermission = true;
                         getLocation();
                     }
                 }
@@ -269,6 +271,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                             .removeLocationUpdates(this);
                                     if (locationResult != null && locationResult.getLocations().size() > 0) {
                                         int index  = locationResult.getLocations().size() -1;
+                                        hasLocationPermission = true;
                                         latitude = locationResult.getLocations().get(index).getLatitude();
                                         longitude = locationResult.getLocations().get(index).getLongitude();
                                         Toast.makeText(getActivity().getApplicationContext(), latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
@@ -348,51 +351,52 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     // This is used to mark your current location on map, and move map view to your current location
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.gMap = googleMap;
-
-        LatLng latLng = new LatLng(latitude,longitude);
-
-        findNearbyQrCodes(latitude, longitude, new FindNearbyCodeCallback() {
-            @Override
-            public void FindNearbyCodeComplete(Map<LatLng, MarkerTag> nearbyCodes) {
-                // Draw nearby codes
-                nearbyCodes.forEach((key, value) -> {
-                    MarkerOptions markerOptions = new MarkerOptions().position(key);
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    Marker newMarker = gMap.addMarker(markerOptions);
-                    assert newMarker != null;
-                    newMarker.setTag(value);
-                    foundMarkers.add(newMarker);
-                });
-                // Draw current location
-                MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("My Current Location");
-                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                marker = googleMap.addMarker(markerOptions);
-                try {
-                    // Convert the Bitmap object to a BitmapDescriptor object
-                    BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
-                    // Add a GroundOverlay to the map with the BitmapDescriptor object
-                    GroundOverlayOptions options = new GroundOverlayOptions()
-                            .image(descriptor)
-                            .position(latLng, 2 * 500)
-                            .transparency(0.3f)
-                            .clickable(false);
-                    overlay = gMap.addGroundOverlay(options);
-                } catch (Exception e){
-                    e.printStackTrace();}
-
-                gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(@NonNull Marker marker1) {
-                        if (marker1 != marker) {
-                            solveOnClick(marker1);
-                        }
-                        return true;
+        if (hasLocationPermission) {
+            this.gMap = googleMap;
+            LatLng latLng = new LatLng(latitude, longitude);
+            findNearbyQrCodes(latitude, longitude, new FindNearbyCodeCallback() {
+                @Override
+                public void FindNearbyCodeComplete(Map<LatLng, MarkerTag> nearbyCodes) {
+                    // Draw nearby codes
+                    nearbyCodes.forEach((key, value) -> {
+                        MarkerOptions markerOptions = new MarkerOptions().position(key);
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        Marker newMarker = gMap.addMarker(markerOptions);
+                        assert newMarker != null;
+                        newMarker.setTag(value);
+                        foundMarkers.add(newMarker);
+                    });
+                    // Draw current location
+                    MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("My Current Location");
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    marker = googleMap.addMarker(markerOptions);
+                    try {
+                        // Convert the Bitmap object to a BitmapDescriptor object
+                        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                        // Add a GroundOverlay to the map with the BitmapDescriptor object
+                        GroundOverlayOptions options = new GroundOverlayOptions()
+                                .image(descriptor)
+                                .position(latLng, 2 * 500)
+                                .transparency(0.3f)
+                                .clickable(false);
+                        overlay = gMap.addGroundOverlay(options);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
-            }
-        });
+
+                    gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker1) {
+                            if (marker1 != marker) {
+                                solveOnClick(marker1);
+                            }
+                            return true;
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public interface FindNearbyCodeCallback {
