@@ -45,28 +45,28 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.home_screen:
-                    if(!(getVisibleFragment() instanceof HomepageFragment)){
-                        replaceFragment(new HomepageFragment());}
+
+                        replaceFragment(new HomepageFragment());
                     break;
 
                 case R.id.map_screen:
-                    if(!(getVisibleFragment() instanceof MapFragment)){
-                        replaceFragment(new MapFragment());}
+
+                        replaceFragment(new MapFragment());
                     break;
 
                 case R.id.search_screen:
-                    if(!(getVisibleFragment() instanceof SearchFragment)){
-                        replaceFragment(new SearchFragment());}
+
+                        replaceFragment(new SearchFragment());
                     break;
 
                 case R.id.player_profile_screen:
-                    if(!(getVisibleFragment() instanceof PlayerProfileFragment)){
-                        replaceFragment(new PlayerProfileFragment());}
+
+                        replaceFragment(new PlayerProfileFragment());
                     break;
 
                 case R.id.ranking_screen:
-                    if(!(getVisibleFragment() instanceof RankingFragment)){
-                        replaceFragment(new RankingFragment());}
+
+                        replaceFragment(new RankingFragment());
                     break;
             }
             return true;
@@ -80,13 +80,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private Fragment getVisibleFragment() {
-        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-
-        for (Fragment fragment: fragments) {
-            if (fragment != null && fragment.isVisible()) return fragment;
-        }
-        return null;
-    }
 }
