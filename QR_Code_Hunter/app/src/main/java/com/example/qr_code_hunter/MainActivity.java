@@ -3,6 +3,7 @@ package com.example.qr_code_hunter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.example.qr_code_hunter.databinding.ActivityMainBinding;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean isFragmentTransactionInProgress = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            long delayInMillis = 500; // Set the desired delay in milliseconds
+
             switch (item.getItemId()){
                 case R.id.home_screen:
                     if(!(getVisibleFragment() instanceof HomepageFragment)){
@@ -74,10 +78,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(Fragment fragment ){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,fragment);
-        fragmentTransaction.commit();
+        if (!isFragmentTransactionInProgress) {
+            isFragmentTransactionInProgress = true;
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame_layout, fragment)
+                    .commitAllowingStateLoss();
+            getSupportFragmentManager().executePendingTransactions();
+            isFragmentTransactionInProgress = false;
+        }
     }
 
     private Fragment getVisibleFragment() {
@@ -89,4 +98,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+
+
 }
