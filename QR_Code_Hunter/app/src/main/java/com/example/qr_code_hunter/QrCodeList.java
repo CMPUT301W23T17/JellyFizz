@@ -150,6 +150,18 @@ public class QrCodeList extends Fragment {
 
                     //Update the adapter that the boxes are not checked
                     QrCodeAdapter adapter1 = (QrCodeAdapter) qrCodeDisplay.getAdapter();
+
+                    if (adapter1 == null) {
+                        //set garbage can to be black again
+                        ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
+                        garbageButton.setImageResource(R.drawable.ic_delete);
+
+                        //set deleteButton to be invisible
+                        Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                        deleteButton.setVisibility(View.GONE);
+                        goToGarbage = true;
+                        return;
+                    }
                     adapter1.notifyDataSetChanged();
 
 
@@ -188,7 +200,17 @@ public class QrCodeList extends Fragment {
             public void onClick(View view) {
                 ListView qrCodeDisplay = getView().findViewById(R.id.qr_code_lister);
 
-                if (qrCodeDisplay.getCount() < 1) return;
+                if (qrCodeDisplay.getCount() < 1) {
+                    //set garbagecan to be black again
+                    ImageView garbageButton = getView().findViewById(R.id.garbage_can_icon);
+                    garbageButton.setImageResource(R.drawable.ic_delete);
+
+                    //set deleteButton to be invisible
+                    Button deleteButton = getView().findViewById(R.id.delete_qrcode_list);
+                    deleteButton.setVisibility(View.GONE);
+                    goToGarbage = true;
+                    return;
+                };
 
                 QrCodeAdapter adapter1 = (QrCodeAdapter) qrCodeDisplay.getAdapter();
                 adapter1.setData(currentSortedCodes);
