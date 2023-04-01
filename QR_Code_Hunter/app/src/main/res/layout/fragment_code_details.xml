@@ -6,6 +6,7 @@
     android:paddingTop="15dp"
     android:clickable="true"
     android:orientation="vertical"
+    android:background="#ECFFFC"
     android:focusableInTouchMode="true">
 
 <!-- Compound Icon Text View
