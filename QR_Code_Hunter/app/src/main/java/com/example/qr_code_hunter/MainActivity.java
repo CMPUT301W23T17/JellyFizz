@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            long delayInMillis = 500; // Set the desired delay in milliseconds
-
             switch (item.getItemId()){
                 case R.id.home_screen:
                     if(!(getVisibleFragment() instanceof HomepageFragment)){
