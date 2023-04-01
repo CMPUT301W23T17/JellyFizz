@@ -66,10 +66,12 @@ public class RankingFragment extends Fragment {
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
                 rankLists.arrangeRankTotal(ranking -> {
-                    rankArr.addAll(ranking);
-                    adapter = new RankAdapter(getActivity(), 0, ranking, true);
-                    rankings.setAdapter(adapter);
-                    displayYourRankTotalScore(rankArr);
+                    if (isAdded()) {
+                        rankArr.addAll(ranking);
+                        adapter = new RankAdapter(requireContext(), 0, ranking, true);
+                        rankings.setAdapter(adapter);
+                        displayYourRankTotalScore(rankArr);
+                    }
                 });
             }
         });
@@ -82,10 +84,12 @@ public class RankingFragment extends Fragment {
                 rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
                     @Override
                     public void onArrangeRankComplete(ArrayList<Rank> ranking) {
-                        rankArr.addAll(ranking);
-                        adapter = new RankAdapter(getActivity(), 0, ranking, false);
-                        rankings.setAdapter(adapter);
-                        displayYourRankHighest(rankArr);
+                        if (isAdded()) {
+                            rankArr.addAll(ranking);
+                            adapter = new RankAdapter(requireContext(), 0, ranking, false);
+                            rankings.setAdapter(adapter);
+                            displayYourRankHighest(rankArr);
+                        }
                     }
                 });
             }
