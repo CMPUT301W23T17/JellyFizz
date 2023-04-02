@@ -36,8 +36,7 @@ public class loginIntentTest {
 
     /**
      * Runs before all tests and creates solo instance.
-     *
-     * @throws Exception
+     * @throws Exception if error occurs during testgit
      */
     @Before
     public void setUp() throws Exception {

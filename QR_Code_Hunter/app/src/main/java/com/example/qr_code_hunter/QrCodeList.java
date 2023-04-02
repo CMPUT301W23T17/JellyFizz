@@ -348,7 +348,7 @@ public class QrCodeList extends Fragment {
      * This method gets the score of a given DocumentReference object.
      *
      * @param docRef the DocumentReference object for which the score is to be obtained
-     * @return a CompletableFuture<Integer> object which will eventually be completed with the score of the given DocumentReference
+     * @return a CompletableFuture integer object which will eventually be completed with the score of the given DocumentReference
      */
     public static CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
 

@@ -12,6 +12,7 @@ public class ShaGenerator {
      *     input string from a scanned QrCode
      * @return
      *     the binary string representation of QrCode
+     * @throws NoSuchAlgorithmException if error occurs during test
      */
     public String shaGeneratorBinary(String input) throws NoSuchAlgorithmException {
         String target = this.shaGeneratorHexadecimal(input);
@@ -35,6 +36,7 @@ public class ShaGenerator {
      *     input string from a scanned QrCode
      * @return
      *     the hexadecimal string representation of QrCode
+     * @throws NoSuchAlgorithmException if error occurs during test
      */
     public String shaGeneratorHexadecimal(String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");

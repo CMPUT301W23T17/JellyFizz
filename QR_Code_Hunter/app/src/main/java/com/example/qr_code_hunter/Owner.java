@@ -171,6 +171,7 @@ public class Owner implements Parcelable {
      * This function remove relationship between player and that QrCode in scannedBy collection
      * @param qrRef
      *        document reference to the qrcode to be deleted
+     * @return A CompletableFuture string object announce finished reading database
      */
     public CompletableFuture<String> removeRelationship(DocumentReference qrRef) {
 
@@ -226,10 +227,10 @@ public class Owner implements Parcelable {
 
     /**
      * This update total score, rank and highest code point of the player after adding/removing given qrCode
-     * @param
-     *      codeScore score of the newly scanned code
-     * @param
-     *      addition 1 represents add, -1 represent subtract
+     * @param codeScore score of the newly scanned code
+     * @param addition 1 represents add, -1 represent subtract
+     * @param nextScore store score of the next smaller code in player's QrCode list
+     * @return A CompletableFuture string object announce finished reading database
      */
     public CompletableFuture<String> updateRankingRelated(int codeScore, int addition, int nextScore) {
         CompletableFuture<String> updateRankingComplete = new CompletableFuture<>();
@@ -422,6 +423,7 @@ public class Owner implements Parcelable {
 
     /**
      * This method updates the ranks of the players in the database based on their score
+     * @return completable future string object announced finish of reading database
      */
     public CompletableFuture<String> updateRank() {
 

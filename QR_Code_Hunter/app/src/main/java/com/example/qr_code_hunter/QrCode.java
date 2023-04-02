@@ -84,6 +84,7 @@ public class QrCode implements Parcelable {
      * This creates a unique name corresponding to the QrCode using 10 bits
      * @param binary
      *      This is the binary representation string of the SHA-256 hash of the code
+     * @return string of name of the code given binary string
      */
     public String setName(String binary) {
         char[] bin = binary.toCharArray();
@@ -113,8 +114,8 @@ public class QrCode implements Parcelable {
 
     /**
      * This determines how many points the QrCode is worth for
-     * @param
-     *     hashString the SHA-hash-string of the QrCode
+     * @param hashString the SHA-hash-string of the QrCode
+     * @return score calculated given the hash string
      */
     public int setScore(String hashString) {
         this.score = 0;
@@ -242,6 +243,7 @@ public class QrCode implements Parcelable {
 
     /**
      * This returns the visual representation of a QrCode
+     * @param binaryString binary string calculated using SHA-256 algorithm
      * @return
      *      Returns a string-type
      */
