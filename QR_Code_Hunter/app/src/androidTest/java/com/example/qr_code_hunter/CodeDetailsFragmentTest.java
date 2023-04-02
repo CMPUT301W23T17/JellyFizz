@@ -148,6 +148,7 @@ public class CodeDetailsFragmentTest {
         loginSolo.clickInList(0);
         loginSolo.waitForView(R.id.fragment_code_details);
         // Check all displayed information
+        loginSolo.waitForView(R.id.details_points);
         assertEquals("RedBayGasArtOwlJawOakIceMudSaw", ((TextView) mainSolo.getView(R.id.details_codename)).getText().toString());
         assertEquals(visualRep, ((TextView) mainSolo.getView(R.id.details_visual)).getText().toString());
         assertEquals("418 pts", ((TextView) mainSolo.getView(R.id.details_points)).getText().toString());
