@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 //CHATGPT was referenced
 public class QrCodeList extends Fragment {
     public Owner currentOwner;
-    public boolean goToGarbage = true;
+    public static boolean goToGarbage = true;
 
     public QrCodeList() {
     }

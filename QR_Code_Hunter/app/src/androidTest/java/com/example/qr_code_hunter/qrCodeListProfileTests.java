@@ -1,10 +1,13 @@
 package com.example.qr_code_hunter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -42,6 +46,8 @@ public class qrCodeListProfileTests {
 
     private Solo solo;
     private Solo solo2;
+
+    private static boolean loggedIn = false;
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
@@ -61,26 +67,29 @@ public class qrCodeListProfileTests {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         solo2 = new Solo(InstrumentationRegistry.getInstrumentation(), mainActivityRule.getActivity());
 
-        // Let user login as always
-        String username = "testusee";
-        String email = "testusee@example.com";
-        String phone = "1234567890";
-        solo.enterText(0, username);
-        solo.enterText(1, email);
-        solo.enterText(2, phone);
+        if (!loggedIn) {
+            // Let user login as always
+            String username = "testusee";
+            String email = "testusee@example.com";
+            String phone = "1234567890";
+            solo.enterText(0, username);
+            solo.enterText(1, email);
+            solo.enterText(2, phone);
 
-        // Click register button
-        solo.clickOnButton("Register");
-        // Assert that user is redirected to homepage
-        TestCase.assertTrue(solo.waitForActivity(MainActivity.class));
-        solo.clickOnView(solo2.getView(R.id.player_profile_screen));
-        assertTrue(solo.waitForView(R.id.user_profile_fragment));
+            // Click register button
+            solo.clickOnButton("Register");
+            // Assert that user is redirected to homepage
+            TestCase.assertTrue(solo.waitForActivity(MainActivity.class));
+            solo.clickOnView(solo2.getView(R.id.player_profile_screen));
+            assertTrue(solo.waitForView(R.id.user_profile_fragment));
 
-        // Move to QrCode list of testusee
-        assertTrue(solo.waitForView(R.id.more_button));
-        solo.clickOnView(solo2.getView(R.id.more_button));
+            // Move to QrCode list of testusee
+            assertTrue(solo.waitForView(R.id.more_button));
+            solo.clickOnView(solo2.getView(R.id.more_button));
 
-        assertTrue(solo.waitForView(R.id.qr_code_list_fragment));
+            assertTrue(solo.waitForView(R.id.qr_code_list_fragment));
+            loggedIn = true;
+        }
     }
 
     /**
@@ -161,8 +170,8 @@ public class qrCodeListProfileTests {
      * cleans up all database dependecies that were created by the setUpDepencies method. Cleans the database
      * @throws InterruptedException
      */
-    @After
-    public void cleanup() throws InterruptedException {
+    @AfterClass
+    public static void cleanup() throws InterruptedException {
         ArrayList<CompletableFuture> features = new ArrayList<>();
 
 
@@ -223,7 +232,6 @@ public class qrCodeListProfileTests {
         completeDelete3.join();
 
     }
-
 
     /**
      * This method tests all functionality to do with displaying the list of qrCodes
@@ -294,6 +302,7 @@ public class qrCodeListProfileTests {
         // Wait for the list to update
         assertTrue(solo.waitForView(R.id.qr_code_lister));
 
+
         // Check that the item has been removed from the list
         assertEquals(initialItemCount - 1, listView.getAdapter().getCount());
 
@@ -329,5 +338,7 @@ public class qrCodeListProfileTests {
             assertTrue(highestTextView1.getVisibility() == View.VISIBLE);
         }
     }
+
+
 
 }
