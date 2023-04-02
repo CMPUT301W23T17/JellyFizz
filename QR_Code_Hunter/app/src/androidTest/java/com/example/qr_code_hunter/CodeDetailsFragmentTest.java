@@ -148,6 +148,7 @@ public class CodeDetailsFragmentTest {
         loginSolo.clickInList(0);
         loginSolo.waitForView(R.id.fragment_code_details);
         // Check all displayed information
+        mainSolo.waitForView(R.id.details_image);
         assertEquals("RedBayGasArtOwlJawOakIceMudSaw", ((TextView) mainSolo.getView(R.id.details_codename)).getText().toString());
         assertEquals(visualRep, ((TextView) mainSolo.getView(R.id.details_visual)).getText().toString());
         assertEquals("418 pts", ((TextView) mainSolo.getView(R.id.details_points)).getText().toString());
@@ -158,29 +159,29 @@ public class CodeDetailsFragmentTest {
         assertEquals(38, drawableID);
     }
 
-    /**
-     * Close activity after each test
-     * @throws Exception if an error occurs during the test.
-     */
-    @After
-    public void tearDown() throws Exception{
-        loginSolo.finishOpenedActivities();
-    }
-
     @After
     public void cleanup() throws InterruptedException {
         CompletableFuture completeDelete1 = new CompletableFuture();
         CompletableFuture completeDelete2 = new CompletableFuture();
-        CompletableFuture completeDelete4 = new CompletableFuture();
+        CompletableFuture completeDelete3 = new CompletableFuture();
 
         String hashString = "000c285457fc971f862a79b786476c78812c8897063c6fa9c045f579a3b2d63f";
-        DocumentReference qrRef = db.collection("QrCodes")
-                .document(hashString);
+        DocumentReference qrRef = db.collection("QrCodes").document(hashString);
         DocumentReference playerRef = db.collection("Players").document("testCodes");
 
+        db.collection("QrCodes").document(hashString).delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        System.out.println("Document successfully deleted");
+                    } else {
+                        System.out.println("Error deleting document: " + task.getException());
+                    }
+                    completeDelete1.complete(null);
+                });
+
         db.collection("scannedBy")
-                .whereEqualTo("qrCodeScanned",qrRef)
                 .whereEqualTo("Player",playerRef)
+                .whereEqualTo("qrCodeScanned",qrRef)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -194,17 +195,6 @@ public class CodeDetailsFragmentTest {
                     completeDelete2.complete(null);
                 });
 
-        db.collection("QrCodes").document(hashString).delete()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        System.out.println("Document successfully deleted");
-                    } else {
-                        System.out.println("Error deleting document: " + task.getException());
-                    }
-                    completeDelete1.complete(null);
-                });
-
-
         db.collection("Players").document("testCodes").delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -212,9 +202,9 @@ public class CodeDetailsFragmentTest {
                     } else {
                         System.out.println("Error deleting document: " + task.getException());
                     }
-                    completeDelete4.complete(null);
+                    completeDelete3.complete(null);
                 });
 
-        completeDelete2.allOf(completeDelete2, completeDelete1, completeDelete4).join();
+        completeDelete1.allOf(completeDelete1, completeDelete2, completeDelete3).join();
     }
 }
