@@ -92,5 +92,30 @@ public class CodeDetailsFragmentTest {
         soloMain.waitForView(R.id.more_button);
         onView(withId(R.id.more_button)).check(matches(isClickable()));
     }
+    
+    @Test
+    public void testArrayListShownOnClick() {
+        // Click the button that displays the array list
+        onView(withId(R.id.my_button)).perform(click());
+
+        // Check if the view that displays the array list is visible
+        onView(withId(R.id.my_list_view)).check(matches(isDisplayed()));
+
+        // Get the contents of the array list from the adapter of the list view
+        ArrayList<String> arrayList = new ArrayList<>();
+        ListView listView = activityRule.getScenario().getActivity().findViewById(R.id.my_list_view);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) listView.getAdapter();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            arrayList.add(adapter.getItem(i));
+        }
+
+        // Check if the contents of the array list match the expected values
+        ArrayList<String> expectedArrayList = new ArrayList<>();
+        expectedArrayList.add("Item 1");
+        expectedArrayList.add("Item 2");
+        expectedArrayList.add("Item 3");
+        assertThat(arrayList, equalTo(expectedArrayList));
+    }
+}
 
 }
