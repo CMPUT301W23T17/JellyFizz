@@ -42,14 +42,13 @@ public class SearchFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         search = new Search();
         ArrayList<String> list = new ArrayList<>();
         ArrayList<ArrayList<String>> listArrayList = new ArrayList<>();
 
         View searchbutton = getView().findViewById(R.id.search_bar);
         listView = getView().findViewById(R.id.search_list);
-        TextView textView = getView().findViewById(R.id.textView4);
+        TextView textView = getView().findViewById(R.id.no_result_label);
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
 
@@ -93,6 +92,15 @@ public class SearchFragment extends Fragment {
                 replaceFragment(new OtherPlayerFragment(listArrayList.get(i).get(0)));
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reset EditText input
+        EditText text = getView().findViewById(R.id.enter_username);
+        text.setText("");
+        text.setHint("ENTER USERNAME");
     }
 
     private void replaceFragment(Fragment fragment ){
