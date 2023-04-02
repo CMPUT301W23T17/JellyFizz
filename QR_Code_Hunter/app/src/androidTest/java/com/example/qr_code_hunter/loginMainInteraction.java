@@ -28,8 +28,8 @@ public class loginMainInteraction {
 
     /**
      * This tests the interaction between the loginPage and the main page. In particular, this method checks whether the correct conditions for
-     * each activty are set when the activity is being displayed
-     * @throws Exception
+     * each activity are set when the activity is being displayed
+     * @throws Exception if an error occurs during the test.
      */
     @Test
     public void testLoginVsHomePageDisplayed() throws Exception {

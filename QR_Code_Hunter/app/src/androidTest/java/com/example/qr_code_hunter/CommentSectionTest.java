@@ -47,7 +47,7 @@ public class CommentSectionTest {
             new ActivityTestRule<>(MainActivity.class, true, true);
     /**
      * Runs before all tests and creates solo instance.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @Before
     public void setUp() throws Exception {
@@ -119,6 +119,7 @@ public class CommentSectionTest {
 
     /**
      * Click on current user profile, assert True if move to correct fragment
+     * @throws InterruptedException if an error occurs during the test.
      */
     @Test
     public void testDisplayCommentDialog() throws InterruptedException {
@@ -155,7 +156,7 @@ public class CommentSectionTest {
 
     /**
      * Close activity after each test
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @After
     public void tearDown() throws Exception{

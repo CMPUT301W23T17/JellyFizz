@@ -148,7 +148,7 @@ public class OtherCodeList extends Fragment {
     /**
      This method retrieves the score associated with a given QR code and returns it as a CompletableFuture.
      @param docRef A DocumentReference object that represents the QR code whose score is to be retrieved.
-     @return A CompletableFuture<Integer> object that eventually contains the score associated with the given QR code.
+     @return A CompletableFuture integer object that eventually contains the score associated with the given QR code.
      */
     public CompletableFuture<Integer> getScoreCode(DocumentReference docRef) {
 

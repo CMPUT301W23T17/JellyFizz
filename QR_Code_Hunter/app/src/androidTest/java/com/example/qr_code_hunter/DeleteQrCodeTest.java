@@ -43,7 +43,7 @@ public class DeleteQrCodeTest {
             new ActivityTestRule<>(MainActivity.class, true, true);
     /**
      * Runs before all tests and creates solo instance.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @Before
     public void setUp() throws Exception {
@@ -98,6 +98,7 @@ public class DeleteQrCodeTest {
 
     /**
      * Click on current user profile, assert True if move to correct fragment
+     * @throws InterruptedException if an error occurs during the test.
      */
     @Test
     public void testDeleteCode() throws InterruptedException {
@@ -131,7 +132,7 @@ public class DeleteQrCodeTest {
 
     /**
      * Close activity after each test
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @After
     public void tearDown() throws Exception{

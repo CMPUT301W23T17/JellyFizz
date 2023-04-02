@@ -51,7 +51,7 @@ public class HomePageFragmentTest {
 
     /**
      * Runs before all tests and creates solo instance.
-     * @throws Exception
+     * @throws Exception if error occurs during test
      */
     @Before
     public void setUp() throws Exception {
@@ -87,49 +87,49 @@ public class HomePageFragmentTest {
         completeDelete1.join();
     }
 
-/**
-*This test verifies that the scan button is displayed on the screen.
-*It checks that the view with the ID "scan_button" is visible to the user.
-*/
+    /**
+    *This test verifies that the scan button is displayed on the screen.
+    *It checks that the view with the ID "scan_button" is visible to the user.
+    */
     @Test
     public void scanButtonDisplayed() {
         soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.scan_button)).check(matches(isDisplayed()));
     }
 
-/**
-*This test verifies that the instruction button is displayed on the screen.
-*It checks that the view with the ID "ask_button" is visible to the user.
-*/
+    /**
+    *This test verifies that the instruction button is displayed on the screen.
+    *It checks that the view with the ID "ask_button" is visible to the user.
+    */
     @Test
     public void instructionButtonDisplayed() {
         soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.ask_button)).check(matches(isDisplayed()));
     }
     
-/**
-*This test verifies that clicking the scan button results in the expected behavior.
-*It performs a click on the view with the ID "scan_button".
-*/
+    /**
+    *This test verifies that clicking the scan button results in the expected behavior.
+    *It performs a click on the view with the ID "scan_button".
+    */
     @Test
     public void clickScanButton() {
         soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.scan_button)).check(matches(isClickable()));
     }
 
-/**
-*This test verifies that clicking the instruction button results in the expected behavior.
-*It performs a click on the view with the ID "ask_button".
-*/
+    /**
+    *This test verifies that clicking the instruction button results in the expected behavior.
+    *It performs a click on the view with the ID "ask_button".
+    */
     @Test
     public void clickInstructionButton() {
         soloMain.waitForView(R.id.home_screen);
         onView(withId(R.id.scan_button)).check(matches(isClickable()));
     }
-    
-/**
-*This tests the change between fragments of navigation bar
-*/
+
+    /**
+    *This tests the change between fragments of navigation bar
+    */
     @Test
     public void testNavigation() {
         // Click on Map screen

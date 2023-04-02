@@ -50,7 +50,7 @@ public class CodeDetailsFragmentTest {
 
     /**
      * Runs before all tests and creates solo instance.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @Before
     public void setUp() throws Exception {
@@ -86,10 +86,10 @@ public class CodeDetailsFragmentTest {
         completeDelete1.join();
     }
 
-/**
-*This method is a unit test that verifies the behavior of the back button on the app.
-*It waits for the more button to be visible on the screen and then checks that it is clickable.
-*/
+    /**
+    *This method is a unit test that verifies the behavior of the back button on the app.
+    *It waits for the more button to be visible on the screen and then checks that it is clickable.
+    */
     @Test
     public void testBackButton() {
         soloMain.waitForView(R.id.home_screen);

@@ -44,7 +44,7 @@ public class RankingTest {
 
     /**
      * Runs before all tests and creates solo instance.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @Before
     public void setUp() throws Exception {

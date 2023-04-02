@@ -405,6 +405,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * This function is used to find all nearby QrCode within 500m of the current location
+     * @param latitude store latitude of current location
+     * @param longitude store longitude of current location
+     * @param callback called until finish fetching data
      */
     public void findNearbyQrCodes(double latitude, double longitude, FindNearbyCodeCallback callback) {
         final GeoLocation center = new GeoLocation(latitude, longitude);
@@ -454,6 +457,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * This function is used to display codes information on click
+     * @param marker marker clicked on map
      */
     // This function is used to show bottom dialog when user click markers
     public void solveOnClick(Marker marker) {

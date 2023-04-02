@@ -44,7 +44,7 @@ public class qrCodeListIcons {
     /**
      * Runs before all tests and creates solo instance.
      *
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @Before
     public void setUp() throws Exception {
@@ -77,7 +77,7 @@ public class qrCodeListIcons {
     /**
      * Close activity after each test
      *
-     * @throws Exception
+     * @throws Exception if an error occurs during the test.
      */
     @After
     public void tearDown() throws Exception {
@@ -88,7 +88,7 @@ public class qrCodeListIcons {
     /**
      * cleans up all database dependecies that were created by the setUpDepencies method. Cleans the database
      *
-     * @throws InterruptedException
+     * @throws InterruptedException if an error occurs during the test
      */
     @AfterClass
     public static void cleanup() throws InterruptedException {
