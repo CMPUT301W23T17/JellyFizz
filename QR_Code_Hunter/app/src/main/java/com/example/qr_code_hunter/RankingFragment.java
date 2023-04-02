@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,12 +27,16 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
+ * ChatGPT was referenced for some parts of this class
  */
 public class RankingFragment extends Fragment {
     private ListView rankings;
     private TextView buttonTotalScore, buttonHighestCode;
     private RankAdapter adapter;
     private String ownerName = LoginActivity.getOwnerName();
+
+    // Keeps track of which list is currently being displayed
+    private boolean isTotalScoreDisplayed = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,8 @@ public class RankingFragment extends Fragment {
         rankings = getView().findViewById(R.id.leaderboard);
 
         Rank rankLists = new Rank();
-        ArrayList<Rank> rankArr = new ArrayList<>();
+        ArrayList<Rank> totalScoreArr = new ArrayList<>();
+        ArrayList<Rank> highestCodeArr = new ArrayList<>();
 
         //  Handle total score button amd highest code button
         buttonTotalScore = getView().findViewById(R.id.buttonTotalScore);
@@ -65,35 +71,39 @@ public class RankingFragment extends Fragment {
             public void onClick(View view) {
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                isTotalScoreDisplayed = true;
                 rankLists.arrangeRankTotal(ranking -> {
                     if (isAdded()) {
-                        rankArr.addAll(ranking);
+                        totalScoreArr.addAll(ranking);
                         adapter = new RankAdapter(requireContext(), 0, ranking, true);
                         rankings.setAdapter(adapter);
-                        displayYourRankTotalScore(rankArr);
+                        displayYourRankTotalScore(totalScoreArr);
                     }
                 });
             }
         });
+
         // Show highest code ranking
         buttonHighestCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buttonTotalScore.setBackgroundColor(Color.parseColor("#ffffff"));
                 buttonHighestCode.setBackgroundColor(Color.parseColor("#e0fbfc"));
+                isTotalScoreDisplayed = false;
                 rankLists.arrangeRankCode(new Rank.ArrangeRankCallback() {
                     @Override
                     public void onArrangeRankComplete(ArrayList<Rank> ranking) {
                         if (isAdded()) {
-                            rankArr.addAll(ranking);
+                            highestCodeArr.addAll(ranking);
                             adapter = new RankAdapter(requireContext(), 0, ranking, false);
                             rankings.setAdapter(adapter);
-                            displayYourRankHighest(rankArr);
+                            displayYourRankHighest(highestCodeArr);
                         }
                     }
                 });
             }
         });
+
         // Set the total score ranking as default
         buttonTotalScore.setSoundEffectsEnabled(false);
         buttonTotalScore.performClick();
@@ -103,13 +113,15 @@ public class RankingFragment extends Fragment {
         rankings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Get the username from the appropriate list based on isTotalScoreDisplayed
+                ArrayList<Rank> rankArr = isTotalScoreDisplayed ? totalScoreArr : highestCodeArr;
                 replaceFragment(new OtherPlayerFragment(rankArr.get(i).username));
             }
         });
 
     }
 
-    // change fragment to see other people profile
+    // Change fragment to see other people profile
     private void replaceFragment(Fragment fragment ){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -117,6 +129,7 @@ public class RankingFragment extends Fragment {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
     public void displayYourRankTotalScore(ArrayList<Rank> rankArr) {
         TextView yourName = getView().findViewById(R.id.yourName);
         TextView yourPts = getView().findViewById(R.id.yourPoints);
@@ -148,11 +161,11 @@ public class RankingFragment extends Fragment {
         else {
             yourRankLabel.setVisibility(View.VISIBLE);
             yourTrophy.setVisibility(View.INVISIBLE);
-            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
+            yourRankLabel.setText(HtmlCompat.fromHtml(yourRank + "<sup><small>th</small></sup>", HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
 
         yourName.setText(ownerName);
-        String ptsLabel = String.valueOf(yourScore) + " pts";
+        String ptsLabel = yourScore + " pts";
         yourPts.setText(ptsLabel);
     }
 
@@ -188,26 +201,19 @@ public class RankingFragment extends Fragment {
         else if (yourScore == 0){
             yourRankLabel.setVisibility(View.VISIBLE);
             yourTrophy.setVisibility(View.INVISIBLE);
-            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourScore) + "<sup><small>th</small></sup>"));
+            yourRankLabel.setText(HtmlCompat.fromHtml(yourScore + "<sup><small>th</small></sup>", HtmlCompat.FROM_HTML_MODE_LEGACY));
+
         }
         else {
             yourRankLabel.setVisibility(View.VISIBLE);
             yourTrophy.setVisibility(View.INVISIBLE);
-            yourRankLabel.setText(Html.fromHtml(String.valueOf(yourRank) + "<sup><small>th</small></sup>"));
+            yourRankLabel.setText(HtmlCompat.fromHtml(yourRank + "<sup><small>th</small></sup>", HtmlCompat.FROM_HTML_MODE_LEGACY));
+
         }
 
         yourName.setText(ownerName);
-        String ptsLabel = String.valueOf(yourScore) + " pts";
+        String ptsLabel = yourScore + " pts";
         yourPts.setText(ptsLabel);
     }
-
-    private String getLastElement(List<String> list) {
-        return list.get(list.size()-1);
-    }
-
-    public String callGetLastElement() {
-        List<String> list = new ArrayList<>();
-        list.add("Hello");
-        return getLastElement(list);
-    }
 }
+

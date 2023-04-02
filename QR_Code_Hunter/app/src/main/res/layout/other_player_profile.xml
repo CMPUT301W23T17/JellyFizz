@@ -125,7 +125,7 @@
             app:layout_constraintVertical_bias="0.428" />
 
         <ImageView
-            android:id="@+id/imageView7"
+            android:id="@+id/otherPlayer_backButton"
             android:layout_width="40dp"
             android:layout_height="30dp"
             android:layout_marginTop="20dp"
