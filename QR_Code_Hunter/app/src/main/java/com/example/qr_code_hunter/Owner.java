@@ -104,16 +104,20 @@ public class Owner implements Parcelable {
 
             Runnable deletionOperation = () -> {
 
+                CompletableFuture<Void> uniqueCheck = new CompletableFuture<>();
+
                 //If not unique remove from database
                 checkUniqueCodeScanned(hashes, new CheckUniqueCallback() {
                     @Override
                     public void onCheckUniqueComplete(Boolean unique) {
                         if (unique) {
                             removeFromQrCollection(hashes);
+                            uniqueCheck.complete(null);
                         }
                     }
                 });
 
+                uniqueCheck.join();
                 removeRelationshipFuture.join();
                 updateRankingRelatedFuture.join();
                 updateRank.join();
@@ -146,8 +150,11 @@ public class Owner implements Parcelable {
             if (task.isSuccessful()) {
                 if (task.getResult().size() == 1) {
                     codeUnique = true;
-                    Log.d("Working", "Only 1 player scanned this");
-                } else {codeUnique = false;}
+                    Log.d("CheckUnique", "Only 1 player scanned this");
+                } else {
+                    codeUnique = false;
+                    Log.d("CheckUnique", "More than 1 player scanned this");
+                }
             } else {
                 Log.e("Working", "Failed with: ", task.getException());
             }
