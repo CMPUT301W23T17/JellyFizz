@@ -103,6 +103,17 @@ public class Owner implements Parcelable {
             final String hashes = tag.hashString;
 
             Runnable deletionOperation = () -> {
+
+                //If not unique remove from database
+                checkUniqueCodeScanned(hashes, new CheckUniqueCallback() {
+                    @Override
+                    public void onCheckUniqueComplete(Boolean unique) {
+                        if (unique) {
+                            removeFromQrCollection(hashes);
+                        }
+                    }
+                });
+
                 removeRelationshipFuture.join();
                 updateRankingRelatedFuture.join();
                 updateRank.join();
