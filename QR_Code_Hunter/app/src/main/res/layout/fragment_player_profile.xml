@@ -17,15 +17,15 @@
 
         <TextView
             android:id="@+id/firstQrCodeImage"
-            android:layout_width="192dp"
-            android:layout_height="151dp"
+            android:layout_width="193dp"
+            android:layout_height="138dp"
             android:clickable="true"
             android:fontFamily="@font/unispace"
-            android:gravity="center"
             android:src="@drawable/qrcode_image"
+            android:gravity="center"
             android:text=""
             android:textColor="@color/teal_200"
-            android:textSize="9sp"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/secondQrCodeImage"
@@ -36,15 +36,14 @@
 
         <TextView
             android:id="@+id/secondQrCodeImage"
-            android:layout_width="192dp"
-            android:layout_height="151dp"
+            android:layout_width="182dp"
+            android:layout_height="138dp"
             android:clickable="true"
             android:fontFamily="@font/unispace"
-            android:gravity="center"
             android:src="@drawable/qrcode_image"
             android:text=""
             android:textColor="@color/teal_200"
-            android:textSize="9sp"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -55,37 +54,31 @@
 
         <TextView
             android:id="@+id/list_of_code_string"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="125dp"
+            android:layout_height="29dp"
             android:text="List of codes"
             android:textColor="#7E7E7E"
-android:gravity="center"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/firstQrCodeImage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/owner_infor_box"
-            app:layout_constraintVertical_bias="0.525" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.8" />
 
         <TextView
             android:id="@+id/more_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:gravity="center"
+            android:layout_width="57dp"
+            android:layout_height="26dp"
             android:text="MORE >"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/secondQrCodeImage"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.796"
+            app:layout_constraintHorizontal_bias="0.581"
             app:layout_constraintStart_toEndOf="@+id/list_of_code_string"
-
-            app:layout_constraintTop_toBottomOf="@+id/owner_infor_box"
-            app:layout_constraintVertical_bias="0.525" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.797" />
 
         <Switch
             android:id="@+id/switch_privacy"
