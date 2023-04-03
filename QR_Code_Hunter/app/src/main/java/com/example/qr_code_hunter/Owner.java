@@ -104,16 +104,20 @@ public class Owner implements Parcelable {
 
             Runnable deletionOperation = () -> {
 
+                CompletableFuture<Void> uniqueCheck = new CompletableFuture<>();
+
                 //If not unique remove from database
                 checkUniqueCodeScanned(hashes, new CheckUniqueCallback() {
                     @Override
                     public void onCheckUniqueComplete(Boolean unique) {
                         if (unique) {
                             removeFromQrCollection(hashes);
+                            uniqueCheck.complete(null);
                         }
                     }
                 });
 
+                uniqueCheck.join();
                 removeRelationshipFuture.join();
                 updateRankingRelatedFuture.join();
                 updateRank.join();
