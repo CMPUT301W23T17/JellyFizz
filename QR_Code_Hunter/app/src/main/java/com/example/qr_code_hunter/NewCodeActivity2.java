@@ -124,7 +124,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 @Override
                                 public void onCheckDuplicateComplete(Boolean duplicated) {
                                     if(!duplicated) {
-                                        Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(NewCodeActivity2.this, "Added new code successfully",Toast.LENGTH_SHORT).show();
                                         if((int) charCount.getText().toString().charAt(0) > 0) {
                                             currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                                         } else {
@@ -136,7 +136,7 @@ public class NewCodeActivity2 extends AppCompatActivity {
                                 }
                             });
                         } else {
-                            Toast.makeText(NewCodeActivity2.this, "Add new code successfully",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NewCodeActivity2.this, "Added new code successfully",Toast.LENGTH_SHORT).show();
                             if((int) charCount.getText().toString().charAt(0) > 0) {
                                 currentOwner.addQRCode(newCode, descBox.getText().toString(),encodedImage);
                             } else {
