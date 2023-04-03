@@ -97,7 +97,7 @@ public class Owner implements Parcelable {
             DocumentReference qrRef = qrCode.document(tag.hashString);
 
             CompletableFuture<String> removeRelationshipFuture = removeRelationship(qrRef);
-            CompletableFuture<String> updateRankingRelatedFuture = updateRankingRelated(tag.score, -1, tag.nextScore);
+            CompletableFuture<String> updateRankingRelatedFuture = updateRankingRelated(tag.score, -1);
             CompletableFuture<String> updateRank = updateRank();
 
             final String hashes = tag.hashString;
@@ -236,7 +236,7 @@ public class Owner implements Parcelable {
                     qrRef = createNewCode(code, comment, image);
                 }
                 addRelationship(qrRef, comment, image);
-                updateRankingRelated(code.getScore(),1,0);
+                updateRankingRelated(code.getScore(),1);
                 updateRank();
                 totalCodeScanned += 1;
             }
@@ -247,10 +247,9 @@ public class Owner implements Parcelable {
      * This update total score, rank and highest code point of the player after adding/removing given qrCode
      * @param codeScore score of the newly scanned code
      * @param addition 1 represents add, -1 represent subtract
-     * @param nextScore store score of the next smaller code in player's QrCode list
      * @return A CompletableFuture string object announce finished reading database
      */
-    public CompletableFuture<String> updateRankingRelated(int codeScore, int addition, int nextScore) {
+    public CompletableFuture<String> updateRankingRelated(int codeScore, int addition) {
         CompletableFuture<String> updateRankingComplete = new CompletableFuture<>();
 
         int newScore = totalScore + (addition*codeScore);
@@ -261,9 +260,7 @@ public class Owner implements Parcelable {
         Map<String, Object> data = new HashMap<>();
         if (addition == 1 && codeScore > highestCode) {
             highestCode = codeScore;
-            data.put("highestCode",highestCode);
-        } else if (addition == -1 && codeScore == highestCode) {
-            data.put("highestCode",nextScore);
+            data.put("highestCode", highestCode);
         }
         data.put("score",newScore);
         data.put("totalCodeScanned",newTotalCodeScanned);
@@ -473,5 +470,23 @@ public class Owner implements Parcelable {
         });
 
         return updateRankCompleted;
+    }
+
+    public void updateHighestCode(int newHighestCode) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("highestCode",newHighestCode);
+        ownerRef.update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Working", "highest code updated successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Working", "Not updated" + e.toString());
+                    }
+                });
     }
 }
