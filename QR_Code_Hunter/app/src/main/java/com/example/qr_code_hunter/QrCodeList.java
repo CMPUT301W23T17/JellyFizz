@@ -103,11 +103,12 @@ public class QrCodeList extends Fragment {
 
                                     CheckBox currentCheckBox = view.findViewById(R.id.qrCodeCheckbox);
 
-                                    if(currentCheckBox.getVisibility() == View.INVISIBLE) {
-                                        currentCheckBox.setVisibility(View.VISIBLE);
-                                    } else {
+                                    if (currentCheckBox.getVisibility() == View.VISIBLE) {
                                         currentCheckBox.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        currentCheckBox.setVisibility(View.VISIBLE);
                                     }
+
                                     currentCheckBox.toggle();
                                 } else {
                                     Log.d("Item Click", "Item is being clicked");
@@ -292,9 +293,23 @@ public class QrCodeList extends Fragment {
 
                 //update adapter
                 adapter1.notifyDataSetChanged();
+
+                // Update new highest code after deletion
+                LoginActivity.createOwnerObject(LoginActivity.getOwnerName(), new LoginActivity.getAllInfo() {
+                    @Override
+                    public void onGetInfo(Owner owner) {
+                        // Get highest code score if available
+                        if (currentSortedCodes.size() == 0) {
+                            owner.updateHighestCode(0);
+                        } else {
+                            QrCode firstCode = new QrCode();
+                            firstCode.setScore(currentSortedCodes.get(0).getHashString().getId());
+                            owner.updateHighestCode(firstCode.getScore());
+                        }
+                    }
+                });
             }
         });
-
     }
 
     /**
