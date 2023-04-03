@@ -130,7 +130,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.258"
+            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.8" />
@@ -144,10 +144,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintHorizontal_bias="0.581"
             app:layout_constraintStart_toEndOf="@+id/list_of_code_string"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.801" />
+            app:layout_constraintVertical_bias="0.797" />
 
         <TextView
             android:id="@+id/email"
@@ -220,7 +220,7 @@
             android:clickable="true"
             android:fontFamily="@font/unispace"
             android:src="@drawable/qrcode_image"
-            android:gravity="right"
+            android:gravity="center"
             android:text=""
             android:textColor="@color/teal_200"
             android:textSize="10sp"
