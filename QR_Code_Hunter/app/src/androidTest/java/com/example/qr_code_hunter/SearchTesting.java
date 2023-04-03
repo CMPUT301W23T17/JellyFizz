@@ -123,7 +123,7 @@ public class SearchTesting {
         soloMain.waitForView(R.id.imageView00);
         onView(withId(R.id.imageView00)).check(matches(isDisplayed()));
 
-        soloMain.clickOnView((soloMain.getView(R.id.imageView7)));
+        soloMain.clickOnView((soloMain.getView(R.id.otherPlayer_backButton)));
         soloMain.waitForView(R.id.search_bar);
     }
 
