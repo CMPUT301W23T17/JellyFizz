@@ -102,7 +102,12 @@ public class QrCodeList extends Fragment {
                                     }
 
                                     CheckBox currentCheckBox = view.findViewById(R.id.qrCodeCheckbox);
-                                    currentCheckBox.setVisibility(View.VISIBLE);
+
+                                    if(currentCheckBox.getVisibility() == View.INVISIBLE) {
+                                        currentCheckBox.setVisibility(View.VISIBLE);
+                                    } else {
+                                        currentCheckBox.setVisibility(View.INVISIBLE);
+                                    }
                                     currentCheckBox.toggle();
                                 } else {
                                     Log.d("Item Click", "Item is being clicked");
