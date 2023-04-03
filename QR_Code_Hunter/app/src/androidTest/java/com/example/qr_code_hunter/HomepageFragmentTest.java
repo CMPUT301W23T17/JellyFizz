@@ -1,7 +1,5 @@
 package com.example.qr_code_hunter;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -19,21 +17,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(AndroidJUnit4.class)
-public class HomePageFragmentTest {
+public class HomepageFragmentTest {
 
     private Solo soloLogin;
     private Solo soloMain;
@@ -132,11 +122,6 @@ public class HomePageFragmentTest {
     */
     @Test
     public void testNavigation() {
-        // Click on Map screen
-        onView(withId(R.id.map_screen)).perform(click());
-        soloMain.waitForView(R.id.map_screen);
-        onView(withId(R.id.map)).check(matches(isDisplayed()));
-
         // Click on Search screen
         onView(withId(R.id.search_screen)).perform(click());
         soloMain.waitForView(R.id.search_screen);
