@@ -15,32 +15,33 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textpoint2"
+            android:id="@+id/other_number_code_scanned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"
             android:text="codes scanned"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textpoint3"
-            app:layout_constraintHorizontal_bias="0.51"
-            app:layout_constraintStart_toEndOf="@+id/textpoint"
+            app:layout_constraintEnd_toStartOf="@+id/other_ranked_label"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/other_point_label"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.463" />
+            app:layout_constraintVertical_bias="0.47" />
 
         <TextView
-            android:id="@+id/textpoint"
-            android:layout_width="54dp"
-            android:layout_height="19dp"
+            android:id="@+id/other_point_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="points"
             android:textColor="#7E7E7E"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.112"
+            app:layout_constraintEnd_toStartOf="@id/other_number_code_scanned"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/number_points"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.47" />
 
         <TextView
             android:id="@+id/email"
@@ -76,8 +77,8 @@
 
         <TextView
             android:id="@+id/number_rank"
-            android:layout_width="64dp"
-            android:layout_height="32dp"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
             android:text="0"
             android:textAlignment="center"
             android:textColor="#DD6E6E"
@@ -86,31 +87,32 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.697"
             app:layout_constraintStart_toEndOf="@+id/number_code"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.43" />
+            app:layout_constraintVertical_bias="0.435" />
 
         <TextView
             android:id="@+id/number_code"
-            android:layout_width="97dp"
-            android:layout_height="29dp"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
             android:text="0"
             android:textAlignment="center"
             android:textColor="#DD6E6E"
             android:textColorLink="#D65F5F"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textpoint2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/other_number_code_scanned"
+            app:layout_constraintEnd_toStartOf="@id/number_rank"
+            app:layout_constraintStart_toEndOf="@id/number_points"
             app:layout_constraintTop_toBottomOf="@+id/user_name"
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/number_points"
-            android:layout_width="81dp"
-            android:layout_height="30dp"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
             android:text="0"
             android:textAlignment="center"
             android:textColor="#DD6E6E"
@@ -118,11 +120,10 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintEnd_toStartOf="@id/number_code"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.428" />
+            app:layout_constraintVertical_bias="0.433" />
 
         <ImageView
             android:id="@+id/otherPlayer_backButton"
@@ -172,13 +173,13 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.805"
-            app:layout_constraintStart_toEndOf="@+id/textpoint5"
+            app:layout_constraintHorizontal_bias="0.672"
+            app:layout_constraintStart_toEndOf="@+id/other_code_label"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.764" />
 
         <TextView
-            android:id="@+id/textpoint5"
+            android:id="@+id/other_code_label"
             android:layout_width="125dp"
             android:layout_height="29dp"
             android:text="List of codes"
@@ -186,13 +187,13 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.101"
+            app:layout_constraintHorizontal_bias="0.213"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.767" />
 
         <TextView
-            android:id="@+id/textpoint3"
+            android:id="@+id/other_ranked_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ranked"
@@ -200,10 +201,9 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.893"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/other_number_code_scanned"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.463" />
+            app:layout_constraintVertical_bias="0.47" />
 
 
         <TextView

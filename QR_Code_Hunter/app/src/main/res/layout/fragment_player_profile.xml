@@ -71,7 +71,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/number_code"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.433" />
+            app:layout_constraintVertical_bias="0.435" />
 
         <TextView
             android:id="@+id/number_code"
@@ -81,6 +81,7 @@
             android:layout_marginEnd="50dp"
             android:text="0"
             android:textAlignment="center"
+            android:gravity="center"
             android:textColor="#DD6E6E"
             android:textColorLink="#D65F5F"
             android:textSize="24sp"
@@ -118,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/codes_scanned_string"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.467" />
+            app:layout_constraintVertical_bias="0.47" />
 
         <TextView
             android:id="@+id/list_of_code_string"
@@ -159,11 +160,12 @@
             android:textColor="#24366A"
             android:textSize="17sp"
             android:textStyle="bold"
+            android:layout_marginStart="2dp"
             app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
             app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
-            app:layout_constraintHorizontal_bias="0.144"
             app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
             app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
+            app:layout_constraintHorizontal_bias="0.170"
             app:layout_constraintVertical_bias="0.475" />
 
         <TextView
@@ -176,11 +178,12 @@
             android:textColor="#24366A"
             android:textSize="17sp"
             android:textStyle="bold"
+            android:layout_marginStart="2dp"
             app:layout_constraintBottom_toBottomOf="@+id/owner_infor_box"
             app:layout_constraintEnd_toEndOf="@+id/owner_infor_box"
-            app:layout_constraintHorizontal_bias="0.144"
             app:layout_constraintStart_toStartOf="@+id/owner_infor_box"
             app:layout_constraintTop_toTopOf="@+id/owner_infor_box"
+            app:layout_constraintHorizontal_bias="0.190"
             app:layout_constraintVertical_bias="0.756" />
 
         <ImageView
