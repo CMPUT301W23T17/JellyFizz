@@ -64,7 +64,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
 
     // For JavaDocs
-     implementation files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar")
+    // implementation files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar")
 
     // For camera
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
