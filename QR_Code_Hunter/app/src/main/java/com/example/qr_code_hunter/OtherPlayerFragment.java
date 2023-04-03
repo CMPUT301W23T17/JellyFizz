@@ -85,15 +85,15 @@ public class OtherPlayerFragment extends Fragment{
                     }
 
                     Integer myAttribute3 = Math.toIntExact(documentSnapshot.getLong("score"));
-                    score = (TextView) getView().findViewById(R.id.number_points);
+                    score = getView().findViewById(R.id.number_points);
                     score.setText(myAttribute3.toString());
 
                     Integer myAttribute4 = Math.toIntExact(documentSnapshot.getLong("rank"));
-                    rank = (TextView) getView().findViewById(R.id.number_rank);
+                    rank = getView().findViewById(R.id.number_rank);
                     rank.setText(myAttribute4.toString());
 
                     Integer myAttribute5 = Math.toIntExact(documentSnapshot.getLong("totalCodeScanned"));
-                    codeScanned = (TextView) getView().findViewById(R.id.number_code);
+                    codeScanned = getView().findViewById(R.id.number_code);
                     codeScanned.setText(myAttribute5.toString());
                 } else {
                     Log.d(TAG, "No such document!");
@@ -106,8 +106,8 @@ public class OtherPlayerFragment extends Fragment{
             }
         });
 
-        ImageView imageView = getView().findViewById(R.id.imageView7);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        ImageView backButton = getView().findViewById(R.id.otherPlayer_backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().onBackPressed();
