@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-
 @RunWith(AndroidJUnit4.class)
 public class DeleteQrCodeTest {
     private Solo solo;
