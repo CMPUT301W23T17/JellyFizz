@@ -3,6 +3,7 @@ package com.example.qr_code_hunter;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 
@@ -31,6 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * This tests the details and functionalities of the Player Profile Fragment
+ * @throws Exception if an error occurs during the test.
+ */
 @RunWith(AndroidJUnit4.class)
 public class PlayerFragmentsTest {
     private Solo soloLogin;
@@ -64,6 +69,10 @@ public class PlayerFragmentsTest {
 
     }
 
+    /**
+     * Delete all the mock data generated for the test
+     * @throws InterruptedException if an error occurs during the test.
+     */
     @After
     public void cleanup() throws InterruptedException {
         CompletableFuture completeDelete3 = new CompletableFuture();
@@ -117,6 +126,10 @@ public class PlayerFragmentsTest {
         completeDelete1.allOf(completeDelete1, completeDelete2).join();
     }
 
+    /**
+     * Test the game details of new players (initial)
+     * @throws Exception if an error occurs during the test.
+     */
     @Test
     public void testNewPlayerInfo() throws Exception {
         soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
@@ -137,6 +150,10 @@ public class PlayerFragmentsTest {
 
     }
 
+    /**
+     * Test game details of existing players
+     * @throws Exception if an error occurs during the test.
+     */
     @Test
     public void testUpdatedPlayerInfo() throws Exception {
         CompletableFuture complete1 = new CompletableFuture<>();
@@ -197,6 +214,10 @@ public class PlayerFragmentsTest {
 
     }
 
+    /**
+     * Test whether or not the privacy button works
+     * @throws Exception if an error occurs during the test.
+     */
     @Test
     public void testSwitchPrivacyButton() throws Exception {
         soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
@@ -209,7 +230,7 @@ public class PlayerFragmentsTest {
         soloMain.waitForView(R.id.ranking_screen);
 
         ListView listView = (ListView) soloMain.getView(R.id.leaderboard);
-        int userIndex = 1;
+        int userIndex = 0;
 
         // Find index of current user in the leaderboard
         for (int i = 0; i < listView.getCount(); i++) {
@@ -230,5 +251,22 @@ public class PlayerFragmentsTest {
         soloMain.waitForView(R.id.other_player_profile_frag);
 
         assertEquals("Your profile is set to private. \nYou can change your privacy from your Profile screen.", ((TextView) soloMain.getView(R.id.email)).getText().toString());
+    }
+
+    /**
+     * Test whether or not the more button works
+     * @throws Exception if an error occurs during the test.
+     */
+    @Test
+    public void testMoreButton() throws Exception {
+        soloMain.clickOnView(soloMain.getView(R.id.player_profile_screen));
+        soloMain.waitForView(R.id.player_profile_screen);
+
+        onView(withId(R.id.more_button)).check(matches(isClickable()));
+        soloMain.clickOnView(soloMain.getView(R.id.more_button));
+
+        soloMain.clickOnView(soloMain.getView(R.id.qr_code_list_fragment));
+        soloMain.waitForView(R.id.qr_code_list_fragment);
+        onView(withId(R.id.qr_code_list_fragment)).check(matches(isDisplayed()));
     }
 }

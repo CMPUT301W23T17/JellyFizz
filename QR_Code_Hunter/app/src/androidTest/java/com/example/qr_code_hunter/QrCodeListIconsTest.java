@@ -26,12 +26,10 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 @RunWith(AndroidJUnit4.class)
-public class qrCodeListIcons {
-
+public class QrCodeListIconsTest {
     private Solo solo;
     private Solo solo2;
 
-    private static boolean loggedIn = false;
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
@@ -52,8 +50,8 @@ public class qrCodeListIcons {
         solo2 = new Solo(InstrumentationRegistry.getInstrumentation(), mainActivityRule.getActivity());
 
             // Let user login as always
-            String username = "testusee";
-            String email = "testusee@example.com";
+            String username = "testUser";
+            String email = "testuser@example.com";
             String phone = "1234567890";
             solo.enterText(0, username);
             solo.enterText(1, email);
@@ -66,7 +64,7 @@ public class qrCodeListIcons {
             solo.clickOnView(solo2.getView(R.id.player_profile_screen));
             assertTrue(solo.waitForView(R.id.user_profile_fragment));
 
-            // Move to QrCode list of testusee
+            // Move to QrCode list of testUser
             assertTrue(solo.waitForView(R.id.more_button));
             solo.clickOnView(solo2.getView(R.id.more_button));
 
@@ -94,11 +92,11 @@ public class qrCodeListIcons {
     public static void cleanup() throws InterruptedException {
         ArrayList<CompletableFuture> features = new ArrayList<>();
 
-        DocumentReference playerRef = db.collection("Players").document("testusee");
+        DocumentReference playerRef = db.collection("Players").document("testUser");
 
         CompletableFuture completeDelete3 = new CompletableFuture();
 
-        db.collection("Players").document("testusee").delete()
+        db.collection("Players").document("testUser").delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("Document successfully deleted");

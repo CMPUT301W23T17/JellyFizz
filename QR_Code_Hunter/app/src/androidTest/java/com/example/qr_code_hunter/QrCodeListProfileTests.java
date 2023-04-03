@@ -4,10 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,9 +38,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-//CHATGPT was used for this test class
+// ChatGPT was used for this test class
 @RunWith(AndroidJUnit4.class)
-public class qrCodeListProfileTests {
+public class QrCodeListProfileTests {
 
     private Solo solo;
     private Solo solo2;
@@ -69,8 +67,8 @@ public class qrCodeListProfileTests {
 
         if (!loggedIn) {
             // Let user login as always
-            String username = "testusee";
-            String email = "testusee@example.com";
+            String username = "testUser";
+            String email = "testuser@example.com";
             String phone = "1234567890";
             solo.enterText(0, username);
             solo.enterText(1, email);
@@ -83,7 +81,7 @@ public class qrCodeListProfileTests {
             solo.clickOnView(solo2.getView(R.id.player_profile_screen));
             assertTrue(solo.waitForView(R.id.user_profile_fragment));
 
-            // Move to QrCode list of testusee
+            // Move to QrCode list of testUser
             assertTrue(solo.waitForView(R.id.more_button));
             solo.clickOnView(solo2.getView(R.id.more_button));
 
@@ -115,8 +113,8 @@ public class qrCodeListProfileTests {
      */
     @BeforeClass
     public static void setUpDependencies() {
-        //Enter username of testusee here:
-        String testusee = "testusee";
+        //Enter username of testUser here:
+        String testUser = "testUser";
 
 
         for (int i = 0; i < testHashStrings.length; i++) {
@@ -137,7 +135,7 @@ public class qrCodeListProfileTests {
             Map<String, Object> mockRelation = new HashMap<>();
             DocumentReference qrRef = db.collection("QrCodes")
                     .document(testHashStrings[i]);
-            DocumentReference playerRef = db.collection("Players").document(testusee);
+            DocumentReference playerRef = db.collection("Players").document(testUser);
             mockRelation.put("Player", playerRef);
             mockRelation.put("qrCodeScanned", qrRef);
 
@@ -181,7 +179,7 @@ public class qrCodeListProfileTests {
 
             DocumentReference qrRef = db.collection("QrCodes")
                     .document(testHashStrings[i]);
-            DocumentReference playerRef = db.collection("Players").document("testusee");
+            DocumentReference playerRef = db.collection("Players").document("testUser");
 
             db.collection("QrCodes").document(testHashStrings[i]).delete()
                     .addOnCompleteListener(task -> {
@@ -197,7 +195,7 @@ public class qrCodeListProfileTests {
             completeDelete1.join();
         }
 
-        DocumentReference playerRef = db.collection("Players").document("testusee");
+        DocumentReference playerRef = db.collection("Players").document("testUser");
 
         CompletableFuture completeDelete2 = new CompletableFuture();
         db.collection("scannedBy")
@@ -219,7 +217,7 @@ public class qrCodeListProfileTests {
 
         CompletableFuture completeDelete3 = new CompletableFuture();
 
-        db.collection("Players").document("testusee").delete()
+        db.collection("Players").document("testUser").delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         System.out.println("Document successfully deleted");
