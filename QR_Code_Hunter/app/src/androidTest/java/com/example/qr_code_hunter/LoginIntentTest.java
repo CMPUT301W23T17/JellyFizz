@@ -23,10 +23,10 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Test class for logInActivity. All the UI tests are written here. Robotium test framework is used
- * * CHATGPT was referenced
+ * * ChatGPT was referenced
  */
 @RunWith(AndroidJUnit4.class)
-public class loginIntentTest {
+public class LoginIntentTest {
     private Solo solo;
     static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -36,7 +36,7 @@ public class loginIntentTest {
 
     /**
      * Runs before all tests and creates solo instance.
-     * @throws Exception if error occurs during testgit
+     * @throws Exception if error occurs during testing
      */
     @Before
     public void setUp() throws Exception {
@@ -66,7 +66,7 @@ public class loginIntentTest {
     public static void cleanup() throws InterruptedException {
         CompletableFuture completeDelete1 = new CompletableFuture();
 
-        String testPlayer = "testuser";
+        String testPlayer = "testUser";
 
         db.collection("Players").document(testPlayer).delete()
                 .addOnCompleteListener(task -> {
@@ -101,7 +101,7 @@ public class loginIntentTest {
     @Test
     public void testRegisterUser() throws Exception {
         // Enter valid user details
-        String username = "testuser";
+        String username = "testUser";
         String email = "testuser@example.com";
         String phone = "1234567890";
         solo.enterText(0, username);
@@ -128,7 +128,7 @@ public class loginIntentTest {
         EditText editText = solo.getEditText(0);
 
         // Enter existing username
-        String username = "testuser";
+        String username = "testUser";
         String email = "testuser@example.com";
         String phone = "1234567890";
         solo.enterText(0, username);
@@ -146,7 +146,7 @@ public class loginIntentTest {
                 "testuser\\", // attempts SQL injection via backslash
                 "téstüsér", // uses non-ASCII characters
                 "", // empty string
-                "testuser", // already taken usernamel, test duplicate username
+                "testUser", // already taken usernamel, test duplicate username
                 "ddddddddddddddddddddddddddddddd", // too long username
                 "dasd../gh" // invalid characters in username
         };
@@ -156,7 +156,7 @@ public class loginIntentTest {
             solo.enterText(0, naughtyString);
             solo.clickOnButton("Register");
 
-            if (naughtyString.equals("testuser")) {
+            if (naughtyString.equals("testUser")) {
                 assertTrue(solo.searchText(solo.getString(R.string.userNameTaken)));
             } else if (naughtyString.length() > 13 || naughtyString.length() < 1) {
                 assertTrue(solo.searchText(solo.getString(R.string.userNameLength)));
@@ -178,7 +178,7 @@ public class loginIntentTest {
     @Test
     public void testInvalidEmail() throws Exception {
         // Enter invalid email
-        solo.enterText(0, "testuser");
+        solo.enterText(0, "testUser");
         solo.enterText(1, "invalidemail");
 
         // Click register button

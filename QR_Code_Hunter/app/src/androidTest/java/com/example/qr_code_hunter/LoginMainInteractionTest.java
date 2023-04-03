@@ -18,9 +18,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
-//CHATGPT was referenced
+// ChatGPT was referenced
 @RunWith(AndroidJUnit4.class)
-public class loginMainInteraction {
+public class LoginMainInteractionTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule =
